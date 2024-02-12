@@ -33,30 +33,31 @@ const zoraChain = {
   checkPollingInterval: reservoirChains.zora.checkPollingInterval,
 };
 
-// const { connectors } = getDefaultWallets({
-//   // appName: 'Reservoir NFT Explorer',
-//   appName: 'The Sphere Common Pool',
-//   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
-//   chains: [zoraChain],
-// });
-
-// const { chains, publicClient } = configureChains(
-//   [{ ...zoraChain }],
-//   [
-//     alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
-//     publicProvider(),
-//   ]
-// );
-
-// const wagmiClient = createConfig({
-//   autoConnect: true,
-//   connectors,
-//   publicClient,
-// });
-const wagmiClient = createConfig({
-  // autoConnect: true,
+const { connectors } = getDefaultWallets({
+  // appName: 'Reservoir NFT Explorer',
+  appName: 'The Sphere Common Pool',
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
   chains: [zoraChain],
 });
+
+const { chains, publicClient } = configureChains(
+  [{ ...zoraChain }],
+  [
+    alchemyProvider({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || '' }),
+    publicProvider(),
+  ]
+);
+
+const wagmiClient = createConfig({
+  autoConnect: true,
+  connectors,
+  publicClient,
+});
+// const wagmiClient = createConfig({
+//   // autoConnect: true,
+//   chains: [zora],
+//   connectors: [injected()],
+// });
 console.log('wagmiClient', wagmiClient);
 const theme = darkTheme({
   headlineFont: 'Sans Serif',
