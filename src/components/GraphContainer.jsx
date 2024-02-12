@@ -20,9 +20,31 @@ export default function GraphContainer() {
         id: token.token.tokenId,
         name: token.token.name,
         image: token.token.imageSmall,
+        group: +token.token.tokenId > 15 ? 1 : 2,
       };
     }),
-    links: [],
+    links: [
+      // {
+      //   source: 2,
+      //   target: 1,
+      //   value: 4,
+      // },
+      // {
+      //   source: 1,
+      //   target: 2,
+      //   value: 1,
+      // },
+      // {
+      //   source: 2,
+      //   target: 3,
+      //   value: 9,
+      // },
+      // {
+      //   source: 3,
+      //   target: 2,
+      //   value: 3,
+      // },
+    ],
   };
 
   return (

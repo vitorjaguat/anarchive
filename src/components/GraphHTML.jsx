@@ -1,10 +1,6 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
-
-console.log('THREE', THREE);
-
 const ForceGraph3D = dynamic(() => import('./forceGraph'), {
   loading: () => <p>Loading...</p>,
   ssr: false,
@@ -386,21 +382,13 @@ export default function Graph({ graphData }) {
         graphData={graphData}
         nodeAutoColorBy={'group'}
         nodeThreeObject={(node) => {
-          // const sprite = new THREE.TextureLoader().load(
-          //   node.image || '/favicon.ico'
-          // );
-          // const material = new THREE.SpriteMaterial({ map: sprite });
-          // const spriteObj = new THREE.Sprite(material);
-          // spriteObj.scale.set(10, 10, 1);
-          // return spriteObj;
-          const texture = new THREE.TextureLoader().load(
-            node.image || '/favicon.ico'
-          );
-          const geometry = new THREE.SphereGeometry(32, 32, 32);
-          const material = new THREE.MeshBasicMaterial({ map: texture });
-          const circle = new THREE.Mesh(geometry, material);
-          circle.scale.set(5, 5, 5);
-          return circle;
+          const nodeEl = document.createElement('div');
+          nodeEl.innerHTML = `
+            <img src=${node.image} style=" border-radius: 50%; width: 40px; height: 40px"/>
+            `;
+          // não adianta tentar adicionar um evento de click aqui, pois o evento não será disparado
+
+          return new CSS2DObject(nodeEl);
         }}
         extraRenderers={isMounted ? extraRenderers : []}
         onNodeClick={(node) => {
