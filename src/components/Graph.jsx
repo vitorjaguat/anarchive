@@ -388,7 +388,13 @@ export default function Graph({ graphData }) {
         }}
         extraRenderers={isMounted ? extraRenderers : []}
         onNodeClick={(node) => {
-          router.push(`https://www.google.com/search?q=${'deer'}`);
+          window.open(
+            `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`,
+            '_blank'
+          );
+          // router.push(
+          //   `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`
+          // );
         }}
         nodeThreeObjectExtend={true}
         // graphData={{
