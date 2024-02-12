@@ -348,7 +348,7 @@ const miserables = {
   ],
 };
 
-export default function Graph() {
+export default function Graph({ graphData }) {
   const isMounted =
     typeof window !== 'undefined' && typeof document !== 'undefined';
   const router = useRouter();
@@ -375,14 +375,12 @@ export default function Graph() {
       <ForceGraph3D
         width={windowWidth}
         height={windowHeight}
-        graphData={data}
+        graphData={graphData}
         nodeAutoColorBy={'group'}
         nodeThreeObject={(node) => {
           const nodeEl = document.createElement('div');
           nodeEl.innerHTML = `
-            <img src="https://placehold.co/600x400?text=${
-              node.id
-            }" style="width: 50px; height: 50px; border-radius: 50%; background-color: #${randomColor()}; padding: 0px;"/>
+            <img src=${node.image} style="width: 50px; height: 50px; border-radius: 50%; padding: 0px;"/>
             `;
           // não adianta tentar adicionar um evento de click aqui, pois o evento não será disparado
 

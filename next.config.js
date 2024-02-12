@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-}
 
-module.exports = nextConfig
+  transpilePackages: ['@reservoir0x/reservoir-kit-ui'],
+};
+
+module.exports = nextConfig;
