@@ -23,7 +23,7 @@
     "**/*.ts",
     "**/*.tsx",
     "src/components/GraphWrapper.jsx",
-    "src/components/forceGraph.jsx"
+    "src/components/Graph.jsx"
   ],
   "exclude": ["node_modules"]
 }

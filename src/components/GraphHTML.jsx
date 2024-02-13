@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
-const ForceGraph3D = dynamic(() => import('./forceGraph'), {
+const ForceGraph3D = dynamic(() => import('./Graph'), {
   loading: () => <p>Loading...</p>,
   ssr: false,
 });
