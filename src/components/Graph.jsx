@@ -9,6 +9,32 @@ import {
 import * as THREE from 'three';
 import { useTokens } from '@reservoir0x/reservoir-kit-ui';
 
+class GraphDataClass {
+  constructor(tokenArr) {
+    this.nodes = tokenArr.map((token) => {
+      return {
+        id: token.token.tokenId,
+        name: token.token.name,
+        image: token.token.imageSmall,
+        group: token.token.attributes.find((att) => att.key === 'Mediatype')
+          .value,
+      };
+    });
+    this.links = [];
+    this.nodes.forEach((node, i, allNodes) => {
+      allNodes.forEach((n) => {
+        if (n.group === node.group && n.id !== node.id) {
+          this.links.push({
+            source: node.id,
+            target: n.id,
+            value: Math.floor(Math.random() * 9) + 1,
+          });
+        }
+      });
+    });
+  }
+}
+
 const Graph = () => {
   const graphRef = useRef();
 
@@ -24,41 +50,24 @@ const Graph = () => {
     collection: '0x8e038a4805d984162028f5978acd894fad310b56',
     sortBy: 'updatedAt',
     limit: 1000,
+    includeAttributes: true,
   });
   console.log('tokens', tokens);
   console.log('ok');
-  const graphData = {
-    nodes: tokens.map((token) => {
-      return {
-        id: token.token.tokenId,
-        name: token.token.name,
-        image: token.token.imageSmall,
-        group: +token.token.tokenId > 15 ? 1 : 2,
-      };
-    }),
-    links: [
-      // {
-      //   source: 2,
-      //   target: 1,
-      //   value: 4,
-      // },
-      // {
-      //   source: 1,
-      //   target: 2,
-      //   value: 1,
-      // },
-      // {
-      //   source: 2,
-      //   target: 3,
-      //   value: 9,
-      // },
-      // {
-      //   source: 3,
-      //   target: 2,
-      //   value: 3,
-      // },
-    ],
-  };
+  // const graphData = {
+  //   nodes: tokens.map((token) => {
+  //     return {
+  //       id: token.token.tokenId,
+  //       name: token.token.name,
+  //       image: token.token.imageSmall,
+  //       group: token.token.attributes.find((att) => att.key === 'Mediatype')
+  //         .value,
+  //     };
+  //   }),
+  //   links: [],
+  // };
+  const graphData = new GraphDataClass(tokens);
+  console.log('graphData', graphData);
 
   //events:
   const handleBackgroundClick = useCallback(() => {
@@ -88,6 +97,9 @@ const Graph = () => {
       onBackgroundClick={handleBackgroundClick}
       onEngineStop={() => graphRef.current.zoomToFit(1000)}
       cooldownTime={2000}
+      //links:
+      linkColor={(link) => 'rgba(0,0,0,0)'}
+      linkWidth={0}
       //nodes:
       nodeAutoColorBy={'group'}
       nodeThreeObject={(node) => {
@@ -114,7 +126,7 @@ const Graph = () => {
         const texture = new THREE.TextureLoader().load(
           node.image || '/favicon.ico'
         );
-        const geometry = new THREE.SphereGeometry(32, 32, 32);
+        const geometry = new THREE.SphereGeometry(10, 10, 10);
         const material = new THREE.MeshBasicMaterial({ map: texture });
         const circle = new THREE.Mesh(geometry, material);
         circle.scale.set(1, 1, 1);
