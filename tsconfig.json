@@ -22,7 +22,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/components/Graph.jsx"
+    "src/components/GraphWrapper.jsx",
+    "src/components/forceGraph.jsx"
   ],
   "exclude": ["node_modules"]
 }

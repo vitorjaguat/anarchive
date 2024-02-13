@@ -2,7 +2,7 @@ import dynamic from 'next/dynamic';
 import { useNFTMetadata } from '@zoralabs/nft-hooks';
 import { useCollections, useTokens } from '@reservoir0x/reservoir-kit-ui';
 
-const Graph = dynamic(() => import('./Graph.jsx'), {
+const Graph = dynamic(() => import('./GraphWrapper.jsx'), {
   loading: () => <p>Loading...</p>,
 });
 

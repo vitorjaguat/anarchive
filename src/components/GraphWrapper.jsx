@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
 
 console.log('THREE', THREE);
@@ -374,32 +374,55 @@ export default function Graph({ graphData }) {
     let stringNumber = String(randomNumber).padStart(6, '0');
     return stringNumber;
   }
+
+  const graphRef = useRef();
+  const handleBackgroundClick = useCallback(() => {
+    // graphRef.current.zoomToFit('1000ms');
+    console.log('graphRef.current', graphRef.current);
+  }, [graphRef]);
+
   return (
     <div className=''>
       <ForceGraph3D
+        ref={graphRef}
         // width={windowWidth}
         // height={windowHeight}
-        width={800}
-        height={800}
+        width={900}
+        height={900}
+        zoomToFit={'1000'}
         showNavInfo={true}
         nodeRelSize={1}
         graphData={graphData}
+        onBackgroundClick={handleBackgroundClick}
         nodeAutoColorBy={'group'}
         nodeThreeObject={(node) => {
+          //SQUARES:
           // const sprite = new THREE.TextureLoader().load(
           //   node.image || '/favicon.ico'
           // );
           // const material = new THREE.SpriteMaterial({ map: sprite });
           // const spriteObj = new THREE.Sprite(material);
-          // spriteObj.scale.set(10, 10, 1);
+          // spriteObj.scale.set(90, 90, 90);
           // return spriteObj;
+
+          //FLAT CIRCLES:
+          // const texture = new THREE.TextureLoader().load(
+          //   node.image || '/favicon.ico'
+          // );
+          // const geometry = new THREE.CircleGeometry(32, 32, 32);
+          // const material = new THREE.MeshBasicMaterial({ map: texture });
+          // const circle = new THREE.Mesh(geometry, material);
+          // circle.scale.set(5, 5, 5);
+          // return circle;
+
+          //SPHERES THAT ROTATE:
           const texture = new THREE.TextureLoader().load(
             node.image || '/favicon.ico'
           );
           const geometry = new THREE.SphereGeometry(32, 32, 32);
           const material = new THREE.MeshBasicMaterial({ map: texture });
           const circle = new THREE.Mesh(geometry, material);
-          circle.scale.set(5, 5, 5);
+          circle.scale.set(1, 1, 1);
           return circle;
         }}
         extraRenderers={isMounted ? extraRenderers : []}
