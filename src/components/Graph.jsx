@@ -126,7 +126,7 @@ const Graph = () => {
         const texture = new THREE.TextureLoader().load(
           node.image || '/favicon.ico'
         );
-        const geometry = new THREE.SphereGeometry(10, 10, 10);
+        const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
         const material = new THREE.MeshBasicMaterial({ map: texture });
         const circle = new THREE.Mesh(geometry, material);
         circle.scale.set(1, 1, 1);
