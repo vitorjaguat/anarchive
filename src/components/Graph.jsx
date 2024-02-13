@@ -1,5 +1,5 @@
 import { ForceGraph3D } from 'react-force-graph';
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ForceGraphMethods } from 'react-force-graph-3d';
 import {
@@ -10,14 +10,15 @@ import * as THREE from 'three';
 import { useTokens } from '@reservoir0x/reservoir-kit-ui';
 
 class GraphDataClass {
-  constructor(tokenArr) {
+  constructor(tokenArr, attribute) {
     this.nodes = tokenArr.map((token) => {
       return {
         id: token.token.tokenId,
         name: token.token.name,
         image: token.token.imageSmall,
-        group: token.token.attributes.find((att) => att.key === 'Mediatype')
+        group: token.token.attributes.find((att) => att.key === attribute)
           .value,
+        city: token.token.attributes.find((att) => att.key === 'City').value,
       };
     });
     this.links = [];
@@ -27,16 +28,21 @@ class GraphDataClass {
           this.links.push({
             source: node.id,
             target: n.id,
-            value: Math.floor(Math.random() * 9) + 1,
+            // value: Math.floor(Math.random() * 9) + 1,
+            // value: 2,
           });
         }
       });
     });
   }
+
+  changeAttribute(attribute) {}
 }
 
 const Graph = () => {
   const graphRef = useRef();
+  const [graphData, setGraphData] = useState({ nodes: [], links: [] });
+  const [sort, setSort] = useState('Mediatype');
 
   const isMounted =
     typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -66,8 +72,21 @@ const Graph = () => {
   //   }),
   //   links: [],
   // };
-  const graphData = new GraphDataClass(tokens);
+  useEffect(() => {
+    setGraphData(new GraphDataClass(tokens, sort));
+  }, [tokens, sort]);
   console.log('graphData', graphData);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setGraphData(({ nodes, links }) => {
+  //       const newLinks = [...new GraphDataClass(tokens, 'City').links];
+  //       return {
+  //         nodes,
+  //         links: newLinks,
+  //       };
+  //     });
+  //   }, 5000);
+  // }, [sort]);
 
   //events:
   const handleBackgroundClick = useCallback(() => {
@@ -77,80 +96,90 @@ const Graph = () => {
   }, [graphRef]);
 
   if (isMounted) {
-    extraRenderers = [new CSS2DRenderer()];
+    // extraRenderers = [new CSS2DRenderer()];
     windowWidth = window.innerWidth;
     windowHeight = window.innerHeight;
   }
 
   return (
-    <ForceGraph3D
-      ref={graphRef}
-      graphData={graphData}
-      //container:
-      width={windowWidth}
-      height={windowHeight}
-      // width={900}
-      // height={900}
-      showNavInfo={true}
-      nodeRelSize={1}
-      //events:
-      onBackgroundClick={handleBackgroundClick}
-      onEngineStop={() => graphRef.current.zoomToFit(1000)}
-      cooldownTime={2000}
-      //links:
-      linkColor={(link) => 'rgba(0,0,0,0)'}
-      linkWidth={0}
-      //nodes:
-      nodeAutoColorBy={'group'}
-      nodeThreeObject={(node) => {
-        //SQUARES:
-        // const sprite = new THREE.TextureLoader().load(
-        //   node.image || '/favicon.ico'
-        // );
-        // const material = new THREE.SpriteMaterial({ map: sprite });
-        // const spriteObj = new THREE.Sprite(material);
-        // spriteObj.scale.set(90, 90, 90);
-        // return spriteObj;
+    <div className=''>
+      <div
+        className='bg-pink-200 w-fit text-black cursor-pointer'
+        onClick={() => {
+          setSort(sort === 'City' ? 'Mediatype' : 'City');
+        }}
+      >
+        Sort by {sort === 'City' ? 'Mediatype' : 'City'}
+      </div>
+      <ForceGraph3D
+        ref={graphRef}
+        graphData={graphData}
+        //container:
+        width={windowWidth}
+        height={windowHeight}
+        // width={900}
+        // height={900}
+        showNavInfo={true}
+        nodeRelSize={1}
+        //events:
+        onBackgroundClick={handleBackgroundClick}
+        onEngineStop={() => graphRef.current.zoomToFit(1000)}
+        cooldownTime={2000}
+        //links:
+        linkColor={(link) => 'rgba(0,0,0,0)'}
+        linkWidth={0}
+        //nodes:
+        nodeAutoColorBy={'group'}
+        nodeThreeObject={(node) => {
+          //SQUARES:
+          // const sprite = new THREE.TextureLoader().load(
+          //   node.image || '/favicon.ico'
+          // );
+          // const material = new THREE.SpriteMaterial({ map: sprite });
+          // const spriteObj = new THREE.Sprite(material);
+          // spriteObj.scale.set(90, 90, 90);
+          // return spriteObj;
 
-        //FLAT CIRCLES:
-        // const texture = new THREE.TextureLoader().load(
-        //   node.image || '/favicon.ico'
-        // );
-        // const geometry = new THREE.CircleGeometry(32, 32, 32);
-        // const material = new THREE.MeshBasicMaterial({ map: texture });
-        // const circle = new THREE.Mesh(geometry, material);
-        // circle.scale.set(5, 5, 5);
-        // return circle;
+          //FLAT CIRCLES:
+          // const texture = new THREE.TextureLoader().load(
+          //   node.image || '/favicon.ico'
+          // );
+          // const geometry = new THREE.CircleGeometry(32, 32, 32);
+          // const material = new THREE.MeshBasicMaterial({ map: texture });
+          // const circle = new THREE.Mesh(geometry, material);
+          // circle.scale.set(5, 5, 5);
+          // return circle;
 
-        //SPHERES THAT ROTATE:
-        const texture = new THREE.TextureLoader().load(
-          node.image || '/favicon.ico'
-        );
-        const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
-        const material = new THREE.MeshBasicMaterial({ map: texture });
-        const circle = new THREE.Mesh(geometry, material);
-        circle.scale.set(1, 1, 1);
-        return circle;
-      }}
-      extraRenderers={isMounted ? extraRenderers : []}
-      onNodeClick={(node) => {
-        window.open(
-          `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`,
-          '_blank'
-        );
-        // router.push(
-        //   `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`
-        // );
-      }}
-      nodeThreeObjectExtend={true}
-      // graphData={{
-      //   nodes: [{ id: 'Harry' }, { id: 'Sally' }, { id: 'Alice' }],
-      //   links: [
-      //     { source: 'Harry', target: 'Sally' },
-      //     { source: 'Harry', target: 'Alice' },
-      //   ],
-      // }}
-    />
+          //SPHERES THAT ROTATE:
+          const texture = new THREE.TextureLoader().load(
+            node.image || '/favicon.ico'
+          );
+          const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
+          const material = new THREE.MeshBasicMaterial({ map: texture });
+          const circle = new THREE.Mesh(geometry, material);
+          circle.scale.set(1, 1, 1);
+          return circle;
+        }}
+        extraRenderers={isMounted ? extraRenderers : []}
+        onNodeClick={(node) => {
+          window.open(
+            `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`,
+            '_blank'
+          );
+          // router.push(
+          //   `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`
+          // );
+        }}
+        nodeThreeObjectExtend={true}
+        // graphData={{
+        //   nodes: [{ id: 'Harry' }, { id: 'Sally' }, { id: 'Alice' }],
+        //   links: [
+        //     { source: 'Harry', target: 'Sally' },
+        //     { source: 'Harry', target: 'Alice' },
+        //   ],
+        // }}
+      />
+    </div>
   );
 };
 
