@@ -8,6 +8,7 @@ import {
 } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as THREE from 'three';
 import { useTokens } from '@reservoir0x/reservoir-kit-ui';
+import SelectSort from './SelectSort';
 
 class GraphDataClass {
   constructor(tokenArr, attribute) {
@@ -110,7 +111,7 @@ const Graph = () => {
   }
 
   return (
-    <div className=''>
+    <div className='relative'>
       {/* <div
         className='bg-pink-200 w-fit text-black cursor-pointer'
         onClick={() => {
@@ -119,24 +120,8 @@ const Graph = () => {
       >
         Sort by {sort === 'City' ? 'Mediatype' : 'City'}
       </div> */}
-      <div className=''>
-        <select
-          value={sort}
-          name='sort'
-          id='sort'
-          className='text-black px-4'
-          onChange={(e) => setSort(e.target.value)}
-        >
-          <option value='none'>--Choose a trait--</option>
-          <option value='none'>None</option>
-          <option value='Mediatype'>Mediatype</option>
-          <option value='City'>City</option>
-          <option value='Country'>Country</option>
-          <option value='Creator'>Creator</option>
-          <option value='Event'>Event</option>
-          <option value='Organization'>Organization</option>
-          <option value='Year'>Year</option>
-        </select>
+      <div className='absolute top-20 left-20 z-[1000]'>
+        <SelectSort setSort={setSort} sort={sort} />
       </div>
       <ForceGraph3D
         ref={graphRef}

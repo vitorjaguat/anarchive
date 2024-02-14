@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
+import Layout from '@/components/Layout';
 
 //wagmi:
 import {
@@ -21,6 +22,10 @@ import {
 import { getDefaultWallets } from '@rainbow-me/rainbowkit';
 import { reservoirChains } from '@reservoir0x/reservoir-sdk';
 import { zora } from 'wagmi/chains';
+
+// rainbowkit (for connect wallet button):
+import '@rainbow-me/rainbowkit/styles.css';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 
 const zoraChain = {
   ...zora,
@@ -58,7 +63,7 @@ const wagmiClient = createConfig({
 //   chains: [zora],
 //   connectors: [injected()],
 // });
-console.log('wagmiClient', wagmiClient);
+// console.log('wagmiClient', wagmiClient);
 const theme = darkTheme({
   headlineFont: 'Sans Serif',
   font: 'Serif',
@@ -89,7 +94,11 @@ export default function App({ Component, pageProps }: AppProps) {
         }}
         theme={theme}
       >
-        <Component {...pageProps} />
+        <RainbowKitProvider chains={chains} modalSize='compact'>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </RainbowKitProvider>
       </ReservoirKitProvider>
     </WagmiConfig>
   );
