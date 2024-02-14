@@ -16,12 +16,18 @@ class GraphDataClass {
         id: token.token.tokenId,
         name: token.token.name,
         image: token.token.imageSmall,
-        group: token.token.attributes.find((att) => att.key === attribute)
-          .value,
-        city: token.token.attributes.find((att) => att.key === 'City').value,
+        group:
+          attribute !== 'none'
+            ? token.token.attributes.find((att) => att.key === attribute).value
+            : 'none',
+        // city: token.token.attributes.find((att) => att.key === 'City').value,
       };
     });
     this.links = [];
+
+    if (attribute === 'none') {
+      return;
+    }
     this.nodes.forEach((node, i, allNodes) => {
       allNodes.forEach((n) => {
         if (n.group === node.group && n.id !== node.id) {
@@ -58,8 +64,7 @@ const Graph = () => {
     limit: 1000,
     includeAttributes: true,
   });
-  console.log('tokens', tokens);
-  console.log('ok');
+
   // const graphData = {
   //   nodes: tokens.map((token) => {
   //     return {
@@ -72,7 +77,10 @@ const Graph = () => {
   //   }),
   //   links: [],
   // };
+
   useEffect(() => {
+    if (sort === 'none') {
+    }
     setGraphData(new GraphDataClass(tokens, sort));
   }, [tokens, sort]);
   console.log('graphData', graphData);
@@ -103,13 +111,32 @@ const Graph = () => {
 
   return (
     <div className=''>
-      <div
+      {/* <div
         className='bg-pink-200 w-fit text-black cursor-pointer'
         onClick={() => {
           setSort(sort === 'City' ? 'Mediatype' : 'City');
         }}
       >
         Sort by {sort === 'City' ? 'Mediatype' : 'City'}
+      </div> */}
+      <div className=''>
+        <select
+          value={sort}
+          name='sort'
+          id='sort'
+          className='text-black px-4'
+          onChange={(e) => setSort(e.target.value)}
+        >
+          <option value='none'>--Choose a trait--</option>
+          <option value='none'>None</option>
+          <option value='Mediatype'>Mediatype</option>
+          <option value='City'>City</option>
+          <option value='Country'>Country</option>
+          <option value='Creator'>Creator</option>
+          <option value='Event'>Event</option>
+          <option value='Organization'>Organization</option>
+          <option value='Year'>Year</option>
+        </select>
       </div>
       <ForceGraph3D
         ref={graphRef}
