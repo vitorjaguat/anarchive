@@ -141,6 +141,7 @@ const Graph = () => {
         linkColor={(link) => 'rgba(0,0,0,0)'}
         linkWidth={0}
         //nodes:
+        nodeLabel={(node) => `<div>${node.name}</div>${node.group}`}
         nodeAutoColorBy={'group'}
         nodeThreeObject={(node) => {
           //SQUARES:
