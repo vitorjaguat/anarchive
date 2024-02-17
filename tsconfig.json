@@ -23,7 +23,8 @@
     "**/*.ts",
     "**/*.tsx",
     "src/components/GraphWrapper.jsx",
-    "src/components/Graph.jsx"
+    "src/components/Graph.jsx",
+    "src/pages/index.jsx"
   ],
   "exclude": ["node_modules"]
 }

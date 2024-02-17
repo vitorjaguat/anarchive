@@ -1,5 +1,5 @@
 import { ForceGraph3D } from 'react-force-graph';
-import { useRef, useCallback, useState, useEffect } from 'react';
+import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { ForceGraphMethods } from 'react-force-graph-3d';
 import {
@@ -12,7 +12,7 @@ import SelectSort from './SelectSort';
 
 class GraphDataClass {
   constructor(tokenArr, attribute) {
-    this.nodes = tokenArr.map((token) => {
+    this.nodes = tokenArr?.map((token) => {
       return {
         id: token.token.tokenId,
         name: token.token.name,
@@ -46,10 +46,11 @@ class GraphDataClass {
   changeAttribute(attribute) {}
 }
 
-const Graph = () => {
+const Graph = ({ setOpenTokenData, openTokenData }) => {
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [sort, setSort] = useState('Mediatype');
+  const [spriteMap, setSpriteMap] = useState(new Map());
 
   const isMounted =
     typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -57,14 +58,39 @@ const Graph = () => {
   let extraRenderers = [];
   let windowWidth = 0;
   let windowHeight = 0;
+  const [tokens, setTokens] = useState([]);
 
-  //fetching token data:
-  const { data: tokens } = useTokens({
-    collection: '0x8e038a4805d984162028f5978acd894fad310b56',
-    sortBy: 'updatedAt',
-    limit: 1000,
-    includeAttributes: true,
-  });
+  // // fetching tokens using hook:
+  // const { data: tokens } = useTokens({
+  //   collection: '0x8e038a4805d984162028f5978acd894fad310b56',
+  //   sortBy: 'updatedAt',
+  //   limit: 1000,
+  //   includeAttributes: true,
+  // });
+
+  //fetching token data using API:
+  useEffect(() => {
+    const fetchData = async () => {
+      const options = {
+        method: 'GET',
+        headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
+      };
+
+      try {
+        const response = await fetch(
+          'https://api-zora.reservoir.tools/tokens/v7?collection=0x8e038a4805d984162028f5978acd894fad310b56&sortBy=updatedAt&limit=1000&includeAttributes=true',
+          options
+        );
+        const data = await response.json();
+        setTokens(data.tokens);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+  // console.log('tokens', tokens);
 
   // const graphData = {
   //   nodes: tokens.map((token) => {
@@ -80,11 +106,9 @@ const Graph = () => {
   // };
 
   useEffect(() => {
-    if (sort === 'none') {
-    }
     setGraphData(new GraphDataClass(tokens, sort));
   }, [tokens, sort]);
-  console.log('graphData', graphData);
+  // console.log('graphData', graphData);
   // useEffect(() => {
   //   setTimeout(() => {
   //     setGraphData(({ nodes, links }) => {
@@ -100,7 +124,7 @@ const Graph = () => {
   //events:
   const handleBackgroundClick = useCallback(() => {
     // graphRef.current.zoomToFit('1000ms');
-    console.log('graphRef.current', graphRef.current);
+    // console.log('graphRef.current', graphRef.current);
     graphRef.current.zoomToFit(1000);
   }, [graphRef]);
 
@@ -110,16 +134,24 @@ const Graph = () => {
     windowHeight = window.innerHeight;
   }
 
+  // console.log(openTokenId);
+
+  const handleNodeClick = useCallback(
+    (node) => {
+      console.log('tokens', tokens);
+      const clickedTokenData = tokens.find(
+        (token) => +token.token.tokenId === +node.id
+      );
+
+      setOpenTokenData(clickedTokenData);
+      console.log(node.id);
+      console.log(openTokenData);
+    },
+    [tokens, setOpenTokenData, openTokenData]
+  );
+
   return (
     <div className='relative'>
-      {/* <div
-        className='bg-pink-200 w-fit text-black cursor-pointer'
-        onClick={() => {
-          setSort(sort === 'City' ? 'Mediatype' : 'City');
-        }}
-      >
-        Sort by {sort === 'City' ? 'Mediatype' : 'City'}
-      </div> */}
       <div className='absolute top-20 left-20 z-[1000]'>
         <SelectSort setSort={setSort} sort={sort} />
       </div>
@@ -136,7 +168,9 @@ const Graph = () => {
         //events:
         onBackgroundClick={handleBackgroundClick}
         onEngineStop={() => graphRef.current.zoomToFit(1000)}
-        cooldownTime={2000}
+        cooldownTime={openTokenData === 'initial' ? 2000 : Infinity}
+        cooldownTicks={Infinity}
+        warmupTicks={0}
         //links:
         linkColor={(link) => 'rgba(0,0,0,0)'}
         linkWidth={0}
@@ -164,9 +198,14 @@ const Graph = () => {
           // return circle;
 
           //SPHERES THAT ROTATE:
-          const texture = new THREE.TextureLoader().load(
-            node.image || '/favicon.ico'
-          );
+          //storing textures in spriteMap state, so that they are not reloaded every time the graph is rerendered:
+          let texture;
+          if (spriteMap.get(node.id)) texture = spriteMap.get(node.id);
+          else {
+            texture = new THREE.TextureLoader().load(`${node.image}`);
+            setSpriteMap(spriteMap.set(node.id, texture));
+          }
+
           const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
           const material = new THREE.MeshBasicMaterial({ map: texture });
           const circle = new THREE.Mesh(geometry, material);
@@ -174,15 +213,16 @@ const Graph = () => {
           return circle;
         }}
         extraRenderers={isMounted ? extraRenderers : []}
-        onNodeClick={(node) => {
-          window.open(
-            `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`,
-            '_blank'
-          );
-          // router.push(
-          //   `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`
+        onNodeClick={
+          handleNodeClick
+          // (node) => {
+          // window.open(
+          //   `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`,
+          //   '_blank'
           // );
-        }}
+
+          // }
+        }
         nodeThreeObjectExtend={true}
         // graphData={{
         //   nodes: [{ id: 'Harry' }, { id: 'Sally' }, { id: 'Alice' }],
