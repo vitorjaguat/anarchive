@@ -1,3 +1,5 @@
+import Markdown from 'react-markdown';
+
 export default function TokenInfo({ openTokenData, handleClickOverlay }) {
   return (
     <div
@@ -48,7 +50,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
               </span>
             </div>
             <div className='text-sm font-light'>
-              {openTokenData.token.description}
+              <Markdown>{openTokenData.token.description}</Markdown>
             </div>
           </div>
         </div>
