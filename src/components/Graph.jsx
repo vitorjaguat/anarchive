@@ -172,7 +172,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
         cooldownTicks={Infinity}
         warmupTicks={0}
         //links:
-        linkColor={(link) => 'rgba(0,0,0,0)'}
+        // linkColor={(link) => 'rgba(0,0,0,0)'}
         linkWidth={0}
         //nodes:
         nodeLabel={(node) => `<div>${node.name}</div>${node.group}`}
