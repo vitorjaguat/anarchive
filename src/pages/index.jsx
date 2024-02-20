@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ['latin'] });
 export default function Home() {
   const [openTokenData, setOpenTokenData] = useState('initial');
   console.log(openTokenData);
+
   const handleClickOverlay = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();

@@ -9,6 +9,7 @@ import {
 import * as THREE from 'three';
 import { useTokens } from '@reservoir0x/reservoir-kit-ui';
 import SelectSort from './SelectSort';
+import { useAccount } from 'wagmi';
 
 class GraphDataClass {
   constructor(tokenArr, attribute) {
@@ -51,6 +52,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [sort, setSort] = useState('Mediatype');
   const [spriteMap, setSpriteMap] = useState(new Map());
+  const [showMineIsChecked, setShowMineIsChecked] = useState(false);
 
   const isMounted =
     typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -106,8 +108,10 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
   // };
 
   useEffect(() => {
-    setGraphData(new GraphDataClass(tokens, sort));
-  }, [tokens, sort]);
+    if (tokens.length > 0 && !showMineIsChecked) {
+      setGraphData(new GraphDataClass(tokens, sort));
+    }
+  }, [tokens, sort, showMineIsChecked]);
   // console.log('graphData', graphData);
   // useEffect(() => {
   //   setTimeout(() => {
@@ -150,10 +154,68 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
     [tokens, setOpenTokenData, openTokenData]
   );
 
+  // user account logic:
+
+  const account = useAccount();
+  const [usersFrags, setUsersFrags] = useState([]);
+  console.log('account', account);
+  useEffect(() => {
+    if (account?.address) {
+      const fetchData = async () => {
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: '*/*',
+            'x-api-key': process.env.RESERVOIR_API_KEY,
+          },
+        };
+
+        try {
+          const response = await fetch(
+            'https://api-zora.reservoir.tools/users/0x5C6DC3b2a55be4b02e26b75848e27c19df4Af9fE/tokens/v9?collection=0x8e038a4805d984162028f5978acd894fad310b56&limit=200&includeAttributes=true',
+            options
+          );
+          const data = await response.json();
+          setUsersFrags(data.tokens);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      fetchData();
+    }
+  }, [account.address]);
+
+  useEffect(() => {
+    if (showMineIsChecked && usersFrags.length > 0) {
+      setGraphData(new GraphDataClass(usersFrags, sort));
+    }
+  }, [showMineIsChecked, usersFrags, sort]);
+
+  console.log('usersFrags', usersFrags);
+  console.log('showMineIsChecked', showMineIsChecked);
+
   return (
     <div className='relative'>
       <div className='absolute top-20 left-20 z-[1000]'>
         <SelectSort setSort={setSort} sort={sort} />
+        {/* link user's frags */}
+        <div className='mt-2'>
+          <input
+            type='checkbox'
+            name='link-users-frags'
+            id='link-users-frags'
+            checked={showMineIsChecked}
+            onChange={() =>
+              setShowMineIsChecked(
+                (prevShowMineIsChecked) => !prevShowMineIsChecked
+              )
+            }
+          />
+          <label className='ml-2' htmlFor='link-users-frags'>
+            Show only mine
+          </label>
+        </div>
       </div>
       <ForceGraph3D
         ref={graphRef}
@@ -172,7 +234,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
         cooldownTicks={Infinity}
         warmupTicks={0}
         //links:
-        // linkColor={(link) => 'rgba(0,0,0,0)'}
+        linkColor={(link) => 'rgba(0,0,0,0)'}
         linkWidth={0}
         //nodes:
         nodeLabel={(node) => `<div>${node.name}</div>${node.group}`}
