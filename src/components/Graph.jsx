@@ -213,7 +213,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
             }
           />
           <label className='ml-2' htmlFor='link-users-frags'>
-            Show only mine
+            Show collected
           </label>
         </div>
       </div>
