@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
+import localFont from '@next/font/local';
 
 //wagmi:
 import {
@@ -26,6 +27,24 @@ import { zora } from 'wagmi/chains';
 // rainbowkit (for connect wallet button):
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+
+const inter = localFont({
+  src: [
+    {
+      path: '../../public/assets/space_grotesk_medium.otf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../../public/assets/space_grotesk_semibold.otf',
+      weight: '700',
+      style: 'bold',
+    },
+  ],
+  variable: '--inter-font',
+  display: 'swap',
+  // src: '../public/assets/space_grotesk_medium.otf',
+});
 
 const zoraChain = {
   ...zora,
@@ -66,7 +85,8 @@ const wagmiClient = createConfig({
 // console.log('wagmiClient', wagmiClient);
 const theme = darkTheme({
   headlineFont: 'Sans Serif',
-  font: 'Serif',
+  // font: 'Serif',
+  font: inter.style.fontFamily,
   primaryColor: '#323aa8',
   primaryHoverColor: '#252ea5',
 });
@@ -95,9 +115,11 @@ export default function App({ Component, pageProps }: AppProps) {
         theme={theme}
       >
         <RainbowKitProvider chains={chains} modalSize='compact'>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <main className={`${inter.variable} font-inter`}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </main>
         </RainbowKitProvider>
       </ReservoirKitProvider>
     </WagmiConfig>

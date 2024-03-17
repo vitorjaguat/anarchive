@@ -194,6 +194,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
 
   console.log('usersFrags', usersFrags);
   console.log('showMineIsChecked', showMineIsChecked);
+  console.log(new GraphDataClass(usersFrags, sort));
 
   return (
     <div className='relative'>
@@ -222,7 +223,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
         graphData={graphData}
         //container:
         width={windowWidth}
-        height={windowHeight}
+        height={windowHeight - 100}
         // width={900}
         // height={900}
         showNavInfo={true}

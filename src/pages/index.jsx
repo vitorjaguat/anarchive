@@ -4,7 +4,7 @@ import GraphWrapper from '../components/GraphWrapper';
 import { useCallback, useState } from 'react';
 import TokenInfo from '../components/TokenInfo';
 
-const inter = Inter({ subsets: ['latin'] });
+// const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   const [openTokenData, setOpenTokenData] = useState('initial');
@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <main
-      className={`relative bg-gray-600 flex min-h-screen flex-col items-center justify-between ${inter.className}`}
+      className={`relative bg-gray-600 flex min-h-screen flex-col items-center justify-between`}
     >
       {openTokenData && openTokenData !== 'initial' && (
         <TokenInfo
