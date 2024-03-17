@@ -172,7 +172,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
 
         try {
           const response = await fetch(
-            'https://api-zora.reservoir.tools/users/0x5C6DC3b2a55be4b02e26b75848e27c19df4Af9fE/tokens/v9?collection=0x8e038a4805d984162028f5978acd894fad310b56&limit=200&includeAttributes=true',
+            `https://api-zora.reservoir.tools/users/${account.address}/tokens/v9?collection=0x8e038a4805d984162028f5978acd894fad310b56&limit=200&includeAttributes=true`,
             options
           );
           const data = await response.json();
