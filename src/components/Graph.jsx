@@ -13,6 +13,7 @@ import { useAccount } from 'wagmi';
 
 class GraphDataClass {
   constructor(tokenArr, attribute) {
+    console.log('tokenArr', tokenArr, attribute);
     this.nodes = tokenArr?.map((token) => {
       return {
         id: token.token.tokenId,
@@ -20,7 +21,7 @@ class GraphDataClass {
         image: token.token.imageSmall,
         group:
           attribute !== 'none'
-            ? token.token.attributes.find((att) => att.key === attribute).value
+            ? token.token.attributes.find((att) => att.key === attribute)?.value
             : 'none',
         // city: token.token.attributes.find((att) => att.key === 'City').value,
       };
@@ -194,7 +195,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
 
   console.log('usersFrags', usersFrags);
   console.log('showMineIsChecked', showMineIsChecked);
-  console.log(new GraphDataClass(usersFrags, sort));
+  // console.log(new GraphDataClass(usersFrags, sort));
 
   return (
     <div className='relative'>
