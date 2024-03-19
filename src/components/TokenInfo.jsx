@@ -60,7 +60,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
           <RxChevronDown size={24} />
         </div>
         {/* columns */}
-        <div className='px-4 flex justify-between gap-4'>
+        <div className='pl-4 flex justify-between gap-4 max-w-[500px]'>
           <div className='flex flex-col gap-4'>
             <img
               src={openTokenData.token.image}
@@ -118,9 +118,9 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
             </div>
           </div>
 
-          <div className='flex h-full flex-col gap-1'>
-            <div className=''>{openTokenData.token.name}</div>
-            <div className='text-sm'>
+          <div className='flex flex-col gap-1'>
+            <div className='pr-4'>{openTokenData.token.name}</div>
+            <div className='text-sm pr-4'>
               Created by{' '}
               <span className='font-bold'>
                 {
@@ -130,8 +130,10 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 }
               </span>
             </div>
-            <div className='text-sm font-light'>
-              <Markdown>{openTokenData.token.description}</Markdown>
+            <div className='mt-4 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-scroll'>
+              <Markdown className='overflow-scroll'>
+                {openTokenData.token.description}
+              </Markdown>
             </div>
           </div>
         </div>
