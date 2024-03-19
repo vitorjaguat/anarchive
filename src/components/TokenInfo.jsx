@@ -3,15 +3,16 @@ import { CollectModal } from '@reservoir0x/reservoir-kit-ui';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { RxChevronDown } from 'react-icons/rx';
 
 const boxVariants = {
   hidden: {
-    opacity: 0,
+    // opacity: 0,
     top: '100%',
     bottom: 'auto',
   },
   visible: {
-    opacity: 1,
+    // opacity: 1,
     top: 'auto',
     bottom: 0,
     transition: {
@@ -37,7 +38,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
 
   return (
     <motion.div
-      className='absolute top-0 left-0 w-screen h-screen flex items-start justify-end z-[1]'
+      className='absolute top-0 left-0 w-screen h-screen flex items-start justify-end z-1000'
       onClick={handleClickOverlay}
       variants={boxVariants}
       initial='hidden'
@@ -45,13 +46,21 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
       exit='exit'
     >
       <div
-        className='bg-slate-700 p-6 z-[1001] h-[calc(100%-100px)]'
+        className='bg-slate-700 pb-6 z-[1001] h-[calc(100%-100px)]'
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
         }}
       >
-        <div className='flex justify-between gap-4'>
+        {/* close button */}
+        <div
+          className='w-full flex justify-center p-1 mb-4 bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer'
+          onClick={handleClickOverlay}
+        >
+          <RxChevronDown size={24} />
+        </div>
+        {/* columns */}
+        <div className='px-4 flex justify-between gap-4'>
           <div className='flex flex-col gap-4'>
             <img
               src={openTokenData.token.image}
@@ -60,6 +69,34 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
               height={250}
               className='max-w-[250px] max-h-[250px] object-contain rounded-md bg-white/10'
             />
+            <div className=''>
+              <CollectModal
+                type='trade'
+                trigger={
+                  <button
+                    className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-slate-800/70 transition-all duration-300'
+                    //   onClick={() => setMintOpenState(true)}
+                  >
+                    Mint
+                  </button>
+                }
+                onConnectWallet={() => {
+                  openConnectModal?.();
+                }}
+                defaultQuantity={2}
+                // openState={mintOpenState}
+                collectionId={openTokenData.token.contract}
+                tokenId={openTokenData.token.tokenId}
+                onCollectComplete={(data) => console.log(data)}
+                onCollectError={(error) => console.log(error)}
+
+                // token={
+                //   openTokenData.token.contract +
+                //   ':' +
+                //   openTokenData.token.tokenId
+                // }
+              />
+            </div>
             <div className='grid grid-cols-2 gap-2'>
               {openTokenData.token.attributes.map((att) => (
                 <div
@@ -95,33 +132,6 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
             </div>
             <div className='text-sm font-light'>
               <Markdown>{openTokenData.token.description}</Markdown>
-            </div>
-            <div className=''>
-              <CollectModal
-                type='trade'
-                trigger={
-                  <button
-                  //   onClick={() => setMintOpenState(true)}
-                  >
-                    Mint
-                  </button>
-                }
-                onConnectWallet={() => {
-                  openConnectModal?.();
-                }}
-                defaultQuantity={2}
-                // openState={mintOpenState}
-                collectionId={openTokenData.token.contract}
-                tokenId={openTokenData.token.tokenId}
-                onCollectComplete={(data) => console.log(data)}
-                onCollectError={(error) => console.log(error)}
-
-                // token={
-                //   openTokenData.token.contract +
-                //   ':' +
-                //   openTokenData.token.tokenId
-                // }
-              />
             </div>
           </div>
         </div>
