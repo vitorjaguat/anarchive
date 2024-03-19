@@ -56,8 +56,8 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
             <img
               src={openTokenData.token.image}
               alt={openTokenData.token.name}
-              //   width={200}
-              //   height={200}
+              width={250}
+              height={250}
               className='max-w-[250px] max-h-[250px] object-contain rounded-md bg-white/10'
             />
             <div className='grid grid-cols-2 gap-2'>
