@@ -193,13 +193,9 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
     }
   }, [showMineIsChecked, usersFrags, sort]);
 
-  console.log('usersFrags', usersFrags);
-  console.log('showMineIsChecked', showMineIsChecked);
-  // console.log(new GraphDataClass(usersFrags, sort));
-
   return (
     <div className='relative'>
-      <div className='absolute top-20 left-20 z-[1000]'>
+      <div className='absolute top-20 left-20 z-[1]'>
         <SelectSort setSort={setSort} sort={sort} />
         {/* link user's frags */}
         <div className='mt-2'>
