@@ -179,7 +179,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 }
               </span>
             </div>
-            <div className='mt-4 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-scroll overflow-x-hidden'>
+            <div className='mt-4 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden'>
               <Markdown className=''>
                 {openTokenData.token.description}
               </Markdown>
