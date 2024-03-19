@@ -27,6 +27,7 @@ import { zora } from 'wagmi/chains';
 // rainbowkit (for connect wallet button):
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { AnimatePresence } from 'framer-motion';
 
 const inter = localFont({
   src: [
@@ -117,7 +118,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <RainbowKitProvider chains={chains} modalSize='compact'>
           <main className={`${inter.variable} font-inter`}>
             <Layout>
+              {/* <AnimatePresence mode='wait'> */}
               <Component {...pageProps} />
+              {/* </AnimatePresence> */}
             </Layout>
           </main>
         </RainbowKitProvider>

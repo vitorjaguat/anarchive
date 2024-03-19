@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import GraphWrapper from '../components/GraphWrapper';
 import { useCallback, useState } from 'react';
 import TokenInfo from '../components/TokenInfo';
+import { AnimatePresence } from 'framer-motion';
 
 // const inter = Inter({ subsets: ['latin'] });
 
@@ -23,12 +24,14 @@ export default function Home() {
     <main
       className={`relative bg-gray-600 flex min-h-screen flex-col items-center justify-between`}
     >
-      {openTokenData && openTokenData !== 'initial' && (
-        <TokenInfo
-          openTokenData={openTokenData}
-          handleClickOverlay={handleClickOverlay}
-        />
-      )}
+      <AnimatePresence>
+        {openTokenData && openTokenData !== 'initial' && (
+          <TokenInfo
+            openTokenData={openTokenData}
+            handleClickOverlay={handleClickOverlay}
+          />
+        )}
+      </AnimatePresence>
       <GraphWrapper
         openTokenData={openTokenData}
         setOpenTokenData={setOpenTokenData}

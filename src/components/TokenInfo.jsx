@@ -15,10 +15,19 @@ const boxVariants = {
     top: 'auto',
     bottom: 0,
     transition: {
-      duration: 0.7,
+      duration: 1.5,
       ease: [0.16, 1, 0.3, 1],
       // type: 'spring',
     },
+  },
+  exit: {
+    top: '100%',
+    transition: {
+      duration: 2,
+      // ease: [0.7, 1, 0.3, 1],
+      // type: 'spring',
+    },
+    // bottom: 'auto',
   },
 };
 
@@ -33,7 +42,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
       variants={boxVariants}
       initial='hidden'
       animate='visible'
-      exit='hidden'
+      exit='exit'
     >
       <div
         className='bg-slate-700 p-6 z-[1001] h-[calc(100%-100px)]'
