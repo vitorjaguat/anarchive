@@ -143,7 +143,7 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
 
   const handleNodeClick = useCallback(
     (node) => {
-      console.log('tokens', tokens);
+      // console.log('tokens', tokens);
       const clickedTokenData = tokens.find(
         (token) => +token.token.tokenId === +node.id
       );

@@ -2,18 +2,41 @@ import Markdown from 'react-markdown';
 import { CollectModal } from '@reservoir0x/reservoir-kit-ui';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
+
+const boxVariants = {
+  hidden: {
+    opacity: 0,
+    top: '100%',
+    bottom: 'auto',
+  },
+  visible: {
+    opacity: 1,
+    top: 'auto',
+    bottom: 0,
+    transition: {
+      duration: 0.7,
+      ease: [0.16, 1, 0.3, 1],
+      // type: 'spring',
+    },
+  },
+};
 
 export default function TokenInfo({ openTokenData, handleClickOverlay }) {
   const { openConnectModal } = useConnectModal();
   const mintOpenState = useState(true);
 
   return (
-    <div
-      className='absolute top-0 left-0 w-screen h-screen bg-gray-600/40 flex items-center justify-center z-[1000]'
+    <motion.div
+      className='absolute top-0 left-0 w-screen h-screen flex items-start justify-end z-[1]'
       onClick={handleClickOverlay}
+      variants={boxVariants}
+      initial='hidden'
+      animate='visible'
+      exit='hidden'
     >
       <div
-        className='bg-slate-700 p-6 rounded-md z-[1001]'
+        className='bg-slate-700 p-6 z-[1001] h-[calc(100%-100px)]'
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -83,9 +106,6 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 tokenId={openTokenData.token.tokenId}
                 onCollectComplete={(data) => console.log(data)}
                 onCollectError={(error) => console.log(error)}
-                normalizeRoyalties={true}
-                feesOnTopBps={[]}
-                feesOnTopUsd={[]}
 
                 // token={
                 //   openTokenData.token.contract +
@@ -97,6 +117,6 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
