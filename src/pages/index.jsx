@@ -22,7 +22,7 @@ export default function Home() {
 
   return (
     <main
-      className={`relative bg-gray-600 flex min-h-screen flex-col items-center justify-between`}
+      className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
     >
       <AnimatePresence>
         {openTokenData && openTokenData !== 'initial' && (
