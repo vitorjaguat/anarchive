@@ -10,43 +10,7 @@ import * as THREE from 'three';
 import { useTokens } from '@reservoir0x/reservoir-kit-ui';
 import SelectSort from './SelectSort';
 import { useAccount } from 'wagmi';
-
-class GraphDataClass {
-  constructor(tokenArr, attribute) {
-    console.log('tokenArr', tokenArr, attribute);
-    this.nodes = tokenArr?.map((token) => {
-      return {
-        id: token.token.tokenId,
-        name: token.token.name,
-        image: token.token.imageSmall,
-        group:
-          attribute !== 'none'
-            ? token.token.attributes.find((att) => att.key === attribute)?.value
-            : 'none',
-        // city: token.token.attributes.find((att) => att.key === 'City').value,
-      };
-    });
-    this.links = [];
-
-    if (attribute === 'none') {
-      return;
-    }
-    this.nodes.forEach((node, i, allNodes) => {
-      allNodes.forEach((n) => {
-        if (n.group === node.group && n.id !== node.id) {
-          this.links.push({
-            source: node.id,
-            target: n.id,
-            // value: Math.floor(Math.random() * 9) + 1,
-            // value: 2,
-          });
-        }
-      });
-    });
-  }
-
-  changeAttribute(attribute) {}
-}
+import { GraphDataClass } from '../model/glassDataClass';
 
 const Graph = ({ setOpenTokenData, openTokenData }) => {
   const graphRef = useRef();
@@ -93,43 +57,15 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
 
     fetchData();
   }, []);
-  // console.log('tokens', tokens);
-
-  // const graphData = {
-  //   nodes: tokens.map((token) => {
-  //     return {
-  //       id: token.token.tokenId,
-  //       name: token.token.name,
-  //       image: token.token.imageSmall,
-  //       group: token.token.attributes.find((att) => att.key === 'Mediatype')
-  //         .value,
-  //     };
-  //   }),
-  //   links: [],
-  // };
 
   useEffect(() => {
     if (tokens.length > 0 && !showMineIsChecked) {
       setGraphData(new GraphDataClass(tokens, sort));
     }
   }, [tokens, sort, showMineIsChecked]);
-  // console.log('graphData', graphData);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setGraphData(({ nodes, links }) => {
-  //       const newLinks = [...new GraphDataClass(tokens, 'City').links];
-  //       return {
-  //         nodes,
-  //         links: newLinks,
-  //       };
-  //     });
-  //   }, 5000);
-  // }, [sort]);
 
   //events:
   const handleBackgroundClick = useCallback(() => {
-    // graphRef.current.zoomToFit('1000ms');
-    // console.log('graphRef.current', graphRef.current);
     graphRef.current.zoomToFit(1000);
   }, [graphRef]);
 
@@ -139,11 +75,8 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
     windowHeight = window.innerHeight;
   }
 
-  // console.log(openTokenId);
-
   const handleNodeClick = useCallback(
     (node) => {
-      // console.log('tokens', tokens);
       const clickedTokenData = tokens.find(
         (token) => +token.token.tokenId === +node.id
       );
@@ -156,7 +89,6 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
   );
 
   // user account logic:
-
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
   console.log('account', account);
@@ -192,6 +124,14 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
       setGraphData(new GraphDataClass(usersFrags, sort));
     }
   }, [showMineIsChecked, usersFrags, sort]);
+
+  // link isDestination logic:
+  useEffect(() => {
+    if (sort === 'From' && tokens.length > 0) {
+      const graph = graphRef.current;
+      graph.d3Force('link').strength((link) => (link.isDestination ? 0 : 0.03));
+    }
+  }, [tokens, sort]);
 
   return (
     <div className='relative'>
@@ -232,7 +172,9 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
         cooldownTicks={Infinity}
         warmupTicks={0}
         //links:
-        linkColor={(link) => 'rgba(0,0,0,0)'}
+        linkColor={(link) =>
+          link?.isDestination ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0)'
+        }
         linkWidth={0}
         //nodes:
         nodeLabel={(node) => `<div>${node.name}</div>${node.group}`}
