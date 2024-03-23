@@ -1,7 +1,7 @@
 import { TokenMedia } from '@reservoir0x/reservoir-kit-ui';
 
 export default function LargeMedia({ token }) {
-  if (token.media.includes('.mpeg')) {
+  if (token.media?.includes('.mpeg')) {
     return (
       <audio controls autoPlay>
         <source src={token.media} type='audio/mpeg' />
