@@ -1,10 +1,11 @@
 import Markdown from 'react-markdown';
-import { CollectModal } from '@reservoir0x/reservoir-kit-ui';
+import { CollectModal, TokenMedia } from '@reservoir0x/reservoir-kit-ui';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RxChevronDown } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
+import LargeMedia from './LargeMedia';
 
 const boxVariants = {
   hidden: {
@@ -109,12 +110,10 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 alt={openTokenData.token.name}
                 width={250}
                 height={250}
-                className='max-w-[250px] max-h-[250px] object-contain rounded-md bg-white/10'
-              />
-              <div
-                className='absolute bottom-2 right-2 cursor-pointer'
+                className='max-w-[250px] max-h-[250px] object-contain rounded-md bg-white/10 cursor-pointer'
                 onClick={() => setOpenLargeMedia(openTokenData)}
-              >
+              />
+              <div className='absolute bottom-2 right-2 cursor-pointer'>
                 <BsArrowsFullscreen size='12' />
               </div>
             </div>
@@ -199,28 +198,23 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
             exit='exit'
             onClick={() => setOpenLargeMedia(null)}
           >
-            <div
-              className=''
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
+            <motion.div
+              variants={largeMediaVariants}
+              initial='hidden'
+              animate='visible'
+              exit='exit'
+              className='flex justify-center'
+              // style={{ maxWidth: 'fit-content' }}
             >
-              <motion.div
-                variants={largeMediaVariants}
-                initial='hidden'
-                animate='visible'
-                exit='exit'
-              >
-                <img
+              {/* <img
                   src={openLargeMedia.token.imageLarge}
                   alt={openLargeMedia.token.name}
                   width={500}
                   height={500}
                   className='max-w-[500px] max-h-[500px] object-contain rounded-md bg-white/10'
-                />
-              </motion.div>
-            </div>
+                /> */}
+              <LargeMedia token={openLargeMedia?.token} />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

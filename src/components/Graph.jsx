@@ -173,9 +173,17 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
         warmupTicks={0}
         //links:
         linkColor={(link) =>
-          link?.isDestination ? 'rgba(255,255,255,1)' : 'rgba(0,0,0,0)'
+          link?.isDestination && sort === 'From'
+            ? 'rgba(255,255,255,0.1)'
+            : 'rgba(0,0,0,0)'
         }
-        linkWidth={0}
+        linkWidth={(link) => (sort === 'From' ? 20 : 0)}
+        // linkDirectionalParticles={(link) => (link.isDestination ? 1 : 0)}
+        linkDirectionalParticles={(link) =>
+          link?.isDestination && sort === 'From' ? 10 : 0
+        }
+        linkDirectionalParticleWidth={1}
+        linkDirectionalParticleSpeed={0.005}
         //nodes:
         nodeLabel={(node) => `<div>${node.name}</div>${node.group}`}
         nodeAutoColorBy={'group'}
