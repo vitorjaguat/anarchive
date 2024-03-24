@@ -7,7 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 
 // const inter = Inter({ subsets: ['latin'] });
 
-export default function Home() {
+export default function Home({ tokens }) {
   const [openTokenData, setOpenTokenData] = useState('initial');
   console.log(openTokenData);
 
@@ -33,6 +33,7 @@ export default function Home() {
         )}
       </AnimatePresence>
       <GraphWrapper
+        tokens={tokens}
         openTokenData={openTokenData}
         setOpenTokenData={setOpenTokenData}
       />

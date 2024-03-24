@@ -88,7 +88,7 @@ export default function LargeMedia({ token }) {
     );
   }
 
-  //   console.log('token.media', token.media);
+  console.log('token.media', token.media);
 
   return (
     <TokenMedia

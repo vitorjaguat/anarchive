@@ -28,6 +28,7 @@ import { zora } from 'wagmi/chains';
 import '@rainbow-me/rainbowkit/styles.css';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 const inter = localFont({
   src: [
@@ -93,6 +94,32 @@ const theme = darkTheme({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  //fetch collection tokens:
+  const [tokens, setTokens] = useState([]);
+
+  //fetching token data using API:
+  useEffect(() => {
+    const fetchData = async () => {
+      const options = {
+        method: 'GET',
+        headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
+      };
+
+      try {
+        const response = await fetch(
+          'https://api-zora.reservoir.tools/tokens/v7?collection=0x8e038a4805d984162028f5978acd894fad310b56&sortBy=updatedAt&limit=1000&includeAttributes=true',
+          options
+        );
+        const data = await response.json();
+        setTokens(data.tokens);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <WagmiConfig config={wagmiClient}>
       <ReservoirKitProvider
@@ -117,9 +144,9 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         <RainbowKitProvider chains={chains} modalSize='compact'>
           <main className={`${inter.variable} font-inter`}>
-            <Layout>
+            <Layout tokens={tokens}>
               {/* <AnimatePresence mode='wait'> */}
-              <Component {...pageProps} />
+              <Component tokens={tokens} {...pageProps} />
               {/* </AnimatePresence> */}
             </Layout>
           </main>
