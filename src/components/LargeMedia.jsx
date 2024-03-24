@@ -71,6 +71,25 @@ export default function LargeMedia({ token }) {
     );
   }
 
+  if (token.media?.includes('.html')) {
+    const tokenMedia = token.media.split(';')[0];
+    // console.log('tokenMedia', tokenMedia);
+    return (
+      <iframe
+        src={tokenMedia}
+        width='100%'
+        height='100%'
+        style={{
+          background: 'white',
+          border: 'none',
+          overflow: 'hidden',
+        }}
+      ></iframe>
+    );
+  }
+
+  //   console.log('token.media', token.media);
+
   return (
     <TokenMedia
       token={token}
