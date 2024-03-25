@@ -12,10 +12,10 @@ import SelectSort from './SelectSort';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 
-const Graph = ({ setOpenTokenData, openTokenData }) => {
+const Graph = ({ tokens, setOpenTokenData, openTokenData }) => {
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
-  const [sort, setSort] = useState('Mediatype');
+  const [sort, setSort] = useState('From');
   const [spriteMap, setSpriteMap] = useState(new Map());
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
 
@@ -25,38 +25,6 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
   let extraRenderers = [];
   let windowWidth = 0;
   let windowHeight = 0;
-  const [tokens, setTokens] = useState([]);
-
-  // // fetching tokens using hook:
-  // const { data: tokens } = useTokens({
-  //   collection: '0x8e038a4805d984162028f5978acd894fad310b56',
-  //   sortBy: 'updatedAt',
-  //   limit: 1000,
-  //   includeAttributes: true,
-  // });
-
-  //fetching token data using API:
-  useEffect(() => {
-    const fetchData = async () => {
-      const options = {
-        method: 'GET',
-        headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
-      };
-
-      try {
-        const response = await fetch(
-          'https://api-zora.reservoir.tools/tokens/v7?collection=0x8e038a4805d984162028f5978acd894fad310b56&sortBy=updatedAt&limit=1000&includeAttributes=true',
-          options
-        );
-        const data = await response.json();
-        setTokens(data.tokens);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     if (tokens.length > 0 && !showMineIsChecked) {
@@ -138,8 +106,9 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
       <div className='absolute top-20 left-20 z-[1]'>
         <SelectSort setSort={setSort} sort={sort} />
         {/* link user's frags */}
-        <div className='mt-2'>
+        <div className='mt-3 flex items-center'>
           <input
+            className=''
             type='checkbox'
             name='link-users-frags'
             id='link-users-frags'
@@ -150,7 +119,10 @@ const Graph = ({ setOpenTokenData, openTokenData }) => {
               )
             }
           />
-          <label className='ml-2' htmlFor='link-users-frags'>
+          <label
+            className='ml-2 mb-[-2px] text-sm text-slate-300'
+            htmlFor='link-users-frags'
+          >
             Show collected
           </label>
         </div>
