@@ -7,7 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 
 // const inter = Inter({ subsets: ['latin'] });
 
-export default function Home({ tokens }) {
+export default function Home({ tokens, sort, showMineIsChecked }) {
   const [openTokenData, setOpenTokenData] = useState('initial');
   console.log(openTokenData);
 
@@ -36,6 +36,8 @@ export default function Home({ tokens }) {
         tokens={tokens}
         openTokenData={openTokenData}
         setOpenTokenData={setOpenTokenData}
+        sort={sort}
+        showMineIsChecked={showMineIsChecked}
       />
     </main>
   );

@@ -97,6 +97,10 @@ export default function App({ Component, pageProps }: AppProps) {
   //fetch collection tokens:
   const [tokens, setTokens] = useState([]);
 
+  // sorting tokens:
+  const [sort, setSort] = useState('From');
+  const [showMineIsChecked, setShowMineIsChecked] = useState(false);
+
   //fetching token data using API:
   useEffect(() => {
     const fetchData = async () => {
@@ -144,9 +148,20 @@ export default function App({ Component, pageProps }: AppProps) {
       >
         <RainbowKitProvider chains={chains} modalSize='compact'>
           <main className={`${inter.variable} font-inter`}>
-            <Layout tokens={tokens}>
+            <Layout
+              sort={sort}
+              setSort={setSort}
+              showMineIsChecked={showMineIsChecked}
+              setShowMineIsChecked={setShowMineIsChecked}
+              tokens={tokens}
+            >
               {/* <AnimatePresence mode='wait'> */}
-              <Component tokens={tokens} {...pageProps} />
+              <Component
+                tokens={tokens}
+                sort={sort}
+                showMineIsChecked={showMineIsChecked}
+                {...pageProps}
+              />
               {/* </AnimatePresence> */}
             </Layout>
           </main>

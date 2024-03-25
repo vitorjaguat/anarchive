@@ -12,12 +12,16 @@ import SelectSort from './SelectSort';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 
-const Graph = ({ tokens, setOpenTokenData, openTokenData }) => {
+const Graph = ({
+  tokens,
+  setOpenTokenData,
+  openTokenData,
+  sort,
+  showMineIsChecked,
+}) => {
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
-  const [sort, setSort] = useState('From');
   const [spriteMap, setSpriteMap] = useState(new Map());
-  const [showMineIsChecked, setShowMineIsChecked] = useState(false);
 
   const isMounted =
     typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -103,30 +107,6 @@ const Graph = ({ tokens, setOpenTokenData, openTokenData }) => {
 
   return (
     <div className='relative'>
-      <div className='absolute top-20 left-20 z-[1]'>
-        <SelectSort setSort={setSort} sort={sort} />
-        {/* link user's frags */}
-        <div className='mt-3 flex items-center'>
-          <input
-            className=''
-            type='checkbox'
-            name='link-users-frags'
-            id='link-users-frags'
-            checked={showMineIsChecked}
-            onChange={() =>
-              setShowMineIsChecked(
-                (prevShowMineIsChecked) => !prevShowMineIsChecked
-              )
-            }
-          />
-          <label
-            className='ml-2 mb-[-2px] text-sm text-slate-300'
-            htmlFor='link-users-frags'
-          >
-            Show collected
-          </label>
-        </div>
-      </div>
       <ForceGraph3D
         ref={graphRef}
         graphData={graphData}
