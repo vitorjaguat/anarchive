@@ -95,6 +95,7 @@ export default function LargeMedia({ token }) {
       token={token}
       imageResolution='large'
       videoOptions={{ autoPlay: true }}
+      // modelViewerOptions={}
       style={{
         width: 'fit-content',
         maxWidth: '80%',

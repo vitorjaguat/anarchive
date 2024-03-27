@@ -17,7 +17,9 @@ const Graph = ({
   openTokenData,
   sort,
   showMineIsChecked,
+  filter,
 }) => {
+  console.log('filter', filter);
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [spriteMap, setSpriteMap] = useState(new Map());
@@ -31,9 +33,9 @@ const Graph = ({
 
   useEffect(() => {
     if (allTokens.length > 0 && !showMineIsChecked) {
-      setGraphData(new GraphDataClass(allTokens, sort));
+      setGraphData(new GraphDataClass(allTokens, sort, filter));
     }
-  }, [allTokens, sort, showMineIsChecked]);
+  }, [allTokens, sort, filter, showMineIsChecked]);
 
   //events:
   const handleBackgroundClick = useCallback(() => {
@@ -62,7 +64,6 @@ const Graph = ({
   // user account logic:
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
-  console.log('account', account);
   useEffect(() => {
     if (account?.address) {
       const fetchData = async () => {
@@ -92,9 +93,9 @@ const Graph = ({
 
   useEffect(() => {
     if (showMineIsChecked && usersFrags.length > 0) {
-      setGraphData(new GraphDataClass(usersFrags, sort));
+      setGraphData(new GraphDataClass(usersFrags, sort, filter));
     }
-  }, [showMineIsChecked, usersFrags, sort]);
+  }, [showMineIsChecked, usersFrags, sort, filter]);
 
   // link isDestination logic:
   useEffect(() => {

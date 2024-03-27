@@ -1,7 +1,20 @@
 class GraphDataClass {
-  constructor(tokenArr, attribute) {
-    console.log('tokenArr', tokenArr, attribute);
-    this.nodes = tokenArr?.map((token) => {
+  constructor(tokenArr, attribute, filtersArr) {
+    console.log('filtersArr', filtersArr);
+    if (!filtersArr?.length) {
+      this.filteredTokens = tokenArr;
+    } else {
+      this.filteredTokens = tokenArr?.filter((tk) =>
+        filtersArr.every((f) =>
+          tk.token.attributes
+            .find((att) => att.key === 'Content Tags')
+            .value.toLowerCase()
+            .includes(f.toLowerCase())
+        )
+      );
+    }
+    console.log('this.filteredTokens', this.filteredTokens);
+    this.nodes = this.filteredTokens?.map((token) => {
       return {
         id: token.token.tokenId,
         name: token.token.name,

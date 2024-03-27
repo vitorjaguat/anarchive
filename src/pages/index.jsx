@@ -45,6 +45,7 @@ export default function Home({
         openTokenData={openTokenData}
         setOpenTokenData={setOpenTokenData}
         sort={sort}
+        filter={filter}
         showMineIsChecked={showMineIsChecked}
       />
     </main>

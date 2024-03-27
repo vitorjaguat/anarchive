@@ -14,6 +14,7 @@ export default function Search({ allTokens, setFilter }) {
         .includes(searchTerm.toLowerCase().trim())
     );
     setFilter((curr) => [...curr, searchTermRef.current.value.trim()]);
+    searchTermRef.current.value = '';
   };
 
   return (

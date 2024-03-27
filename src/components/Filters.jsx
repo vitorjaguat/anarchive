@@ -12,7 +12,7 @@ export default function Filters({ filter, setFilter }) {
           >
             {f}
             <div
-              className='pl-1'
+              className='pl-1 cursor-pointer'
               onClick={() =>
                 setFilter((curr) => curr.filter((term) => term !== f))
               }
