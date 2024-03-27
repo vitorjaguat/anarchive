@@ -4,10 +4,17 @@ import GraphWrapper from '../components/GraphWrapper';
 import { useCallback, useState } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import { AnimatePresence } from 'framer-motion';
+import Filters from '../components/Filters';
 
 // const inter = Inter({ subsets: ['latin'] });
 
-export default function Home({ tokens, sort, showMineIsChecked }) {
+export default function Home({
+  allTokens,
+  sort,
+  showMineIsChecked,
+  filter,
+  setFilter,
+}) {
   const [openTokenData, setOpenTokenData] = useState('initial');
   console.log(openTokenData);
 
@@ -24,6 +31,7 @@ export default function Home({ tokens, sort, showMineIsChecked }) {
     <main
       className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
     >
+      <Filters filter={filter} setFilter={setFilter} />
       <AnimatePresence>
         {openTokenData && openTokenData !== 'initial' && (
           <TokenInfo
@@ -33,7 +41,7 @@ export default function Home({ tokens, sort, showMineIsChecked }) {
         )}
       </AnimatePresence>
       <GraphWrapper
-        tokens={tokens}
+        allTokens={allTokens}
         openTokenData={openTokenData}
         setOpenTokenData={setOpenTokenData}
         sort={sort}

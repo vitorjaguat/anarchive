@@ -1,19 +1,19 @@
 import { useRef, useState } from 'react';
 
-export default function Search({ tokens }) {
+export default function Search({ allTokens, setFilter }) {
   const searchTermRef = useRef('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const searchTerm = searchTermRef.current.value;
-    const filteredTokens = tokens.filter((token) =>
+    const filteredTokens = allTokens.filter((token) =>
       token.token.attributes
         .find((att) => att.key === 'Content Tags')
         .value.toLowerCase()
         .trim()
         .includes(searchTerm.toLowerCase().trim())
     );
-    console.log(filteredTokens);
+    setFilter((curr) => [...curr, searchTermRef.current.value.trim()]);
   };
 
   return (
@@ -24,8 +24,8 @@ export default function Search({ tokens }) {
           type='text'
           name='searchTerm'
           id='searchTerm'
-          placeholder='search content tag...'
-          className='bg-slate-700 text-white px-4 py-2 rounded-lg w-96 outline-none'
+          placeholder='type content tag and hit enter'
+          className='bg-slate-700 text-white px-4 py-2 rounded-lg w-96 outline-none text-center'
         />
       </form>
     </div>

@@ -95,11 +95,14 @@ const theme = darkTheme({
 
 export default function App({ Component, pageProps }: AppProps) {
   //fetch collection tokens:
-  const [tokens, setTokens] = useState([]);
+  const [allTokens, setAllTokens] = useState([]);
 
   // sorting tokens:
   const [sort, setSort] = useState('From');
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
+
+  //filter tokens by content tag (searchbar):
+  const [filter, setFilter] = useState([]);
 
   //fetching token data using API:
   useEffect(() => {
@@ -115,7 +118,7 @@ export default function App({ Component, pageProps }: AppProps) {
           options
         );
         const data = await response.json();
-        setTokens(data.tokens);
+        setAllTokens(data.tokens);
       } catch (err) {
         console.error(err);
       }
@@ -151,14 +154,18 @@ export default function App({ Component, pageProps }: AppProps) {
             <Layout
               sort={sort}
               setSort={setSort}
+              filter={filter}
+              setFilter={setFilter}
               showMineIsChecked={showMineIsChecked}
               setShowMineIsChecked={setShowMineIsChecked}
-              tokens={tokens}
+              allTokens={allTokens}
             >
               {/* <AnimatePresence mode='wait'> */}
               <Component
-                tokens={tokens}
+                allTokens={allTokens}
                 sort={sort}
+                filter={filter}
+                setFilter={setFilter}
                 showMineIsChecked={showMineIsChecked}
                 {...pageProps}
               />

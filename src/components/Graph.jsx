@@ -8,12 +8,11 @@ import {
 } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as THREE from 'three';
 import { useTokens } from '@reservoir0x/reservoir-kit-ui';
-import SelectSort from './SelectSort';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 
 const Graph = ({
-  tokens,
+  allTokens,
   setOpenTokenData,
   openTokenData,
   sort,
@@ -31,10 +30,10 @@ const Graph = ({
   let windowHeight = 0;
 
   useEffect(() => {
-    if (tokens.length > 0 && !showMineIsChecked) {
-      setGraphData(new GraphDataClass(tokens, sort));
+    if (allTokens.length > 0 && !showMineIsChecked) {
+      setGraphData(new GraphDataClass(allTokens, sort));
     }
-  }, [tokens, sort, showMineIsChecked]);
+  }, [allTokens, sort, showMineIsChecked]);
 
   //events:
   const handleBackgroundClick = useCallback(() => {
@@ -49,7 +48,7 @@ const Graph = ({
 
   const handleNodeClick = useCallback(
     (node) => {
-      const clickedTokenData = tokens.find(
+      const clickedTokenData = allTokens.find(
         (token) => +token.token.tokenId === +node.id
       );
 
@@ -57,7 +56,7 @@ const Graph = ({
       console.log(node.id);
       console.log(openTokenData);
     },
-    [tokens, setOpenTokenData, openTokenData]
+    [allTokens, setOpenTokenData, openTokenData]
   );
 
   // user account logic:
@@ -99,11 +98,11 @@ const Graph = ({
 
   // link isDestination logic:
   useEffect(() => {
-    if (sort === 'From' && tokens.length > 0) {
+    if (sort === 'From' && allTokens.length > 0) {
       const graph = graphRef.current;
       graph.d3Force('link').strength((link) => (link.isDestination ? 0 : 0.03));
     }
-  }, [tokens, sort]);
+  }, [allTokens, sort]);
 
   return (
     <div className='relative'>
@@ -115,7 +114,7 @@ const Graph = ({
         height={windowHeight - 100}
         // width={900}
         // height={900}
-        showNavInfo={true}
+        showNavInfo={false}
         nodeRelSize={1}
         //events:
         onBackgroundClick={handleBackgroundClick}

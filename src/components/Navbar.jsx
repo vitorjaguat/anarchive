@@ -3,9 +3,11 @@ import Search from './Search';
 import SelectSort from './SelectSort';
 
 export default function Navbar({
-  tokens,
+  allTokens,
   sort,
   setSort,
+  filter,
+  setFilter,
   showMineIsChecked,
   setShowMineIsChecked,
 }) {
@@ -19,7 +21,7 @@ export default function Navbar({
         setShowMineIsChecked={setShowMineIsChecked}
         showMineIsChecked={showMineIsChecked}
       />
-      <Search tokens={tokens} />
+      <Search allTokens={allTokens} setFilter={setFilter} />
       <ConnectButton />
     </div>
   );

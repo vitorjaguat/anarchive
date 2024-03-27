@@ -2,9 +2,11 @@ import Navbar from './Navbar';
 
 export default function Layout({
   children,
-  tokens,
+  allTokens,
   sort,
   setSort,
+  filter,
+  setFilter,
   showMineIsChecked,
   setShowMineIsChecked,
 }) {
@@ -15,9 +17,11 @@ export default function Layout({
 
         <div className='absolute bottom-0 left-0 right-0 z-[1999]'>
           <Navbar
-            tokens={tokens}
+            allTokens={allTokens}
             sort={sort}
             setSort={setSort}
+            filter={filter}
+            setFilter={setFilter}
             showMineIsChecked={showMineIsChecked}
             setShowMineIsChecked={setShowMineIsChecked}
           />
