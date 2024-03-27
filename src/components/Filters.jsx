@@ -1,4 +1,5 @@
 import { VscClose } from 'react-icons/vsc';
+import { FiFilter } from 'react-icons/fi';
 
 export default function Filters({ filter, setFilter }) {
   console.log(filter);
@@ -10,7 +11,11 @@ export default function Filters({ filter, setFilter }) {
             key={f}
             className='bg-slate-600/50 text-white px-3 py-1 rounded-md flex justify-between items-center gap-2 mb-1'
           >
-            {f}
+            <div className='flex gap-3 items-center'>
+              <FiFilter size={14} />
+              {f}
+            </div>
+
             <div
               className='pl-1 cursor-pointer'
               onClick={() =>
