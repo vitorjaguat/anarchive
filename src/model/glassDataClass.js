@@ -18,7 +18,7 @@ class GraphDataClass {
       return {
         id: token.token.tokenId,
         name: token.token.name,
-        image: token.token.imageSmall,
+        image: token.token.imageLarge,
         group:
           attribute !== 'none'
             ? token.token.attributes.find((att) => att.key === attribute)?.value
