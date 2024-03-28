@@ -2,6 +2,7 @@ import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import localFont from '@next/font/local';
+import contract from '../utils/contract';
 
 //wagmi:
 import {
@@ -114,7 +115,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
       try {
         const response = await fetch(
-          'https://api-zora.reservoir.tools/tokens/v7?collection=0x8e038a4805d984162028f5978acd894fad310b56&sortBy=updatedAt&limit=1000&includeAttributes=true',
+          `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
           options
         );
         const data = await response.json();

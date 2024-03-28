@@ -84,7 +84,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
   return (
     <>
       <motion.div
-        className='absolute top-0 right-0 max-w-[500px] bg-slate-700 pb-6 z-[1] h-[calc(100%)]'
+        className='absolute top-0 right-0 bg-slate-700 pb-6 z-[1] h-[calc(100%)]'
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -102,7 +102,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
           <RxChevronDown size={24} />
         </div>
         {/* columns */}
-        <div className='pl-4 flex justify-between gap-4 max-w-[500px]'>
+        <div className='pl-4 flex justify-between gap-4 max-w-[600px]'>
           <div className='flex flex-col gap-4'>
             <div className='relative'>
               <img
