@@ -127,7 +127,8 @@ const Graph = ({
         //links:
         linkColor={(link) =>
           link?.isDestination && sort === 'From'
-            ? 'rgba(255,255,255,0.1)'
+            ? // ? 'rgba(255,255,255,0.1)'
+              'rgba (160, 160, 255, 0.1)'
             : 'rgba(0,0,0,0)'
         }
         linkWidth={(link) => (sort === 'From' ? 20 : 0)}
