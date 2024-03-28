@@ -136,7 +136,7 @@ const Graph = ({
           link?.isDestination && sort === 'From' ? 10 : 0
         }
         linkDirectionalParticleWidth={1}
-        linkDirectionalParticleSpeed={0.005}
+        linkDirectionalParticleSpeed={0.0025}
         //nodes:
         nodeLabel={(node) => `<div>${node.name}</div>${node.group}`}
         nodeAutoColorBy={'group'}
