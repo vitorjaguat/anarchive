@@ -113,13 +113,20 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 className='max-w-[250px] max-h-[250px] object-contain rounded-md bg-white/10 cursor-pointer'
                 onClick={() => setOpenLargeMedia(openTokenData)}
               />
-              <div className='absolute bottom-2 right-2 cursor-pointer'>
+              <div
+                className='absolute bottom-2 right-2 cursor-pointer'
+                onClick={() => setOpenLargeMedia(openTokenData)}
+              >
                 <BsArrowsFullscreen size='12' />
               </div>
             </div>
             <div className=''>
               <CollectModal
                 type='mint'
+                // defaultQuantity={10}
+                copyOverrides={{
+                  mintTitle: 'Mint your own',
+                }}
                 trigger={
                   <button
                     className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-black hover:scale-105 transition-all duration-300'
