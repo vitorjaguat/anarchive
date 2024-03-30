@@ -6,14 +6,7 @@ export default function Search({ allTokens, setFilter }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const searchTerm = searchTermRef.current.value;
-    const filteredTokens = allTokens.filter((token) =>
-      token.token.attributes
-        .find((att) => att.key === 'Content Tags')
-        .value.toLowerCase()
-        .trim()
-        .includes(searchTerm.toLowerCase().trim())
-    );
-    setFilter((curr) => [...curr, searchTermRef.current.value.trim()]);
+    setFilter((curr) => [...curr, searchTerm.trim()]);
     searchTermRef.current.value = '';
   };
 

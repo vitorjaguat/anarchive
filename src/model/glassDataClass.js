@@ -4,14 +4,16 @@ class GraphDataClass {
     if (!filtersArr?.length) {
       this.filteredTokens = tokenArr;
     } else {
-      this.filteredTokens = tokenArr?.filter((tk) =>
-        filtersArr.every((f) =>
-          tk.token.attributes
-            .find((att) => att.key === 'Content Tags')
-            .value.toLowerCase()
-            .includes(f.toLowerCase())
-        )
-      );
+      this.filteredTokens = tokenArr?.filter((tk) => {
+        let attribute = tk.token.attributes.find(
+          (att) => att.key === 'Content Tags'
+        );
+        let attributeValue = attribute ? attribute.value.toLowerCase() : '';
+
+        return filtersArr.every((f) =>
+          attributeValue.includes(f.toLowerCase())
+        );
+      });
     }
     console.log('this.filteredTokens', this.filteredTokens);
     this.nodes = this.filteredTokens?.map((token) => {
