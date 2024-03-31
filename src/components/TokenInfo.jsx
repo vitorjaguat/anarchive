@@ -155,7 +155,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
             <div className='grid grid-cols-2 gap-2'>
               {openTokenData.token.attributes.map((att) => (
                 <div
-                  key={att.key}
+                  key={Math.random()}
                   className='flex flex-col gap-2 text-xs bg-white/10 rounded-md pb-2 h-fit'
                 >
                   <div className='text-center text-[10px] bg-white/10'>

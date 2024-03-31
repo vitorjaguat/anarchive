@@ -5,8 +5,14 @@ import { useCallback, useState } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import { AnimatePresence } from 'framer-motion';
 import Filters from '../components/Filters';
+import Head from '../components/Headhead';
 
 // const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: '...',
+  description: '...',
+};
 
 export default function Home({
   allTokens,
@@ -28,26 +34,29 @@ export default function Home({
   console.log('openTokenData', openTokenData);
 
   return (
-    <main
-      className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
-    >
-      <Filters filter={filter} setFilter={setFilter} />
-      <AnimatePresence>
-        {openTokenData && openTokenData !== 'initial' && (
-          <TokenInfo
-            openTokenData={openTokenData}
-            handleClickOverlay={handleClickOverlay}
-          />
-        )}
-      </AnimatePresence>
-      <GraphWrapper
-        allTokens={allTokens}
-        openTokenData={openTokenData}
-        setOpenTokenData={setOpenTokenData}
-        sort={sort}
-        filter={filter}
-        showMineIsChecked={showMineIsChecked}
-      />
-    </main>
+    <>
+      <Head />
+      <main
+        className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
+      >
+        <Filters filter={filter} setFilter={setFilter} />
+        <AnimatePresence>
+          {openTokenData && openTokenData !== 'initial' && (
+            <TokenInfo
+              openTokenData={openTokenData}
+              handleClickOverlay={handleClickOverlay}
+            />
+          )}
+        </AnimatePresence>
+        <GraphWrapper
+          allTokens={allTokens}
+          openTokenData={openTokenData}
+          setOpenTokenData={setOpenTokenData}
+          sort={sort}
+          filter={filter}
+          showMineIsChecked={showMineIsChecked}
+        />
+      </main>
+    </>
   );
 }
