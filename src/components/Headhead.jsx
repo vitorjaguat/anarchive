@@ -21,7 +21,7 @@ export default function Headhead() {
           name='twitter:description'
           content="A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined,"
         />
-        <meta name='twitter:image' content='/meta/image2.png' />
+        <meta name='twitter:image' content='/public/meta/image2.png' />
         <meta property='og:type' content='website' />
         <meta property='og:determiner' content='the' />
         <meta property='og:locale' content='en' />
@@ -30,7 +30,7 @@ export default function Headhead() {
           property='og:description'
           content="A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined."
         />
-        <meta property='og:image' content='/meta/image2.png' />
+        <meta property='og:image' content='/public/meta/image2.png' />
         <meta property='og:image:type' content='image/png' />
         <meta property='og:image:width' content='1200' />
         <meta property='og:image:height' content='630' />
