@@ -10,10 +10,16 @@ export default function Navbar({
   setFilter,
   showMineIsChecked,
   setShowMineIsChecked,
+  setInfoVisible,
+  infoVisible,
 }) {
   return (
     <div className='w-full flex justify-between items-center bg-slate-800 p-4 select-none h-[100px] z-[1000]'>
-      <div className='tracking-widest flex flex-col leading-4'>
+      <div
+        className='tracking-widest flex flex-col leading-4 z-[1000]'
+        onMouseEnter={() => setInfoVisible(true)}
+        onMouseLeave={() => setInfoVisible(false)}
+      >
         <div>The</div>
         <div>Anarchiving</div>
         <div>Game</div>
