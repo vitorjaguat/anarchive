@@ -16,7 +16,7 @@ export default function Navbar({
   return (
     <div className='w-full flex justify-between items-center bg-slate-800 p-4 select-none h-[100px] z-[1000]'>
       <div
-        className='tracking-widest flex flex-col leading-4 z-[1000]'
+        className='tracking-widest flex flex-col leading-4 z-[1000] hover:text-slate-400 duration-300 cursor-help'
         onMouseEnter={() => setInfoVisible(true)}
         onMouseLeave={() => setInfoVisible(false)}
       >
