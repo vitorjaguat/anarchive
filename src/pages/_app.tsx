@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import localFont from '@next/font/local';
 import contract from '../utils/contract';
+import Headhead from '@/components/Headhead';
 
 //wagmi:
 import {
@@ -129,52 +130,55 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <WagmiConfig config={wagmiClient}>
-      <ReservoirKitProvider
-        options={{
-          // Reservoir API key which you can generate at https://reservoir.tools/
-          // This is a protected key and displays as 'undefined' on the browser
-          // DO NOT add NEXT_PUBLIC to the key or you'll risk leaking it on the browser
-          apiKey: process.env.RESERVOIR_API_KEY,
-          //CONFIGURABLE: Override any configuration available in RK: https://docs.reservoir.tools/docs/reservoirkit-ui#configuring-reservoirkit-ui
-          // Note that you should at the very least configure the source with your own domain
-          chains: [{ ...reservoirChains.zora, active: true }],
-          logLevel: 4,
-          // source: source,
-          normalizeRoyalties: true,
-          //CONFIGURABLE: Set your marketplace fee and recipient, (fee is in BPS)
-          // Note that this impacts orders created on your marketplace (offers/listings)
-          // marketplaceFee: 250,
-          // marketplaceFeeRecipient: "0xabc"
-          disablePoweredByReservoir: true,
-        }}
-        theme={theme}
-      >
-        <RainbowKitProvider chains={chains} modalSize='compact'>
-          <main className={`${inter.variable} font-inter`}>
-            <Layout
-              sort={sort}
-              setSort={setSort}
-              filter={filter}
-              setFilter={setFilter}
-              showMineIsChecked={showMineIsChecked}
-              setShowMineIsChecked={setShowMineIsChecked}
-              allTokens={allTokens}
-            >
-              {/* <AnimatePresence mode='wait'> */}
-              <Component
-                allTokens={allTokens}
+    <>
+      <Headhead />
+      <WagmiConfig config={wagmiClient}>
+        <ReservoirKitProvider
+          options={{
+            // Reservoir API key which you can generate at https://reservoir.tools/
+            // This is a protected key and displays as 'undefined' on the browser
+            // DO NOT add NEXT_PUBLIC to the key or you'll risk leaking it on the browser
+            apiKey: process.env.RESERVOIR_API_KEY,
+            //CONFIGURABLE: Override any configuration available in RK: https://docs.reservoir.tools/docs/reservoirkit-ui#configuring-reservoirkit-ui
+            // Note that you should at the very least configure the source with your own domain
+            chains: [{ ...reservoirChains.zora, active: true }],
+            logLevel: 4,
+            // source: source,
+            normalizeRoyalties: true,
+            //CONFIGURABLE: Set your marketplace fee and recipient, (fee is in BPS)
+            // Note that this impacts orders created on your marketplace (offers/listings)
+            // marketplaceFee: 250,
+            // marketplaceFeeRecipient: "0xabc"
+            disablePoweredByReservoir: true,
+          }}
+          theme={theme}
+        >
+          <RainbowKitProvider chains={chains} modalSize='compact'>
+            <main className={`${inter.variable} font-inter`}>
+              <Layout
                 sort={sort}
+                setSort={setSort}
                 filter={filter}
                 setFilter={setFilter}
                 showMineIsChecked={showMineIsChecked}
-                {...pageProps}
-              />
-              {/* </AnimatePresence> */}
-            </Layout>
-          </main>
-        </RainbowKitProvider>
-      </ReservoirKitProvider>
-    </WagmiConfig>
+                setShowMineIsChecked={setShowMineIsChecked}
+                allTokens={allTokens}
+              >
+                {/* <AnimatePresence mode='wait'> */}
+                <Component
+                  allTokens={allTokens}
+                  sort={sort}
+                  filter={filter}
+                  setFilter={setFilter}
+                  showMineIsChecked={showMineIsChecked}
+                  {...pageProps}
+                />
+                {/* </AnimatePresence> */}
+              </Layout>
+            </main>
+          </RainbowKitProvider>
+        </ReservoirKitProvider>
+      </WagmiConfig>
+    </>
   );
 }

@@ -8,6 +8,7 @@ export default function Headhead() {
       <Head>
         <meta charset='utf-8' />
         <meta name='viewport' content='width=device-width' />
+        <link rel='icon' href={'/meta/image1.png'} />
         <title>The Anarchiving Game</title>
         <meta
           name='description'
@@ -20,7 +21,7 @@ export default function Headhead() {
           name='twitter:description'
           content="A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined,"
         />
-        <meta name='twitter:image' content={ogimage} />
+        <meta name='twitter:image' content='../../public/meta/image2.png' />
         <meta property='og:type' content='website' />
         <meta property='og:determiner' content='the' />
         <meta property='og:locale' content='en' />
@@ -29,12 +30,11 @@ export default function Headhead() {
           property='og:description'
           content="A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined."
         />
-        <meta property='og:image' content={ogimage} />
+        <meta property='og:image' content='../../public/meta/image2.png' />
         <meta property='og:image:type' content='image/png' />
         <meta property='og:image:width' content='1200' />
         <meta property='og:image:height' content='630' />
         <meta property='og:image:alt' content='The Anarchiving Game' />
-        <link rel='icon' href='../../public/meta/image1.png'></link>
       </Head>
     </>
   );
