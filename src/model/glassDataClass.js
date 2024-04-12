@@ -5,9 +5,7 @@ class GraphDataClass {
       this.filteredTokens = tokenArr;
     } else {
       this.filteredTokens = tokenArr?.filter((tk) => {
-        let attribute = tk.token.attributes.find(
-          (att) => att.key === 'Content Tags'
-        );
+        let attribute = tk.token.attributes.find((att) => att.key === 'Tags');
         let attributeValue = attribute ? attribute.value.toLowerCase() : '';
 
         return filtersArr.every((f) =>

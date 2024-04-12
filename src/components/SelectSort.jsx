@@ -18,7 +18,7 @@ export default function SelectSort({
         <option value='From'>From</option>
         <option value='To'>To</option>
         <option value='Creator'>Creator</option>
-        <option value='Mediatype'>Mediatype</option>
+        <option value='Media'>Media</option>
         <option value='Event'>Event</option>
         <option value='Location'>Location</option>
         <option value='Year'>Year</option>

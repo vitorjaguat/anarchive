@@ -139,7 +139,9 @@ const Graph = ({
         linkDirectionalParticleWidth={1}
         linkDirectionalParticleSpeed={0.0025}
         //nodes:
-        nodeLabel={(node) => `<div>${node.name}</div>${node.group}`}
+        nodeLabel={(node) =>
+          `<div class='node-label'><div class='title'>${node.name}</div><div>${node.group}</div></div>`
+        }
         nodeAutoColorBy={'group'}
         nodeThreeObject={(node) => {
           //SQUARES:
