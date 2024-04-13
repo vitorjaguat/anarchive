@@ -1,4 +1,11 @@
 import { motion } from 'framer-motion';
+import {
+  BsGlobe,
+  BsInstagram,
+  BsTelegram,
+  BsTwitterX,
+  BsYoutube,
+} from 'react-icons/bs';
 import { RxChevronDown } from 'react-icons/rx';
 
 const boxVariants = {
@@ -93,57 +100,62 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
           </a>
           .{' '}
         </div>
-        <div className='flex flex-col'>
+        <div className=' my-4 flex justify-around w-full'>
           <a
-            className='font-bold text-slate-400 hover:text-slate-50 duration-300'
+            className=' hover:text-slate-50 duration-300'
             href='https://thesphere.as'
             target='_blank'
             rel='noopener noreferrer'
           >
-            https://thesphere.as
+            <BsGlobe size={20} />
           </a>
           <a
-            className='font-bold text-slate-400 hover:text-slate-50 duration-300'
+            className=' hover:text-slate-50 duration-300'
             href='https://instagram.com/thesphere_as'
             target='_blank'
             rel='noopener noreferrer'
           >
-            https://instagram.com/thesphere_as
+            <BsInstagram size={20} />
           </a>
           <a
-            className='font-bold text-slate-400 hover:text-slate-50 duration-300'
+            className=' hover:text-slate-50 duration-300'
             href='https://twitter.com/thesphere_as'
             target='_blank'
             rel='noopener noreferrer'
           >
-            https://twitter.com/thesphere_as
+            <BsTwitterX size={20} />
           </a>
           <a
-            className='font-bold text-slate-400 hover:text-slate-50 duration-300'
+            className=' hover:text-slate-50 duration-300'
             href='https://www.youtube.com/@thesphere2767'
             target='_blank'
             rel='noopener noreferrer'
           >
-            https://www.youtube.com/@thesphere2767
+            <BsYoutube size={20} />
           </a>
           <a
-            className='font-bold text-slate-400 hover:text-slate-50 duration-300'
+            className=' hover:text-slate-50 duration-300'
             href='https://warpcast.com/thesphere'
             target='_blank'
             rel='noopener noreferrer'
           >
-            https://warpcast.com/thesphere
+            <img
+              src='/icons/logo-farcaster.svg'
+              alt='Farcaster'
+              width={20}
+              height={20}
+            />
           </a>
           <a
-            className='font-bold text-slate-400 hover:text-slate-50 duration-300'
+            className=' hover:text-slate-50 duration-300'
             href='https://t.me/+o3hn1fgGsQMzZjgx'
             target='_blank'
             rel='noopener noreferrer'
           >
-            https://t.me/+o3hn1fgGsQMzZjgx
+            <BsTelegram size={20} />
           </a>
         </div>
-        <div className=''>
+        <div className='flex flex-col items-center w-full text-xs'>
           <div className=''>alpha v.0.1 - April 2024</div>
           <div className=''>Developed by Uint Studio</div>
         </div>
