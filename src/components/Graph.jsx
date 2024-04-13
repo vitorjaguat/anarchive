@@ -10,7 +10,7 @@ import * as THREE from 'three';
 import { useTokens } from '@reservoir0x/reservoir-kit-ui';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
-import { contract } from '../utils/contract';
+import contract from '../utils/contract';
 
 const Graph = ({
   allTokens,
@@ -78,10 +78,12 @@ const Graph = ({
 
         try {
           const response = await fetch(
-            `https://api-zora.reservoir.tools/users/${account.address}/tokens/v9?collection=${contract}&limit=200&includeAttributes=true`,
+            `https://api-zora.reservoir.tools/users/${account.address}/tokens/v10?collection=${contract}&limit=200&includeAttributes=true`,
             options
           );
           const data = await response.json();
+          console.log('data', data);
+          console.log('contract', contract);
           setUsersFrags(data.tokens);
         } catch (err) {
           console.error(err);
@@ -91,6 +93,7 @@ const Graph = ({
       fetchData();
     }
   }, [account.address]);
+  console.log('account', account);
 
   useEffect(() => {
     if (showMineIsChecked && usersFrags.length > 0) {
