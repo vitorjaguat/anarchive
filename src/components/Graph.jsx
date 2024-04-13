@@ -39,6 +39,7 @@ const Graph = ({
 
   //events:
   const handleBackgroundClick = useCallback(() => {
+    console.log('graphData', graphData);
     graphRef.current.zoomToFit(1000);
   }, [graphRef]);
 
@@ -53,10 +54,14 @@ const Graph = ({
       const clickedTokenData = allTokens.find(
         (token) => +token.token.tokenId === +node.id
       );
-
+      graphRef.current.zoomToFit(
+        1000,
+        10,
+        (node) => node.id === clickedTokenData.token.tokenId
+      );
       setOpenTokenData(clickedTokenData);
     },
-    [allTokens, setOpenTokenData, openTokenData]
+    [allTokens, setOpenTokenData]
   );
 
   // user account logic:
@@ -102,6 +107,9 @@ const Graph = ({
       graph.d3Force('link').strength((link) => (link.isDestination ? 0 : 0.03));
     }
   }, [allTokens, sort]);
+
+  const graphWidth =
+    openTokenData === 'initial' ? windowWidth : windowWidth - 600;
 
   return (
     <div className='relative'>

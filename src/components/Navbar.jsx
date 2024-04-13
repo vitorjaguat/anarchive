@@ -26,9 +26,13 @@ export default function Navbar({
           <div>Anarchiving</div>
           <div>Game</div>
         </div>
-        <div className=''>
-          <GoQuestion size={12} />
-        </div>
+      </div>
+
+      <div
+        className='px-4 cursor-help'
+        onClick={() => setInfoVisible(!infoVisible)}
+      >
+        <GoQuestion size={16} />
       </div>
 
       <SelectSort

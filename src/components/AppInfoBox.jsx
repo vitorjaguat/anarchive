@@ -40,7 +40,7 @@ const boxVariants = {
 export default function AppInfoBox({ setInfoVisible, infoVisible }) {
   return (
     <motion.div
-      className='absolute bg-slate-800/80 rounded-tr-md max-w-[600px] flex flex-col'
+      className='absolute bg-slate-800 rounded-tr-md max-w-[600px] flex flex-col'
       variants={boxVariants}
       initial='hidden'
       animate='visible'
@@ -50,10 +50,10 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
       // }}
     >
       <div
-        className='w-full flex justify-center p-1 mb-4 bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer rounded-tr-md'
+        className='w-full flex justify-center p-0 mb-2 bg-slate-600 hover:bg-slate-400 duration-300 cursor-pointer rounded-tr-md'
         onClick={() => setInfoVisible(false)}
       >
-        <RxChevronDown size={24} />
+        <RxChevronDown size={22} />
       </div>
       <div className='p-4 flex flex-col gap-4 text-sm'>
         <div className='text-white'>
@@ -102,7 +102,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
         </div>
         <div className=' my-4 flex justify-around w-full'>
           <a
-            className=' hover:text-slate-50 duration-300'
+            className=' hover:scale-125 duration-500'
             href='https://thesphere.as'
             target='_blank'
             rel='noopener noreferrer'
@@ -110,7 +110,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             <BsGlobe size={20} />
           </a>
           <a
-            className=' hover:text-slate-50 duration-300'
+            className=' hover:scale-125 duration-500'
             href='https://instagram.com/thesphere_as'
             target='_blank'
             rel='noopener noreferrer'
@@ -118,7 +118,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             <BsInstagram size={20} />
           </a>
           <a
-            className=' hover:text-slate-50 duration-300'
+            className=' hover:scale-125 duration-500'
             href='https://twitter.com/thesphere_as'
             target='_blank'
             rel='noopener noreferrer'
@@ -126,7 +126,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             <BsTwitterX size={20} />
           </a>
           <a
-            className=' hover:text-slate-50 duration-300'
+            className=' hover:scale-125 duration-500'
             href='https://www.youtube.com/@thesphere2767'
             target='_blank'
             rel='noopener noreferrer'
@@ -134,7 +134,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             <BsYoutube size={20} />
           </a>
           <a
-            className=' hover:text-slate-50 duration-300'
+            className=' hover:scale-125 duration-500'
             href='https://warpcast.com/thesphere'
             target='_blank'
             rel='noopener noreferrer'
@@ -147,7 +147,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             />
           </a>
           <a
-            className=' hover:text-slate-50 duration-300'
+            className=' hover:scale-125 duration-500'
             href='https://t.me/+o3hn1fgGsQMzZjgx'
             target='_blank'
             rel='noopener noreferrer'
