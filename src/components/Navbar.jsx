@@ -19,7 +19,7 @@ export default function Navbar({
       <div
         className='tracking-widest flex leading-4 z-[1000] hover:text-slate-400 duration-300 cursor-help items-end'
         onMouseEnter={() => setInfoVisible(true)}
-        onMouseLeave={() => setInfoVisible(false)}
+        // onMouseLeave={() => setInfoVisible(false)}
       >
         <div className='flex flex-col'>
           <div>The</div>

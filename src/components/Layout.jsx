@@ -1,6 +1,7 @@
 import Navbar from './Navbar';
 import { useState, useEffect } from 'react';
 import AppInfoBox from './AppInfoBox';
+import { AnimatePresence } from 'framer-motion';
 
 export default function Layout({
   children,
@@ -44,7 +45,14 @@ export default function Layout({
       <div className='relative w-screen h-screen'>
         <div>{children}</div>
 
-        {infoVisible && <AppInfoBox />}
+        <AnimatePresence>
+          {infoVisible && (
+            <AppInfoBox
+              setInfoVisible={setInfoVisible}
+              infoVisible={infoVisible}
+            />
+          )}
+        </AnimatePresence>
 
         <div className='absolute bottom-0 left-0 right-0 z-[1999]'>
           <Navbar
