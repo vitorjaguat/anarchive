@@ -20,7 +20,6 @@ const Graph = ({
   showMineIsChecked,
   filter,
 }) => {
-  console.log('filter', filter);
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [spriteMap, setSpriteMap] = useState(new Map());
@@ -56,8 +55,6 @@ const Graph = ({
       );
 
       setOpenTokenData(clickedTokenData);
-      console.log(node.id);
-      console.log(openTokenData);
     },
     [allTokens, setOpenTokenData, openTokenData]
   );
@@ -82,8 +79,6 @@ const Graph = ({
             options
           );
           const data = await response.json();
-          console.log('data', data);
-          console.log('contract', contract);
           setUsersFrags(data.tokens);
         } catch (err) {
           console.error(err);
@@ -93,7 +88,6 @@ const Graph = ({
       fetchData();
     }
   }, [account.address]);
-  console.log('account', account);
 
   useEffect(() => {
     if (showMineIsChecked && usersFrags.length > 0) {
