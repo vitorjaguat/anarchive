@@ -162,7 +162,8 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             <BsTelegram size={20} />
           </a>
         </div>
-        <div className='text-xs w-full flex flex-col items-end gap-[4px]'>
+        <div className='mt-2 w-full border-b-[1px] border-white/30'></div>
+        <div className='mt-2 text-xs w-full flex flex-col items-end gap-[4px]'>
           <div className='text-sm bold mb-2'>Navigation instructions</div>
 
           <div className='flex gap-2'>
