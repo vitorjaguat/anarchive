@@ -38,10 +38,27 @@ const Graph = ({
   }, [allTokens, sort, filter, showMineIsChecked]);
 
   //events:
-  const handleBackgroundClick = useCallback(() => {
-    console.log('graphData', graphData);
-    graphRef.current.zoomToFit(1000);
-  }, [graphRef]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const key = e.key;
+      console.log('key', key);
+      if (key === ' ') {
+        graphRef?.current?.zoomToFit(1000);
+        return;
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown, true);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMounted]);
+
+  // const handleBackgroundClick = useCallback(() => {
+  //   console.log('graphData', graphData);
+  //   graphRef.current.zoomToFit(1000);
+  // }, [graphRef]);
 
   if (isMounted) {
     // extraRenderers = [new CSS2DRenderer()];
@@ -54,11 +71,7 @@ const Graph = ({
       const clickedTokenData = allTokens.find(
         (token) => +token.token.tokenId === +node.id
       );
-      graphRef.current.zoomToFit(
-        1000,
-        10,
-        (node) => node.id === clickedTokenData.token.tokenId
-      );
+
       setOpenTokenData(clickedTokenData);
     },
     [allTokens, setOpenTokenData]
@@ -112,7 +125,7 @@ const Graph = ({
     openTokenData === 'initial' ? windowWidth : windowWidth - 600;
 
   return (
-    <div className='relative'>
+    <div className='relative' onKeyDown={(e) => handleKeyPress(e)}>
       <ForceGraph3D
         ref={graphRef}
         graphData={graphData}
@@ -124,8 +137,8 @@ const Graph = ({
         showNavInfo={false}
         nodeRelSize={1}
         //events:
-        onBackgroundClick={handleBackgroundClick}
-        onEngineStop={() => graphRef.current.zoomToFit(1000)}
+        // onBackgroundClick={handleBackgroundClick}
+        onEngineStop={() => graphRef.current.zoomToFit(1000, -2000)}
         cooldownTime={openTokenData === 'initial' ? 2000 : Infinity}
         cooldownTicks={Infinity}
         warmupTicks={0}

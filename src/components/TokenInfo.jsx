@@ -102,15 +102,15 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
           <RxChevronDown size={24} />
         </div>
         {/* columns */}
-        <div className='pl-4 flex justify-between gap-4 max-w-[600px]'>
+        <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
           <div className='flex flex-col gap-4'>
-            <div className='relative'>
+            <div className='relative w-full'>
               <img
                 src={openTokenData.token.image}
                 alt={openTokenData.token.name}
-                width={250}
-                height={250}
-                className='max-w-[250px] max-h-[250px] object-contain rounded-md bg-white/10 cursor-pointer'
+                width={300}
+                height={300}
+                className='max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer'
                 onClick={() => setOpenLargeMedia(openTokenData)}
               />
               <div
@@ -124,14 +124,12 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
               <CollectModal
                 type='mint'
                 // defaultQuantity={10}
+                chainId={7777777}
                 copyOverrides={{
                   mintTitle: 'Mint your own',
                 }}
                 trigger={
-                  <button
-                    className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-black hover:scale-105 transition-all duration-300'
-                    //   onClick={() => setMintOpenState(true)}
-                  >
+                  <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-black hover:scale-105 transition-all duration-300'>
                     Mint
                   </button>
                 }

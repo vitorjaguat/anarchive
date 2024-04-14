@@ -40,7 +40,7 @@ const boxVariants = {
 export default function AppInfoBox({ setInfoVisible, infoVisible }) {
   return (
     <motion.div
-      className='absolute bg-slate-800 rounded-tr-md max-w-[600px] flex flex-col'
+      className='absolute bg-slate-700 rounded-tr-md max-w-[600px] flex flex-col'
       variants={boxVariants}
       initial='hidden'
       animate='visible'
@@ -50,7 +50,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
       // }}
     >
       <div
-        className='w-full flex justify-center p-0 mb-2 bg-slate-600 hover:bg-slate-400 duration-300 cursor-pointer rounded-tr-md'
+        className='w-full flex justify-center p-0 mb-2 bg-slate-500 hover:bg-slate-400 duration-300 cursor-pointer rounded-tr-md'
         onClick={() => setInfoVisible(false)}
       >
         <RxChevronDown size={22} />
