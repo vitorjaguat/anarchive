@@ -7,6 +7,13 @@ import {
   BsYoutube,
 } from 'react-icons/bs';
 import { RxChevronDown } from 'react-icons/rx';
+import {
+  TbZoomScan,
+  TbArrowsMove,
+  TbRotate360,
+  TbEye,
+  TbSpace,
+} from 'react-icons/tb';
 
 const boxVariants = {
   hidden: {
@@ -155,7 +162,31 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             <BsTelegram size={20} />
           </a>
         </div>
-        <div className='flex flex-col items-center w-full text-xs'>
+        <div className='text-xs w-full flex flex-col items-end gap-[4px]'>
+          <div className='text-sm bold mb-2'>Navigation instructions</div>
+
+          <div className='flex gap-2'>
+            Left-click drag to rotate
+            <TbRotate360 size={20} />
+          </div>
+          <div className='flex gap-2'>
+            Scroll to zoom in/out
+            <TbZoomScan size={20} />
+          </div>
+          <div className='flex gap-2'>
+            Right-click to pan
+            <TbArrowsMove size={20} />
+          </div>
+          <div className='flex gap-2'>
+            Left-click on fragment to see details and mint
+            <TbEye size={20} />
+          </div>
+          <div className='flex gap-2'>
+            Press spacebar to reset view (recenter)
+            <TbSpace size={20} />
+          </div>
+        </div>
+        <div className='flex flex-col items-start w-full text-xs'>
           <div className=''>alpha v.0.1 - April 2024</div>
           <div className=''>Developed by Uint Studio</div>
         </div>
