@@ -66,7 +66,7 @@ export default function LargeMedia({ token }) {
         // }}
         data={token.media}
         width='800'
-        height='700'
+        height={window.innerHeight - 150}
       ></object>
     );
   }
