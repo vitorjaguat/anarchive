@@ -128,6 +128,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 copyOverrides={{
                   mintTitle: 'Mint your own',
                 }}
+                normalizeRoyalties={true}
                 trigger={
                   <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-black hover:scale-105 transition-all duration-300'>
                     Mint
