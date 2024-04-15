@@ -96,7 +96,7 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
       >
         {/* close button */}
         <div
-          className='w-full flex justify-center p-1 mb-4 bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer'
+          className='w-full flex justify-center p-1 mb-4 bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer '
           onClick={handleClickOverlay}
         >
           <RxChevronDown size={24} />
