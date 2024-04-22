@@ -150,6 +150,7 @@ export default function App({ Component, pageProps }: AppProps) {
             // marketplaceFee: 250,
             // marketplaceFeeRecipient: "0xabc"
             disablePoweredByReservoir: true,
+            bountyReferrer: '0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea',
           }}
           theme={theme}
         >

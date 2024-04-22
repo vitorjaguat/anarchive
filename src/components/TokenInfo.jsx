@@ -126,18 +126,21 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 // defaultQuantity={10}
                 chainId={7777777}
                 copyOverrides={{
-                  mintTitle: 'Mint your own',
+                  mintTitle: 'Collect your own',
+                  mintCtaBuy: 'Collect',
                 }}
                 normalizeRoyalties={true}
                 trigger={
                   <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-black hover:scale-105 transition-all duration-300'>
-                    Mint
+                    Collect
                   </button>
                 }
                 onConnectWallet={() => {
                   openConnectModal?.();
                 }}
-                defaultQuantity={2}
+                // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
+                // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
+
                 // openState={mintOpenState}
                 collectionId={openTokenData.token.contract}
                 tokenId={openTokenData.token.tokenId}
