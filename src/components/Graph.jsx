@@ -138,7 +138,14 @@ const Graph = ({
         nodeRelSize={1}
         //events:
         // onBackgroundClick={handleBackgroundClick}
-        onEngineStop={() => graphRef.current.zoomToFit(1000, -2000)}
+        onEngineStop={() => {
+          console.log('openTokenData', openTokenData);
+          if (filter?.length === 0) {
+            graphRef.current.zoomToFit(1000, -2000);
+          } else {
+            graphRef.current.zoomToFit(1000);
+          }
+        }}
         cooldownTime={openTokenData === 'initial' ? 2000 : Infinity}
         cooldownTicks={Infinity}
         warmupTicks={0}
