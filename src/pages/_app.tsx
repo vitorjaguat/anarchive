@@ -116,7 +116,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
       try {
         const response = await fetch(
-          `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
+          `https://api-zora.reservoir.tools/tokens/v6?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
           options
         );
         const data = await response.json();
