@@ -22,7 +22,7 @@ export default function Home({
   setFilter,
 }) {
   const [openTokenData, setOpenTokenData] = useState('initial');
-  console.log(openTokenData);
+  // console.log(openTokenData);
 
   const handleClickOverlay = useCallback((e) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ export default function Home({
   }, []);
 
   //single token view:
-  console.log('openTokenData', openTokenData);
+  // console.log('openTokenData', openTokenData);
 
   return (
     <>
