@@ -1,6 +1,6 @@
 class GraphDataClass {
   constructor(tokenArr, attribute, filtersArr) {
-    console.log('filtersArr', filtersArr);
+    // console.log('filtersArr', filtersArr);
     if (!filtersArr?.length) {
       this.filteredTokens = tokenArr;
     } else {
@@ -13,7 +13,7 @@ class GraphDataClass {
         );
       });
     }
-    console.log('this.filteredTokens', this.filteredTokens);
+    // console.log('this.filteredTokens', this.filteredTokens);
     this.nodes = this.filteredTokens?.map((token) => {
       return {
         id: token.token.tokenId,
@@ -59,7 +59,7 @@ class GraphDataClass {
           });
       });
     }
-    console.log('this.links', this.links);
+    // console.log('this.links', this.links);
   }
 
   changeAttribute(attribute) {}

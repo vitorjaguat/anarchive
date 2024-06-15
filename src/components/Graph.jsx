@@ -139,7 +139,7 @@ const Graph = ({
         //events:
         // onBackgroundClick={handleBackgroundClick}
         onEngineStop={() => {
-          console.log('openTokenData', openTokenData);
+          // console.log('openTokenData', openTokenData);
           if (filter?.length === 0) {
             graphRef.current.zoomToFit(1000, -2000);
           } else {

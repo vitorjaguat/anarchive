@@ -2,7 +2,7 @@ import { VscClose } from 'react-icons/vsc';
 import { FiFilter } from 'react-icons/fi';
 
 export default function Filters({ filter, setFilter }) {
-  console.log(filter);
+  // console.log(filter);
   return (
     <div className='absolute top-4 left-4 z-[4]'>
       <div className=''>
