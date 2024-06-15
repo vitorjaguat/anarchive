@@ -4,7 +4,7 @@ import { FiFilter } from 'react-icons/fi';
 export default function Filters({ filter, setFilter }) {
   // console.log(filter);
   return (
-    <div className='absolute top-4 left-4 z-[4]'>
+    <div className='absolute top-4 left-4 z-[4] '>
       <div className=''>
         {filter.map((f) => (
           <div
