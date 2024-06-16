@@ -193,8 +193,14 @@ const Graph = ({
           let texture;
           if (spriteMap.get(node.id)) texture = spriteMap.get(node.id);
           else {
-            texture = new THREE.TextureLoader().load(`${node.image}`);
-            setSpriteMap(spriteMap.set(node.id, texture));
+            const loader = new THREE.TextureLoader();
+            loader.load(node.image, (loadedTexture) => {
+              texture = loadedTexture;
+              setSpriteMap(spriteMap.set(node.id, texture));
+            });
+
+            // texture = new THREE.TextureLoader().load(`${node.image}`);
+            // setSpriteMap(spriteMap.set(node.id, texture));
           }
 
           const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
