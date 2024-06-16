@@ -195,7 +195,7 @@ const Graph = ({
           else {
             const loader = new THREE.TextureLoader();
             loader.load(
-              node.image,
+              `${node.image}`,
               (loadedTexture) => {
                 texture = loadedTexture;
                 setSpriteMap(spriteMap.set(node.id, texture));
