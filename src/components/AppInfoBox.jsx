@@ -189,7 +189,17 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
         </div>
         <div className='flex flex-col items-start w-full text-xs'>
           <div className=''>alpha v.0.1 - April 2024</div>
-          <div className=''>Developed by Uint Studio</div>
+          <div className=''>
+            Developed by{' '}
+            <a
+              className='text-slate-200 hover:text-slate-300 hover:tracking-wider duration-500'
+              href='http://uint.studio'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              Uint Studio
+            </a>
+          </div>
         </div>
       </div>
     </motion.div>
