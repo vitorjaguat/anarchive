@@ -1,5 +1,9 @@
 import Markdown from 'react-markdown';
-import { CollectModal, TokenMedia } from '@reservoir0x/reservoir-kit-ui';
+import {
+  CollectModal,
+  TokenMedia,
+  MintModal,
+} from '@reservoir0x/reservoir-kit-ui';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -80,6 +84,7 @@ const largeMediaVariants = {
 export default function TokenInfo({ openTokenData, handleClickOverlay }) {
   const { openConnectModal } = useConnectModal();
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
+  console.log('openTokenData', openTokenData.token.tokenId);
 
   return (
     <>
@@ -121,37 +126,34 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
               </div>
             </div>
             <div className=''>
-              <CollectModal
-                type='mint'
-                // defaultQuantity={10}
+              <MintModal
                 chainId={7777777}
                 copyOverrides={{
                   mintTitle: 'Collect your own',
                   mintCtaBuy: 'Collect',
                 }}
-                normalizeRoyalties={true}
+                // normalizeRoyalties={true}
                 trigger={
                   <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-black hover:scale-105 transition-all duration-300'>
                     Collect
                   </button>
                 }
-                onConnectWallet={() => {
-                  openConnectModal?.();
-                }}
+                // onConnectWallet={() => {
+                //   openConnectModal?.();
+                // }}
                 // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
                 // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
 
                 // openState={mintOpenState}
                 collectionId={openTokenData.token.contract}
-                tokenId={openTokenData.token.tokenId}
-                onCollectComplete={(data) => console.log(data)}
-                onCollectError={(error) => console.log(error)}
-
-                // token={
-                //   openTokenData.token.contract +
-                //   ':' +
-                //   openTokenData.token.tokenId
-                // }
+                // tokenId={openTokenData.token.tokenId}
+                onMintComplete={(data) => console.log(data)}
+                onMintError={(error) => console.log(error)}
+                token={
+                  openTokenData.token.contract +
+                  ':' +
+                  openTokenData.token.tokenId
+                }
               />
             </div>
             <div className='grid grid-cols-2 gap-2'>

@@ -71,7 +71,7 @@ const Graph = ({
       const clickedTokenData = allTokens.find(
         (token) => +token.token.tokenId === +node.id
       );
-
+      // console.log('clickedTokenData', clickedTokenData);
       setOpenTokenData(clickedTokenData);
     },
     [allTokens, setOpenTokenData]
