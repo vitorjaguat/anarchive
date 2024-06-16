@@ -1,6 +1,6 @@
 import Markdown from 'react-markdown';
 import { MintModal } from '@reservoir0x/reservoir-kit-ui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RxChevronDown } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
@@ -77,9 +77,19 @@ const largeMediaVariants = {
   },
 };
 
-export default function TokenInfo({ openTokenData, handleClickOverlay }) {
+export default function TokenInfo({
+  openTokenData,
+  handleClickOverlay,
+  imageLoaded,
+  setImageLoaded,
+}) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   console.log('openTokenData', openTokenData.token);
+  console.log('imageLoaded', imageLoaded);
+
+  // useEffect(() => {
+  //   setImageLoaded(false);
+  // }, [openTokenData]);
 
   return (
     <>
@@ -105,14 +115,30 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
         <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
           <div className='flex flex-col gap-4'>
             <div className='relative w-full'>
+              {!imageLoaded && (
+                // <Image
+                //   src='/assets/loading284x284.png'
+                //   width={284}
+                //   height={284}
+                //   alt='loading'
+                // />
+                <div className='w-full h-[200px] flex items-center justify-center'>
+                  <div className='text-sm animate-ping'>loading...</div>
+                </div>
+              )}
+
               <Image
                 src={openTokenData.token.image}
                 alt={openTokenData.token.name}
                 width={300}
                 height={300}
-                className='max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer'
-                placeholder='blur'
-                blurDataURL='data:,loading'
+                className={
+                  'max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer' +
+                  (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
+                }
+                onLoad={(e) => setImageLoaded(true)}
+                // placeholder='blur'
+                // blurDataURL='data:,loading'
                 onClick={() => setOpenLargeMedia(openTokenData)}
               />
               <div

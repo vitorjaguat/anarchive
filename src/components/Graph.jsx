@@ -19,6 +19,7 @@ const Graph = ({
   sort,
   showMineIsChecked,
   filter,
+  setImageLoaded,
 }) => {
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
@@ -72,9 +73,10 @@ const Graph = ({
         (token) => +token.token.tokenId === +node.id
       );
       // console.log('clickedTokenData', clickedTokenData);
+      setImageLoaded(false);
       setOpenTokenData(clickedTokenData);
     },
-    [allTokens, setOpenTokenData]
+    [allTokens, setOpenTokenData, setImageLoaded]
   );
 
   // user account logic:

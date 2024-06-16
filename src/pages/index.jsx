@@ -22,6 +22,8 @@ export default function Home({
   setFilter,
 }) {
   const [openTokenData, setOpenTokenData] = useState('initial');
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   // console.log(openTokenData);
 
   const handleClickOverlay = useCallback((e) => {
@@ -45,6 +47,8 @@ export default function Home({
             <TokenInfo
               openTokenData={openTokenData}
               handleClickOverlay={handleClickOverlay}
+              setImageLoaded={setImageLoaded}
+              imageLoaded={imageLoaded}
             />
           )}
         </AnimatePresence>
@@ -55,6 +59,7 @@ export default function Home({
           sort={sort}
           filter={filter}
           showMineIsChecked={showMineIsChecked}
+          setImageLoaded={setImageLoaded}
         />
       </main>
     </>
