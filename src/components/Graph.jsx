@@ -193,18 +193,18 @@ const Graph = ({
           let texture;
           if (spriteMap.get(node.id)) texture = spriteMap.get(node.id);
           else {
-            // const loader = new THREE.TextureLoader();
-            // loader.load(
-            //   `${node.image}`,
-            //   (loadedTexture) => {
-            //     texture = loadedTexture;
-            //     setSpriteMap(spriteMap.set(node.id, texture));
-            //   },
-            //   undefined,
-            //   (err) => console.error({ err })
-            // );
+            const loader = new THREE.TextureLoader();
+            texture = loader.load(
+              `${node.image}`,
+              (texture) => {
+                texture = texture;
+                setSpriteMap(spriteMap.set(node.id, texture));
+              },
+              undefined,
+              (err) => console.error({ err })
+            );
 
-            texture = new THREE.TextureLoader().load(`${node.image}`);
+            // texture = new THREE.TextureLoader().load(`${node.image}`);
             setSpriteMap(spriteMap.set(node.id, texture));
           }
 
