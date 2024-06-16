@@ -79,7 +79,7 @@ const largeMediaVariants = {
 
 export default function TokenInfo({ openTokenData, handleClickOverlay }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
-  console.log('openTokenData', openTokenData.token.tokenId);
+  console.log('openTokenData', openTokenData.token);
 
   return (
     <>
@@ -111,7 +111,8 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
                 width={300}
                 height={300}
                 className='max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer'
-                placeholder='empty'
+                placeholder='blur'
+                blurDataURL='data:,loading'
                 onClick={() => setOpenLargeMedia(openTokenData)}
               />
               <div
