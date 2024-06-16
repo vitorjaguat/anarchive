@@ -1,38 +1,19 @@
+## The Anarchiving Game
+
+The Anarchiving Game is built on top of Zora. It enables data visualization and interaction with fragments of [The Sphere](https://www.thesphere.as/)'s journey, as a value discovery process for self-collecting digital tribes.
+
+The Anarchiving Game addresses the problem of context creation for NFTs, enabling new forms of value and content discovery. Departing from The Sphere as an organization that has been exploring and developing new ecologies of funding and co-ownership for the performing arts, we think of the Anarchiving Game as a participatory and proliferating cryptomedia information catalog: an open-ended canvas where the collective memory and creative outputs of The Sphere's community are not just preserved but continually re-envisioned and synthetically expanded upon.
+
+We aim to empower and celebrate our emerging network of participants by inviting them to create constellations of fragments as NFTs related to organizational journeys. While embodying the ethos of collaborative innovation and decentralized decision-making, this non-linear archive collectively records something that computational sciences call a “state change”. And we’re bringing this governance rituals history onchain together with visitors, collectors, and anarchivists.
+
+The structure of the game makes use of a Zora ERC-1155 contract in which anarchivists get microgrants and have their wallets greenlisted as creators within the smart contract. The tokens have the same metadata structure (attribute-value pairs), and when parsing this structure into multiple visualizations, users can dive into an ever evolving entity-relation graph. Through a wallet connector, people can collect and sort the NFTs on Zora Network.
+
+As the graph grows, it can be read as a collection of gestures towards self-collecting digital tribes, leveraged by the protocol fees distribution system implemented by Zora.
+
+In January 2024 we received a grant from [Serpentine’s Future Art Ecosystem](https://futureartecosystems.org/about/) + [RadicalXChange](https://www.radicalxchange.org/) as part of their program [New Models for Interdependence and Ownership in Art and Culture](https://proud-paprika-325.notion.site/The-winning-projects-from-our-Open-Call-for-New-Models-for-Interdependence-and-Ownership-in-Art-and--b36baccbfe094012834f52b05d87dc4b). We are currently working on improvements with Zora SDK and creating new functionalities, while onboarding around 100 creators.
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+## Technologies we used
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Reservoir SDK, Guild SDK, Zora SDK, RainbowKit, Next.js, TypeScript, TailwindCSS, Framer Motion, React Force Graph, THREE.js
