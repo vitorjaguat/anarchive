@@ -1,15 +1,11 @@
 import Markdown from 'react-markdown';
-import {
-  CollectModal,
-  TokenMedia,
-  MintModal,
-} from '@reservoir0x/reservoir-kit-ui';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { RxChevronDown } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import LargeMedia from './LargeMedia';
+import Image from 'next/image';
 
 const boxVariants = {
   hidden: {
@@ -82,7 +78,6 @@ const largeMediaVariants = {
 };
 
 export default function TokenInfo({ openTokenData, handleClickOverlay }) {
-  const { openConnectModal } = useConnectModal();
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   console.log('openTokenData', openTokenData.token.tokenId);
 
@@ -110,12 +105,13 @@ export default function TokenInfo({ openTokenData, handleClickOverlay }) {
         <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
           <div className='flex flex-col gap-4'>
             <div className='relative w-full'>
-              <img
+              <Image
                 src={openTokenData.token.image}
                 alt={openTokenData.token.name}
                 width={300}
                 height={300}
                 className='max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer'
+                placeholder='empty'
                 onClick={() => setOpenLargeMedia(openTokenData)}
               />
               <div
