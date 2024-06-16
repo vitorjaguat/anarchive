@@ -194,10 +194,15 @@ const Graph = ({
           if (spriteMap.get(node.id)) texture = spriteMap.get(node.id);
           else {
             const loader = new THREE.TextureLoader();
-            loader.load(node.image, (loadedTexture) => {
-              texture = loadedTexture;
-              setSpriteMap(spriteMap.set(node.id, texture));
-            });
+            loader.load(
+              node.image,
+              (loadedTexture) => {
+                texture = loadedTexture;
+                setSpriteMap(spriteMap.set(node.id, texture));
+              },
+              undefined,
+              (err) => console.error({ err })
+            );
 
             // texture = new THREE.TextureLoader().load(`${node.image}`);
             // setSpriteMap(spriteMap.set(node.id, texture));
