@@ -37,7 +37,7 @@ export default function Navbar({
         </div>
       </div>
 
-      <div className='flex w-full gap-6'>
+      <div className='flex w-full h-full gap-6'>
         <div className=''>
           <SelectSort
             setSort={setSort}
@@ -49,7 +49,9 @@ export default function Navbar({
         <div style={{ flex: 2 }} className='flex-2'>
           <Search allTokens={allTokens} setFilter={setFilter} />
         </div>
-        <ConnectButton />
+        <div className='flex h-full items-center'>
+          <ConnectButton />
+        </div>
       </div>
     </div>
   );

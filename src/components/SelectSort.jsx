@@ -5,7 +5,7 @@ export default function SelectSort({
   showMineIsChecked,
 }) {
   return (
-    <div className='w-full'>
+    <div className='w-full h-full flex flex-col justify-center'>
       <select
         value={sort}
         name='sort'
