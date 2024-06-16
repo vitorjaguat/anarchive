@@ -38,4 +38,6 @@ yarn-error.log*
 next-env.d.ts
 
 # trash
-/trash 
+/trash
+*/trash 
+*/*/trash 
