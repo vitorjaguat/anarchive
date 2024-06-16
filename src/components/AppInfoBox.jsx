@@ -21,20 +21,23 @@ const boxVariants = {
     top: '100%',
     bottom: 'auto',
     left: 0,
+    backgroundColor: 'rgb(51, 65, 85)',
   },
   visible: {
     // opacity: 1,
     top: 'auto',
     left: 0,
     bottom: 100,
+    backgroundColor: 'rgb(51, 65, 85)',
     transition: {
-      duration: 1.5,
+      duration: 1,
       ease: [0.16, 1, 0.3, 1],
       // type: 'spring',
     },
   },
   exit: {
     top: '100%',
+    backgroundColor: 'rgb(51, 65, 85)',
     transition: {
       duration: 2,
       // ease: [0.4, 0.5, 0.7, 1],
@@ -192,7 +195,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
           <div className=''>
             Developed by{' '}
             <a
-              className='text-slate-200 hover:text-slate-300 hover:tracking-wider duration-500'
+              className='text-slate-200 hover:text-slate-300 tracking-wide hover:tracking-wider duration-500'
               href='http://uint.studio'
               target='_blank'
               rel='noopener noreferrer'
