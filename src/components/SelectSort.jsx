@@ -5,12 +5,12 @@ export default function SelectSort({
   showMineIsChecked,
 }) {
   return (
-    <div className=''>
+    <div className='w-full'>
       <select
         value={sort}
         name='sort'
         id='sort'
-        className='text-black text-sm px-4 py-1 bg-slate-400 rounded-md w-40 outline-none'
+        className='text-black text-sm px-4 py-1 bg-slate-400 rounded-md w-full outline-none'
         onChange={(e) => setSort(e.target.value)}
       >
         <option value='none'>--Choose a trait--</option>
