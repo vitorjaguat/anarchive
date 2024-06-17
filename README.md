@@ -1,6 +1,6 @@
 ## The Anarchiving Game
 
-![The Anarchiving Game](https://github.com/vitorjaguat/anarchive/blob/main/public/anarchiving.mp4)
+https://github.com/vitorjaguat/anarchive/blob/main/public/anarchiving.mp4
 
 The Anarchiving Game is built on top of Zora. It enables data visualization and interaction with fragments of [The Sphere](https://www.thesphere.as/)'s journey, as a value discovery process for self-collecting digital tribes.
 
