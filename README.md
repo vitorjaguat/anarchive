@@ -1,5 +1,9 @@
 ## The Anarchiving Game
 
+<video width="320" height="240" autoplay muted>
+  <source src="https://anarchiving.thesphere.as/anarchiving.mp4" type="video/mp4">
+</video>
+
 The Anarchiving Game is built on top of Zora. It enables data visualization and interaction with fragments of [The Sphere](https://www.thesphere.as/)'s journey, as a value discovery process for self-collecting digital tribes.
 
 The Anarchiving Game addresses the problem of context creation for NFTs, enabling new forms of value and content discovery. Departing from The Sphere as an organization that has been exploring and developing new ecologies of funding and co-ownership for the performing arts, we think of the Anarchiving Game as a participatory and proliferating cryptomedia information catalog: an open-ended canvas where the collective memory and creative outputs of The Sphere's community are not just preserved but continually re-envisioned and synthetically expanded upon.

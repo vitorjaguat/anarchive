@@ -21,12 +21,10 @@ export default function Navbar({
         onMouseEnter={() => setInfoVisible(true)}
         // onMouseLeave={() => setInfoVisible(false)}
       >
-        <div className='flex'>
-          <div className='flex flex-col'>
-            <div>The</div>
-            <div>Anarchiving</div>
-            <div>Game</div>
-          </div>
+        <div className='flex flex-col'>
+          <div>The</div>
+          <div>Anarchiving</div>
+          <div>Game</div>
         </div>
 
         <div

@@ -126,7 +126,22 @@ export default function TokenInfo({
                   <div className='text-sm animate-ping'>loading...</div>
                 </div>
               )}
-
+              {openTokenData.token.image.slice(-3) === 'gif' && (
+                <img
+                  src={openTokenData.token.image}
+                  alt={openTokenData.token.name}
+                  width={300}
+                  height={300}
+                  className={
+                    'max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer' +
+                    (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
+                  }
+                  onLoad={(e) => setImageLoaded(true)}
+                  // placeholder='blur'
+                  // blurDataURL='data:,loading'
+                  onClick={() => setOpenLargeMedia(openTokenData)}
+                />
+              )}
               <Image
                 src={openTokenData.token.image}
                 alt={openTokenData.token.name}
