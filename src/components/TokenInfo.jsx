@@ -94,12 +94,37 @@ export default function TokenInfo({
   return (
     <>
       <motion.div
-        className='absolute top-0 right-0 bg-slate-700 pb-6 z-[1] h-[calc(100%)]'
+        className='absolute right-0 bg-slate-700 pb-6 z-[2] h-full'
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
         }}
-        variants={boxVariants}
+        variants={{
+          hidden: {
+            // opacity: 0,
+            top: '100%',
+            // bottom: 'auto',
+          },
+          visible: {
+            // opacity: 1,
+            top: 'auto',
+            bottom: 0,
+            transition: {
+              duration: 1.5,
+              ease: [0.16, 1, 0.3, 1],
+              // type: 'spring',
+            },
+          },
+          exit: {
+            top: '100%',
+            transition: {
+              duration: 2,
+              // ease: [0.4, 0.5, 0.7, 1],
+              type: 'spring',
+            },
+            // bottom: 'auto',
+          },
+        }}
         initial='hidden'
         animate='visible'
         exit='exit'
@@ -126,7 +151,8 @@ export default function TokenInfo({
                   <div className='text-sm animate-ping'>loading...</div>
                 </div>
               )}
-              {openTokenData.token.image.slice(-3) === 'gif' && (
+              {(openTokenData.token.image.slice(-3) === 'gif' ||
+                openTokenData.token.image.slice(-3) === 'svg') && (
                 <img
                   src={openTokenData.token.image}
                   alt={openTokenData.token.name}

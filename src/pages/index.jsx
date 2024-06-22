@@ -1,5 +1,5 @@
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
+// import Image from 'next/image';
+// import { Inter } from 'next/font/google';
 import GraphWrapper from '../components/GraphWrapper';
 import { useCallback, useState } from 'react';
 import TokenInfo from '../components/TokenInfo';
