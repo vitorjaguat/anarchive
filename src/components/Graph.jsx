@@ -32,12 +32,6 @@ const Graph = ({
   let windowWidth = 0;
   let windowHeight = 0;
 
-  useEffect(() => {
-    if (allTokens.length > 0 && !showMineIsChecked) {
-      setGraphData(new GraphDataClass(allTokens, sort, filter));
-    }
-  }, [allTokens, sort, filter, showMineIsChecked]);
-
   //events:
 
   useEffect(() => {
@@ -67,17 +61,14 @@ const Graph = ({
     windowHeight = window.innerHeight;
   }
 
-  const handleNodeClick = useCallback(
-    (node) => {
-      const clickedTokenData = allTokens.find(
-        (token) => +token.token.tokenId === +node.id
-      );
-      // console.log('clickedTokenData', clickedTokenData);
-      setImageLoaded(false);
-      setOpenTokenData(clickedTokenData);
-    },
-    [allTokens, setOpenTokenData, setImageLoaded]
-  );
+  const handleNodeClick = (node) => {
+    const clickedTokenData = allTokens.find(
+      (token) => +token.token.tokenId === +node.id
+    );
+    // console.log('clickedTokenData', clickedTokenData);
+    setImageLoaded(false);
+    setOpenTokenData(clickedTokenData);
+  };
 
   // user account logic:
   const account = useAccount();
@@ -104,16 +95,26 @@ const Graph = ({
           console.error(err);
         }
       };
-
       fetchData();
     }
   }, [account.address]);
 
+  //graph data logic:
   useEffect(() => {
+    if (allTokens.length > 0 && !showMineIsChecked) {
+      setGraphData(new GraphDataClass(allTokens, sort, filter));
+    }
     if (showMineIsChecked && usersFrags.length > 0) {
       setGraphData(new GraphDataClass(usersFrags, sort, filter));
     }
-  }, [showMineIsChecked, usersFrags, sort, filter]);
+    if (showMineIsChecked && usersFrags.length === 0) {
+      setGraphData({ nodes: [], links: [] });
+    }
+  }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
+
+  // useEffect(() => {
+
+  // }, [allTokens, sort, filter, showMineIsChecked]);
 
   // link isDestination logic:
   useEffect(() => {
@@ -141,14 +142,14 @@ const Graph = ({
         //events:
         // onBackgroundClick={handleBackgroundClick}
         onEngineStop={() => {
-          // console.log('openTokenData', openTokenData);
           if (filter?.length === 0) {
             graphRef.current.zoomToFit(1000, -2000);
           } else {
             graphRef.current.zoomToFit(1000);
           }
         }}
-        cooldownTime={openTokenData === 'initial' ? 2000 : Infinity}
+        // cooldownTime={openTokenData === 'initial' ? 3000 : Infinity}
+        cooldownTime={3000}
         cooldownTicks={Infinity}
         warmupTicks={0}
         //links:
