@@ -130,6 +130,7 @@ const Graph = ({
   return (
     <div className='relative' onKeyDown={(e) => handleKeyPress(e)}>
       <ForceGraph3D
+        // rendererConfig={{ alpha: false }}
         ref={graphRef}
         graphData={graphData}
         //container:
