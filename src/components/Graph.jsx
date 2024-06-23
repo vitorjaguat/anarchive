@@ -130,7 +130,10 @@ const Graph = ({
   return (
     <div className='relative' onKeyDown={(e) => handleKeyPress(e)}>
       <ForceGraph3D
-        // rendererConfig={{ alpha: false }}
+        // rendererConfig={{
+        //   powerPreference: 'high-performance',
+        //   antialias: true,
+        // }}
         ref={graphRef}
         graphData={graphData}
         //container:

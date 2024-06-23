@@ -79,7 +79,7 @@ export default function TokenInfo({
         {/* columns */}
         {openTokenData?.token && (
           <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-2'>
               <div className='relative w-full'>
                 {!imageLoaded && (
                   // <Image
@@ -150,7 +150,7 @@ export default function TokenInfo({
                   }}
                   // normalizeRoyalties={true}
                   trigger={
-                    <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-black hover:scale-105 transition-all duration-300'>
+                    <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'>
                       Collect
                     </button>
                   }
@@ -172,16 +172,16 @@ export default function TokenInfo({
                   }
                 />
               </div>
-              <div className='grid grid-cols-2 gap-2'>
-                {openTokenData.token.attributes.map((att) => (
+              <div className='grid grid-cols-2 gap-1'>
+                {openTokenData.token.attributes.map((att, i) => (
                   <div
-                    key={Math.random()}
-                    className='flex flex-col gap-2 text-xs bg-white/10 rounded-md pb-2 h-fit'
+                    key={i}
+                    className='flex flex-col gap-2 text-xs bg-white/10 rounded-md pb-2 h-full'
                   >
                     <div className='text-center text-[10px] bg-white/10'>
                       {att.key}
                     </div>
-                    <div className='text-center px-2 flex flex-col gap-1'>
+                    <div className='text-center px-2 flex flex-col justify-center h-full gap-1'>
                       {att.key !== 'Content Tags'
                         ? att.value
                         : att.value
