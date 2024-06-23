@@ -38,6 +38,9 @@ export default function LargeMedia({ token }) {
   //       ></model-viewer>
   //     );
   //   }
+  if (!token.media) {
+    token.media = token.imageLarge;
+  }
 
   if (token.media?.includes('.mpeg')) {
     return (
@@ -68,6 +71,20 @@ export default function LargeMedia({ token }) {
         width='800'
         height={window.innerHeight - 150}
       ></object>
+    );
+  }
+
+  if (token.media?.includes('.svg')) {
+    return (
+      <img
+        src={token.media}
+        alt={token.name}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+        }}
+      />
     );
   }
 

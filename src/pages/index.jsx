@@ -42,16 +42,14 @@ export default function Home({
         className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
       >
         <Filters filter={filter} setFilter={setFilter} />
-        <AnimatePresence>
-          {openTokenData && openTokenData !== 'initial' && (
-            <TokenInfo
-              openTokenData={openTokenData}
-              handleClickOverlay={handleClickOverlay}
-              setImageLoaded={setImageLoaded}
-              imageLoaded={imageLoaded}
-            />
-          )}
-        </AnimatePresence>
+
+        <TokenInfo
+          openTokenData={openTokenData}
+          handleClickOverlay={handleClickOverlay}
+          setImageLoaded={setImageLoaded}
+          imageLoaded={imageLoaded}
+        />
+
         <GraphWrapper
           allTokens={allTokens}
           openTokenData={openTokenData}
