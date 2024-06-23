@@ -40,3 +40,39 @@ body {
   font-size: 0.85rem;
   margin-bottom: 0.1rem;
 }
+
+/* connect button styles */
+/* #__next
+  > div
+  > main
+  > div
+  > div.absolute.bottom-0.left-0.right-0.z-\[1999\]
+  > div
+  > div.flex.w-full.h-full.gap-6
+  > div.flex.h-full.items-center.font-thin
+  > div {
+  padding: 0;
+  height: fit-content;
+} */
+/* .connect-btn div {
+  display: flex;
+  justify-content: center;
+  min-width: 130px;
+}
+.connect-btn button {
+  background-color: transparent;
+  padding: 7px 32px;
+  height: fit-content;
+  font: inherit;
+  font-weight: thin;
+  border-radius: 8px;
+  min-width: 130px;
+  white-space: nowrap;
+  text-align: center;
+  background-color: aqua;
+  text-align: center;
+} */
+.connect-btn button {
+  font: inherit !important;
+  font-weight: 500 !important;
+}
