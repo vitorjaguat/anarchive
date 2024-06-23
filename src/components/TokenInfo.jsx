@@ -12,6 +12,7 @@ export default function TokenInfo({
   handleClickOverlay,
   imageLoaded,
   setImageLoaded,
+  setOpenTokenData,
 }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   // console.log('openTokenData', openTokenData.token);
@@ -39,11 +40,11 @@ export default function TokenInfo({
           hidden: {
             // opacity: 0,
             top: '100%',
-            // bottom: 'auto',
+            bottom: 'auto',
           },
           visible: {
             // opacity: 1,
-            top: 'auto',
+            top: 0,
             bottom: 0,
             transition: {
               duration: 1.5,
@@ -68,7 +69,10 @@ export default function TokenInfo({
         {/* close button */}
         <div
           className='w-full flex justify-center p-1 mb-4 bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer '
-          onClick={() => tokenInfoControls.start('hidden')}
+          onClick={() => {
+            tokenInfoControls.start('hidden');
+            setOpenTokenData(null);
+          }}
         >
           <RxChevronDown size={24} />
         </div>

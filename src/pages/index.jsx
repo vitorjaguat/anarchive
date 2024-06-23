@@ -3,7 +3,6 @@
 import GraphWrapper from '../components/GraphWrapper';
 import { useCallback, useState } from 'react';
 import TokenInfo from '../components/TokenInfo';
-import { AnimatePresence } from 'framer-motion';
 import Filters from '../components/Filters';
 import Head from '../components/Headhead';
 
@@ -48,6 +47,7 @@ export default function Home({
           handleClickOverlay={handleClickOverlay}
           setImageLoaded={setImageLoaded}
           imageLoaded={imageLoaded}
+          setOpenTokenData={setOpenTokenData}
         />
 
         <GraphWrapper
