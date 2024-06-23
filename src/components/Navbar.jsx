@@ -35,8 +35,8 @@ export default function Navbar({
         </div>
       </div>
 
-      <div className='flex w-full h-full gap-6'>
-        <div className=''>
+      <div className='flex justify-end w-full h-full gap-10'>
+        <div className='min-w-[130px]'>
           <SelectSort
             setSort={setSort}
             sort={sort}
@@ -44,10 +44,8 @@ export default function Navbar({
             showMineIsChecked={showMineIsChecked}
           />
         </div>
-        <div style={{ flex: 2 }} className='flex-2'>
-          <Search allTokens={allTokens} setFilter={setFilter} />
-        </div>
-        <div className='flex h-full items-center'>
+        <Search allTokens={allTokens} setFilter={setFilter} />
+        <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
           <ConnectButton />
         </div>
       </div>

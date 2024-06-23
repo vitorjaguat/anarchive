@@ -31,7 +31,7 @@ export default function TokenInfo({
   return (
     <>
       <motion.div
-        className='absolute right-0 bg-slate-700 pb-6 z-[2] h-full'
+        className='absolute min-w-[600px] right-0 bg-slate-700 pb-6 z-[2] h-full'
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
