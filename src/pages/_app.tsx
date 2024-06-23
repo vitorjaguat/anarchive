@@ -11,9 +11,9 @@ import { WagmiProvider } from 'wagmi';
 import { config } from '../../wagmiConfig';
 import {
   RainbowKitProvider,
-  getDefaultConfig,
-  darkTheme as rainbowDarkTheme,
-  lightTheme as rainbowLightTheme,
+  // getDefaultConfig,
+  // darkTheme as rainbowDarkTheme,
+  // lightTheme as rainbowLightTheme,
 } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -22,6 +22,11 @@ import { useEffect, useState } from 'react';
 
 const inter = localFont({
   src: [
+    {
+      path: '../../public/assets/space_grotesk_light.otf',
+      weight: '300',
+      style: 'thin',
+    },
     {
       path: '../../public/assets/space_grotesk_medium.otf',
       weight: '500',

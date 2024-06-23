@@ -119,7 +119,7 @@ export default function TokenInfo({
                     width={300}
                     height={300}
                     className={
-                      'max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer' +
+                      'max-w-1/2 max-h-[280px] object-contain rounded-md bg-white/10 cursor-pointer' +
                       (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
                     }
                     onLoad={(e) => setImageLoaded(true)}
@@ -181,7 +181,7 @@ export default function TokenInfo({
                     <div className='text-center text-[10px] bg-white/10'>
                       {att.key}
                     </div>
-                    <div className='text-center px-2 flex flex-col justify-center h-full gap-1'>
+                    <div className='text-center px-2 flex flex-col justify-center h-full gap-1 font-thin'>
                       {att.key !== 'Content Tags'
                         ? att.value
                         : att.value
@@ -194,8 +194,10 @@ export default function TokenInfo({
             </div>
 
             <div className='flex flex-col gap-1'>
-              <div className='pr-4'>{openTokenData.token.name}</div>
-              <div className='text-sm pr-4'>
+              <div className='pr-4 leading-snug'>
+                {openTokenData.token.name}
+              </div>
+              <div className='mt-1 text-xs pr-4 font-thin'>
                 Created by{' '}
                 <span className='font-bold'>
                   {
@@ -205,7 +207,7 @@ export default function TokenInfo({
                   }
                 </span>
               </div>
-              <div className='mt-4 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden'>
+              <div className='mt-20 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
                 <Markdown className=''>
                   {openTokenData.token.description}
                 </Markdown>
