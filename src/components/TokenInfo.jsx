@@ -76,102 +76,109 @@ export default function TokenInfo({
         >
           <RxChevronDown size={24} />
         </div>
+
         {/* columns */}
         {openTokenData?.token && (
-          <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
-            <div className='flex flex-col gap-2'>
-              <div className='relative w-full'>
-                {!imageLoaded && (
-                  // <Image
-                  //   src='/assets/loading284x284.png'
-                  //   width={284}
-                  //   height={284}
-                  //   alt='loading'
-                  // />
-                  <div className='w-full h-[200px] flex items-center justify-center'>
-                    <div className='text-sm animate-ping'>loading...</div>
+          <div className='pl-4 grid grid-cols-2 gap-4 h-[calc(100%-136px)] max-w-[600px]'>
+            {/* left column */}
+            <div className='flex flex-col justify-between h-full gap-2'>
+              {/* image + collect btn */}
+              <div className='flex flex-col gap-2'>
+                <div className='relative bg-white/10 rounded-md overflow-hidden w-full flex justify-center items-center min-h-[280px]'>
+                  {!imageLoaded && (
+                    // <Image
+                    //   src='/assets/loading284x284.png'
+                    //   width={284}
+                    //   height={284}
+                    //   alt='loading'
+                    // />
+                    <div className='w-full h-[200px] flex items-center justify-center'>
+                      <div className='text-sm animate-ping'>loading...</div>
+                    </div>
+                  )}
+                  {(openTokenData?.token?.image.slice(-3) === 'gif' ||
+                    openTokenData?.token?.image.slice(-3) === 'svg') && (
+                    <img
+                      src={openTokenData.token.image}
+                      alt={openTokenData.token.name}
+                      width={300}
+                      height={300}
+                      className={
+                        'max-w-1/2 max-h-[300px] object-contain cursor-pointer' +
+                        (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
+                      }
+                      onLoad={(e) => setImageLoaded(true)}
+                      // placeholder='blur'
+                      // blurDataURL='data:,loading'
+                      onClick={() => {
+                        largeMediaControls.start('visible');
+                        setOpenLargeMedia(openTokenData);
+                      }}
+                    />
+                  )}
+                  {openTokenData?.token?.image && (
+                    <Image
+                      src={openTokenData.token.image}
+                      alt={openTokenData.token.name}
+                      width={300}
+                      height={300}
+                      className={
+                        'max-w-1/2 max-h-[280px] object-contain cursor-pointer' +
+                        (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
+                      }
+                      onLoad={(e) => setImageLoaded(true)}
+                      // placeholder='blur'
+                      // blurDataURL='data:,loading'
+                      onClick={() => {
+                        largeMediaControls.start('visible');
+                        setOpenLargeMedia(openTokenData);
+                      }}
+                    />
+                  )}
+                  <div
+                    className='absolute bottom-2 right-2 cursor-pointer'
+                    onClick={() => {
+                      largeMediaControls.start('visible');
+                      setOpenLargeMedia(openTokenData);
+                    }}
+                  >
+                    <BsArrowsFullscreen size='12' />
                   </div>
-                )}
-                {(openTokenData?.token?.image.slice(-3) === 'gif' ||
-                  openTokenData?.token?.image.slice(-3) === 'svg') && (
-                  <img
-                    src={openTokenData.token.image}
-                    alt={openTokenData.token.name}
-                    width={300}
-                    height={300}
-                    className={
-                      'max-w-1/2 max-h-[300px] object-contain rounded-md bg-white/10 cursor-pointer' +
-                      (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
-                    }
-                    onLoad={(e) => setImageLoaded(true)}
-                    // placeholder='blur'
-                    // blurDataURL='data:,loading'
-                    onClick={() => {
-                      largeMediaControls.start('visible');
-                      setOpenLargeMedia(openTokenData);
+                </div>
+                <div className=''>
+                  <MintModal
+                    chainId={7777777}
+                    copyOverrides={{
+                      mintTitle: 'Collect your own',
+                      mintCtaBuy: 'Collect',
                     }}
-                  />
-                )}
-                {openTokenData?.token?.image && (
-                  <Image
-                    src={openTokenData.token.image}
-                    alt={openTokenData.token.name}
-                    width={300}
-                    height={300}
-                    className={
-                      'max-w-1/2 max-h-[280px] object-contain rounded-md bg-white/10 cursor-pointer' +
-                      (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
+                    // normalizeRoyalties={true}
+                    trigger={
+                      <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'>
+                        Collect
+                      </button>
                     }
-                    onLoad={(e) => setImageLoaded(true)}
-                    // placeholder='blur'
-                    // blurDataURL='data:,loading'
-                    onClick={() => {
-                      largeMediaControls.start('visible');
-                      setOpenLargeMedia(openTokenData);
-                    }}
+                    // onConnectWallet={() => {
+                    //   openConnectModal?.();
+                    // }}
+                    // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
+                    // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
+
+                    // openState={mintOpenState}
+                    collectionId={openTokenData.token.contract}
+                    // tokenId={openTokenData.token.tokenId}
+                    onMintComplete={(data) => console.log(data)}
+                    onMintError={(error) => console.log(error)}
+                    token={
+                      openTokenData.token.contract +
+                      ':' +
+                      openTokenData.token.tokenId
+                    }
                   />
-                )}
-                <div
-                  className='absolute bottom-2 right-2 cursor-pointer'
-                  onClick={() => {
-                    largeMediaControls.start('visible');
-                    setOpenLargeMedia(openTokenData);
-                  }}
-                >
-                  <BsArrowsFullscreen size='12' />
                 </div>
               </div>
-              <div className=''>
-                <MintModal
-                  chainId={7777777}
-                  copyOverrides={{
-                    mintTitle: 'Collect your own',
-                    mintCtaBuy: 'Collect',
-                  }}
-                  // normalizeRoyalties={true}
-                  trigger={
-                    <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'>
-                      Collect
-                    </button>
-                  }
-                  // onConnectWallet={() => {
-                  //   openConnectModal?.();
-                  // }}
-                  // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-                  // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
 
-                  // openState={mintOpenState}
-                  collectionId={openTokenData.token.contract}
-                  // tokenId={openTokenData.token.tokenId}
-                  onMintComplete={(data) => console.log(data)}
-                  onMintError={(error) => console.log(error)}
-                  token={
-                    openTokenData.token.contract +
-                    ':' +
-                    openTokenData.token.tokenId
-                  }
-                />
-              </div>
+              {/* attributes */}
               <div className='grid grid-cols-2 gap-1'>
                 {openTokenData.token.attributes.map((att, i) => (
                   <div
@@ -193,21 +200,26 @@ export default function TokenInfo({
               </div>
             </div>
 
+            {/* right column */}
             <div className='flex flex-col gap-1'>
-              <div className='pr-4 leading-snug'>
-                {openTokenData.token.name}
+              {/* title + authors */}
+              <div className='flex flex-col gap-1'>
+                <div className='pr-4 pt-4 leading-snug'>
+                  {openTokenData.token.name}
+                </div>
+                <div className='mt-1 text-xs pr-4 font-thin'>
+                  Created by{' '}
+                  <span className='font-bold'>
+                    {
+                      openTokenData.token.attributes.find(
+                        (att) => att.key === 'Creator'
+                      ).value
+                    }
+                  </span>
+                </div>
               </div>
-              <div className='mt-1 text-xs pr-4 font-thin'>
-                Created by{' '}
-                <span className='font-bold'>
-                  {
-                    openTokenData.token.attributes.find(
-                      (att) => att.key === 'Creator'
-                    ).value
-                  }
-                </span>
-              </div>
-              <div className='mt-20 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
+
+              <div className='mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
                 <Markdown className=''>
                   {openTokenData.token.description}
                 </Markdown>
