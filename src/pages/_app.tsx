@@ -122,8 +122,6 @@ export default function App({ Component, pageProps }: AppProps) {
               <ThirdwebProvider
                 clientId={process.env.THIRDWEB_CLIENT_ID}
                 secretKey={process.env.THIRDWEB_CLIENT_SECRET}
-                // clientId='d3cb6e160e5c6817e0ba2c74376ddd7b'
-                // secretKey='CKVMMqO6iJ6XoEpXTvDjdZMwYBaCmoFOGL2rCBV8K_l9p1XlPOgSWjC5m1_qDq7GhDjNS58eWheo-UQENZp0ig'
               >
                 <main className={`${inter.variable} font-inter`}>
                   <Layout
