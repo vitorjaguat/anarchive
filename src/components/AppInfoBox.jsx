@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useAnimationControls } from 'framer-motion';
+import { useEffect } from 'react';
 import {
   BsGlobe,
   BsInstagram,
@@ -48,12 +49,20 @@ const boxVariants = {
 };
 
 export default function AppInfoBox({ setInfoVisible, infoVisible }) {
+  const controls = useAnimationControls();
+  useEffect(() => {
+    if (infoVisible) {
+      controls.start('visible');
+    } else {
+      controls.start('exit');
+    }
+  }, [infoVisible]);
   return (
     <motion.div
       className='absolute bg-slate-700 rounded-tr-md max-w-[600px] flex flex-col'
       variants={boxVariants}
       initial='hidden'
-      animate='visible'
+      animate={controls}
       exit='exit'
       // style={{
       //   transform: 'translate(-50%, calc(-50% - 50px))',
