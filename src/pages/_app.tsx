@@ -18,6 +18,9 @@ import {
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+//thirdweb
+import { ThirdwebProvider } from '@thirdweb-dev/react';
+
 import { useEffect, useState } from 'react';
 
 const inter = localFont({
@@ -116,28 +119,35 @@ export default function App({ Component, pageProps }: AppProps) {
             theme={theme}
           >
             <RainbowKitProvider modalSize='compact'>
-              <main className={`${inter.variable} font-inter`}>
-                <Layout
-                  sort={sort}
-                  setSort={setSort}
-                  filter={filter}
-                  setFilter={setFilter}
-                  showMineIsChecked={showMineIsChecked}
-                  setShowMineIsChecked={setShowMineIsChecked}
-                  allTokens={allTokens}
-                >
-                  {/* <AnimatePresence mode='wait'> */}
-                  <Component
-                    allTokens={allTokens}
+              <ThirdwebProvider
+                clientId={process.env.THIRDWEB_CLIENT_ID}
+                secretKey={process.env.THIRDWEB_CLIENT_SECRET}
+                // clientId='d3cb6e160e5c6817e0ba2c74376ddd7b'
+                // secretKey='CKVMMqO6iJ6XoEpXTvDjdZMwYBaCmoFOGL2rCBV8K_l9p1XlPOgSWjC5m1_qDq7GhDjNS58eWheo-UQENZp0ig'
+              >
+                <main className={`${inter.variable} font-inter`}>
+                  <Layout
                     sort={sort}
+                    setSort={setSort}
                     filter={filter}
                     setFilter={setFilter}
                     showMineIsChecked={showMineIsChecked}
-                    {...pageProps}
-                  />
-                  {/* </AnimatePresence> */}
-                </Layout>
-              </main>
+                    setShowMineIsChecked={setShowMineIsChecked}
+                    allTokens={allTokens}
+                  >
+                    {/* <AnimatePresence mode='wait'> */}
+                    <Component
+                      allTokens={allTokens}
+                      sort={sort}
+                      filter={filter}
+                      setFilter={setFilter}
+                      showMineIsChecked={showMineIsChecked}
+                      {...pageProps}
+                    />
+                    {/* </AnimatePresence> */}
+                  </Layout>
+                </main>
+              </ThirdwebProvider>
             </RainbowKitProvider>
           </ReservoirKitProvider>
         </QueryClientProvider>
