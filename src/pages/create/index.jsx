@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 export default function CreateIndex() {
   const [image, setImage] = useState(null);
+  const [media, setMedia] = useState(null);
+  const titleRef = useRef('');
 
   const handleImageUpload = (event) => {
     // simple:
@@ -26,6 +28,11 @@ export default function CreateIndex() {
     // reader.readAsArrayBuffer(file);
   };
 
+  const handleMediaUpload = (event) => {
+    const file = event.target.files[0];
+    setMedia(file);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Create a new FormData object
@@ -34,7 +41,7 @@ export default function CreateIndex() {
     // Append the image file to the FormData object
     formData.append('name', 'test');
     formData.append('image', image);
-    console.log('formData:', formData.getAll('name'));
+    formData.append('media', media);
     try {
       // Send the FormData object as the request body
       const response = await fetch('/api/upload', {
@@ -58,9 +65,21 @@ export default function CreateIndex() {
       <div className='text-xl'>Create your token</div>
       <div className=''>
         <form onSubmit={handleSubmit}>
-          <input type='file' onChange={handleImageUpload} />
           <div className=''>
-            <button type='submit'>Submit</button>
+            Image:
+            <input type='file' onChange={handleImageUpload} />
+          </div>
+          <div className=''>
+            Media:
+            <input type='file' onChange={handleMediaUpload} />
+          </div>
+          <div className=''>
+            <button
+              className='bg-blue-200 p-3 mt-3 text-black rounded-lg'
+              type='submit'
+            >
+              Submit
+            </button>
           </div>
         </form>
       </div>
