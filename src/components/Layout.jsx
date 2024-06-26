@@ -1,6 +1,7 @@
 import Navbar from './Navbar';
 import { useState, useEffect } from 'react';
 import AppInfoBox from './AppInfoBox';
+import { usePathname } from 'next/navigation';
 
 export default function Layout({
   children,
@@ -13,6 +14,7 @@ export default function Layout({
   setShowMineIsChecked,
 }) {
   const [isMobile, setIsMobile] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleResize = () => {
@@ -28,6 +30,10 @@ export default function Layout({
     };
   }, []);
   const [infoVisible, setInfoVisible] = useState(false);
+
+  if (pathname === '/create') {
+    return <>{children}</>;
+  }
 
   if (isMobile)
     return (
