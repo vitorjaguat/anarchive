@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import createToken from '../../utils/createToken';
 
 export default function CreateIndex() {
   const [image, setImage] = useState(null);
@@ -79,7 +80,20 @@ export default function CreateIndex() {
       });
 
       // Handle the response from the API
-      console.log('Response:', response);
+      const data = await response.json();
+      console.log('Response:', data);
+      try {
+        // const { parameters, request, hash, writeResponse }
+        const finalResponse = await createToken(data.uriMetadata);
+        console.log('finalResponse:', finalResponse);
+        // console.log('SUCCESS!');
+        // console.log('parameters:', parameters);
+        // console.log('request:', request);
+        // console.log('hash:', hash);
+        // console.log('writeResponse:', writeResponse);
+      } catch (error) {
+        console.error('Error:', error);
+      }
     } catch (error) {
       console.error('Error:', error);
     }
