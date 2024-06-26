@@ -33,6 +33,59 @@ export default async function handler(req, res) {
       const media = fs.readFileSync(files.media[0].filepath);
       const uriImg = await storage.upload(img);
       const uriMedia = await storage.upload(media);
+      const metadataObj = {
+        name: fields.title[0],
+        description: fields.description[0],
+        image: uriImg,
+        content: {
+          mime: files.media[0].mimetype,
+          uri: uriMedia,
+        },
+        animation_url: !files.media[0].mimetype.includes('image')
+          ? uriMedia
+          : undefined,
+        attributes: [
+          {
+            trait_type: 'To',
+            value: fields.attTo[0],
+          },
+          {
+            trait_type: 'From',
+            value: fields.attFrom[0],
+          },
+          {
+            trait_type: 'Year',
+            value: fields.attYear[0],
+          },
+          {
+            trait_type: 'Event',
+            value: fields.attEvent[0],
+          },
+          {
+            trait_type: 'Media',
+            value: fields.attMedia[0],
+          },
+          {
+            trait_type: 'Creator',
+            value: fields.attCreator[0],
+          },
+          {
+            trait_type: 'Tags',
+            value: fields.attTags[0],
+          },
+          {
+            trait_type: 'Location',
+            value: fields.attLocation[0],
+          },
+        ],
+      };
+      // if (!metadataObj.content.mime.includes('image')) {
+      //   metadataObj.animation_url = uriMedia;
+      // }
+      const metadata = JSON.stringify(metadataObj);
+      const uriMetadata = await storage.upload(metadata);
+      console.log('metadata:', metadata);
+      console.log('uriMetadata:', uriMetadata);
 
       // form.parse(req, async (err, fields, files) => {
       //   console.log('fields:', fields);
@@ -56,12 +109,11 @@ export default async function handler(req, res) {
       // console.log('download URL:', result.body);
 
       // res.status(200).json({ message: 'Image uploaded successfully', uri });
-      console.log('image URI:', uriImg);
-      console.log('media URI:', uriMedia);
 
-      res
-        .status(200)
-        .json({ message: 'Image uploaded successfully', uriImg, uriMedia });
+      // console.log('image URI:', uriImg);
+      // console.log('media URI:', uriMedia);
+
+      res.status(200).json({ message: 'Image uploaded successfully' });
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Error uploading image' });
