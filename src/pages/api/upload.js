@@ -113,7 +113,9 @@ export default async function handler(req, res) {
       // console.log('image URI:', uriImg);
       // console.log('media URI:', uriMedia);
 
-      res.status(200).json({ message: 'Image uploaded successfully' });
+      res
+        .status(200)
+        .json({ message: 'Image uploaded successfully', uriMetadata });
     } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Error uploading image' });

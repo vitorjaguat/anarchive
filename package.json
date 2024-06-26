@@ -22,6 +22,7 @@
     "@types/react": "18.2.55",
     "@types/react-dom": "18.2.19",
     "@zoralabs/nft-hooks": "^1.2.1",
+    "@zoralabs/protocol-deployments": "^0.1.13",
     "@zoralabs/protocol-sdk": "^0.7.0",
     "autoprefixer": "10.4.17",
     "eslint": "8.56.0",
