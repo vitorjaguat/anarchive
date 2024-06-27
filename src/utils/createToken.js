@@ -9,6 +9,7 @@ import {
 import collectionAddress from './dummyCollectionAddress';
 
 export default async function createToken(tokenUri) {
+  console.log(collectionAddress);
   try {
     // //dinamically importing the zoraprotocolConfig file, so it only runs on client:
     // const { publicClient, walletClient, chainId, creatorAccountPromise } =
@@ -24,6 +25,16 @@ export default async function createToken(tokenUri) {
       token: {
         // token metadata uri
         tokenMetadataURI: tokenUri,
+        maxSupply: BigInt('18446744073709551615'),
+        mintToCreatorCount: 1,
+        salesConfig: {
+          //https://github.com/ourzora/zora-protocol/blob/10d3855fd05ef457c12a978d851886903cddc409/packages/protocol-sdk/src/create/types.ts#L13
+          pricePerToken: BigInt(0), // defaults to 0, type bigint
+          saleStart: BigInt(0), // defaults to 0 (now), in seconds
+          saleEnd: BigInt('18446744073709551615'), // defaults to forever, in seconds
+          maxTokensPerAddress: BigInt(1), // bigint
+          // currency:   //type Address, if an erc20 mint, the erc20 address.  Leave null for eth mints
+        },
       },
       // account to execute the transaction (the creator)
       account: creatorAccount,

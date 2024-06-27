@@ -25,25 +25,30 @@ export default async function handler(req, res) {
       const [fields, files] = await form.parse(req);
       console.log('fields:', fields);
       console.log('files:', files);
-      console.log('filepath:', files.image[0].filepath);
+      // console.log('filepath:', files.image[0].filepath);
 
       // const imgPath = path.join(process.cwd(), files.image[0].filepath);
       // console.log('imgPath:', imgPath);
-      const img = fs.readFileSync(files.image[0].filepath);
+      // TODO: check if there is image and media or only media:
       const media = fs.readFileSync(files.media[0].filepath);
-      const uriImg = await storage.upload(img);
       const uriMedia = await storage.upload(media);
+      const isTypeImage = files.media[0].mimetype.includes('image');
+      let img;
+      let uriImg;
+      if (!isTypeImage) {
+        img = fs.readFileSync(files.image[0].filepath);
+        uriImg = await storage.upload(img);
+      }
+
       const metadataObj = {
         name: fields.title[0],
         description: fields.description[0],
-        image: uriImg,
+        image: isTypeImage ? uriMedia : uriImg,
         content: {
           mime: files.media[0].mimetype,
           uri: uriMedia,
         },
-        animation_url: !files.media[0].mimetype.includes('image')
-          ? uriMedia
-          : undefined,
+        animation_url: !isTypeImage ? uriMedia : undefined,
         attributes: [
           {
             trait_type: 'To',
@@ -79,6 +84,9 @@ export default async function handler(req, res) {
           },
         ],
       };
+      if (isTypeImage) {
+        delete metadataObj.animation_url;
+      }
       // if (!metadataObj.content.mime.includes('image')) {
       //   metadataObj.animation_url = uriMedia;
       // }
