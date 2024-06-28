@@ -1,5 +1,9 @@
 import React, { useRef, useState } from 'react';
 import createToken from '../../utils/createToken';
+import PayoutSplits from '../../components/create/PayoutSplits';
+import MintStart from '../../components/create/MintStart';
+import EditionSize from '../../components/create/EditionSize';
+import { parseEther } from 'viem';
 
 export default function CreateIndex() {
   const [image, setImage] = useState(null);
@@ -18,8 +22,12 @@ export default function CreateIndex() {
   const attCreatorRef = useRef('');
   const attTagsRef = useRef('');
   const attLocationRef = useRef('');
+  const priceRef = useRef('');
+  const mintingDurationRef = useRef('');
+  const [payoutRecipients, setPayoutRecipients] = useState('me');
 
   // console.log(attMediaRef.current.value);
+  console.log('payoutRecipients', payoutRecipients);
 
   const handleImageUpload = (event) => {
     setImagePreview(null);
@@ -28,7 +36,7 @@ export default function CreateIndex() {
     const mimetype = file?.type;
 
     // if media is an image, show ImagePreview
-    if (mimetype.includes('image')) {
+    if (mimetype?.includes('image')) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -62,12 +70,12 @@ export default function CreateIndex() {
 
     //check is file.type is image and show Thumbnail input:
     const mimetype = file?.type;
-    if (!mimetype.includes('image')) {
+    if (!mimetype?.includes('image')) {
       setShowThumbnailInput(true);
     }
 
     // if media is an image, show MediaPreview
-    if (mimetype.includes('image')) {
+    if (mimetype?.includes('image')) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setMediaPreview(reader.result);
@@ -359,8 +367,28 @@ export default function CreateIndex() {
       // Handle the response from the API
       const data = await response.json();
       console.log('Response:', data);
+      // Get sales config options:
+      // price:
+      let price;
+      if (priceRef.current.value === '') {
+        price = '0';
+      } else {
+        price = priceRef.current.value.toString();
+      }
+
+      //mintingDuration:
+      const mintingDuration = mintingDurationRef.current.value;
+
+      //payoutRecipients:
+      const payoutRecipient = payoutRecipients;
+
       try {
-        const finalResponse = await createToken(data.uriMetadata);
+        const finalResponse = await createToken(
+          data.uriMetadata,
+          price,
+          mintingDuration,
+          payoutRecipient
+        );
         console.log('finalResponse:', finalResponse);
       } catch (error) {
         console.error('Error:', error);
@@ -613,6 +641,52 @@ export default function CreateIndex() {
                   )}
                 </div>
               </div>
+
+              {/* Sales config: */}
+              {/* Price // Mint duration */}
+              <div className='flex flex-col gap-2 mt-5'>
+                <div className=''>
+                  <label htmlFor='price'>Price: </label>
+                  <input
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    ref={priceRef}
+                    type='number'
+                    id='price'
+                    name='price'
+                    defaultValue='0'
+                    step={0.000001}
+                    onChange={() => {
+                      console.log(priceRef.current.value);
+                    }}
+                  />
+                </div>
+                <div className=''>
+                  <label htmlFor='mintingDuration'>Minting duration: </label>
+                  <select
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    ref={mintingDurationRef}
+                    id='mintingDuration'
+                    name='mintingDuration'
+                    defaultValue={'open'}
+                  >
+                    <option value='24h'>24 hours</option>
+                    <option value='1week'>1 week</option>
+                    <option value='1month'>1 month</option>
+                    <option value='3months'>3 months</option>
+                    <option value='6months'>6 months</option>
+                    <option value='1year'>1 year</option>
+                    <option value='open'>OPEN</option>
+                  </select>
+                </div>
+                <PayoutSplits
+                  payoutRecipients={payoutRecipients}
+                  setPayoutRecipients={setPayoutRecipients}
+                />
+                <MintStart />
+                <EditionSize />
+              </div>
+
+              {/* Submit button: */}
               <div className=''>
                 <button
                   className={
