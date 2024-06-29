@@ -444,13 +444,26 @@ export default function CreateIndex() {
   }
 
   return (
-    <div className='w-screen h-screen overflow-y-scroll'>
+    <div className='relative w-screen h-screen overflow-y-scroll'>
+      {/* video bg: */}
+      <div className='fixed top-0 left-0 opacity-40 object-cover w-screen h-screen z-0'>
+        <video
+          className='w-full h-full object-cover'
+          autoPlay
+          muted
+          src='/assets/tag_bg.mp4'
+          loop
+          playsInline
+        />
+      </div>
+
+      {/* content: */}
       <div
-        className='py-10 w-full min-h-screen flex items-center justify-center bg-slate-300'
+        className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'
         style={{ overflowY: 'scroll' }}
       >
-        <div className='max-w-[1200px] min-w-[800px] h-fit bg-slate-400 p-6 rounded-sm text-black'>
-          <div className='pt-10 pb-16 text-3xl w-full text-center font-bold  animate-bounce'>
+        <div className='max-w-[1200px] min-w-[800px] h-fit bg-slate-400 p-6 rounded-md text-black'>
+          <div className='pt-20 pb-16 text-3xl w-full text-center font-bold  animate-bounce'>
             Create your token
           </div>
           <div className=''>
@@ -739,7 +752,7 @@ export default function CreateIndex() {
               </div>
 
               {/* Submit button: */}
-              <div className=''>
+              <div className='mt-6'>
                 <button
                   className={
                     'bg-blue-200 w-full p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 hover:scale-[1.02] ' +
