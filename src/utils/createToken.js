@@ -14,7 +14,8 @@ export default async function createToken(
   tokenUri,
   tokenPrice,
   tokenMintingDuration,
-  tokenPayoutRecipient
+  tokenPayoutRecipient,
+  tokenEditionSize
 ) {
   // parsing tokenMintingDuration:
   // TODO: ask Zora team how this configuration works
@@ -105,13 +106,15 @@ export default async function createToken(
       token: {
         // token metadata uri
         tokenMetadataURI: tokenUri,
-        maxSupply: BigInt('18446744073709551615'),
+        // maxSupply: BigInt('18446744073709551615'),
+        maxSupply: tokenEditionSize,
         mintToCreatorCount: 1,
         salesConfig: {
           //https://github.com/ourzora/zora-protocol/blob/10d3855fd05ef457c12a978d851886903cddc409/packages/protocol-sdk/src/create/types.ts#L13
           pricePerToken: parseEther(tokenPrice), // defaults to 0, type bigint
           saleStart: BigInt(0), // defaults to 0 (now), in seconds
-          saleEnd: parsedTokenMintingDuration, // defaults to forever, in seconds
+          saleEnd: BigInt('18446744073709551615'),
+          // saleEnd: parsedTokenMintingDuration, // defaults to forever, in seconds
           maxTokensPerAddress: BigInt(1), // bigint // max tokens that can be minted per address
           // currency:   //type Address, if an erc20 mint, the erc20 address.  Leave null for eth mints
         },
