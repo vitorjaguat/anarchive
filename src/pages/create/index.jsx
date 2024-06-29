@@ -409,7 +409,38 @@ export default function CreateIndex() {
   console.log('address:', address);
 
   if (!greenlistedAccounts.includes(address?.toLowerCase())) {
-    return <div className=''>Your address is not greenlisted!</div>;
+    return (
+      <div className='relative h-screen w-screen flex items-center justify-center'>
+        <div className='absolute opacity-40 object-cover w-full h-full z-0'>
+          <video
+            className='w-full h-full object-cover'
+            autoPlay
+            muted
+            src='/assets/tag_bg.mp4'
+            loop
+            playsInline
+          />
+        </div>
+        <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
+          <div className='text-center'>
+            It seems that your wallet is not{' '}
+            <span className='text-[#11ff20]'>greenlisted</span> as a creator
+            within The Anarchiving Game smart contract yet. To start your
+            journey as an Anarchivist, you must join our guild, and follow
+            instructions from there:{' '}
+          </div>
+          <div className='text-[#11ff20] text-xl animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
+            <a
+              href='https://guild.xyz/anarchiving'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              https://guild.xyz/anarchiving
+            </a>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
