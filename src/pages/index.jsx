@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import Filters from '../components/Filters';
 import Head from '../components/Headhead';
+import CreateTokenButton from '../components/CreateTokenButton';
 
 // const inter = Inter({ subsets: ['latin'] });
 
@@ -59,6 +60,8 @@ export default function Home({
           showMineIsChecked={showMineIsChecked}
           setImageLoaded={setImageLoaded}
         />
+
+        <CreateTokenButton />
       </main>
     </>
   );

@@ -3,9 +3,11 @@ import createToken from '../../utils/createToken';
 import PayoutSplits from '../../components/create/PayoutSplits';
 import MintStart from '../../components/create/MintStart';
 import EditionSize from '../../components/create/EditionSize';
-import { parseEther } from 'viem';
+import { useAccount } from 'wagmi';
+import { greenlistedAccounts } from '../../utils/greenlistedAccounts';
 
 export default function CreateIndex() {
+  const { isConnected, address } = useAccount();
   const [image, setImage] = useState(null);
   const [media, setMedia] = useState(null);
   const [showThumbnailInput, setShowThumbnailInput] = useState(false);
@@ -25,6 +27,9 @@ export default function CreateIndex() {
   const priceRef = useRef('');
   const mintingDurationRef = useRef('');
   const [payoutRecipients, setPayoutRecipients] = useState('me');
+  const [editionSize, setEditionSize] = useState(
+    BigInt('18446744073709551615')
+  );
 
   // console.log(attMediaRef.current.value);
   console.log('payoutRecipients', payoutRecipients);
@@ -377,7 +382,8 @@ export default function CreateIndex() {
       }
 
       //mintingDuration:
-      const mintingDuration = mintingDurationRef.current.value;
+      // const mintingDuration = mintingDurationRef.current.value;
+      const mintingDuration = null;
 
       //payoutRecipients:
       const payoutRecipient = payoutRecipients;
@@ -387,7 +393,8 @@ export default function CreateIndex() {
           data.uriMetadata,
           price,
           mintingDuration,
-          payoutRecipient
+          payoutRecipient,
+          editionSize
         );
         console.log('finalResponse:', finalResponse);
       } catch (error) {
@@ -397,6 +404,13 @@ export default function CreateIndex() {
       console.error('Error:', error);
     }
   };
+
+  // console.log('editionSize:', editionSize);
+  console.log('address:', address);
+
+  if (!greenlistedAccounts.includes(address.toLowerCase())) {
+    return <div className=''>Your address is not greenlisted!</div>;
+  }
 
   return (
     <div className='w-screen h-screen overflow-y-scroll'>
@@ -643,8 +657,8 @@ export default function CreateIndex() {
               </div>
 
               {/* Sales config: */}
-              {/* Price // Mint duration */}
               <div className='flex flex-col gap-2 mt-5'>
+                {/* Price */}
                 <div className=''>
                   <label htmlFor='price'>Price: </label>
                   <input
@@ -660,7 +674,9 @@ export default function CreateIndex() {
                     }}
                   />
                 </div>
-                <div className=''>
+
+                {/* Minting duration */}
+                {/* <div className=''>
                   <label htmlFor='mintingDuration'>Minting duration: </label>
                   <select
                     className='w-full px-4 py-3 rounded-lg outline-none font-thin'
@@ -677,13 +693,18 @@ export default function CreateIndex() {
                     <option value='1year'>1 year</option>
                     <option value='open'>OPEN</option>
                   </select>
-                </div>
+                </div> */}
+
+                {/* Payout/splits */}
                 <PayoutSplits
                   payoutRecipients={payoutRecipients}
                   setPayoutRecipients={setPayoutRecipients}
                 />
-                <MintStart />
-                <EditionSize />
+                <EditionSize
+                  editionSize={editionSize}
+                  setEditionSize={setEditionSize}
+                />
+                {/* <MintStart /> */}
               </div>
 
               {/* Submit button: */}
