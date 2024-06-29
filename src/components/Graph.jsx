@@ -37,7 +37,7 @@ const Graph = ({
   useEffect(() => {
     const handleKeyDown = (e) => {
       const key = e.key;
-      console.log('key', key);
+      // console.log('key', key);
       if (key === ' ') {
         graphRef?.current?.zoomToFit(1000);
         return;
@@ -152,8 +152,8 @@ const Graph = ({
             graphRef.current.zoomToFit(1000);
           }
         }}
-        // cooldownTime={openTokenData === 'initial' ? 3000 : Infinity}
-        cooldownTime={3000}
+        cooldownTime={openTokenData === 'initial' ? 2000 : Infinity}
+        // cooldownTime={2000}
         cooldownTicks={Infinity}
         warmupTicks={0}
         //links:
