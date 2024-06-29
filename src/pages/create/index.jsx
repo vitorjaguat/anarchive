@@ -436,7 +436,12 @@ export default function CreateIndex() {
   // console.log('editionSize:', editionSize);
   // console.log('address:', address);
 
-  if (!greenlistedAccounts.includes(address?.toLowerCase())) {
+  // if (!greenlistedAccounts.includes(address?.toLowerCase())) {
+  if (
+    !greenlistedAccounts.find(
+      (addr) => addr.toLowerCase() === address?.toLowerCase()
+    )
+  ) {
     return (
       <div className='relative h-screen w-screen flex items-center justify-center'>
         {/* video bg: */}
