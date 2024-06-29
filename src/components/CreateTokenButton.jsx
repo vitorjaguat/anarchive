@@ -18,16 +18,16 @@ export default function CreateTokenButton() {
 
   return (
     <div
-      className='absolute top-3 left-3 p-2 bg-white/20 rounded-md cursor-pointer hover:bg-white/50 flex items-center justify-center w-[34px] h-[34px] overflow-hidden hover:w-fit duration-300  group'
+      className='absolute top-3 left-3 flex items-center justify-center'
       onClick={handleAddClick}
     >
-      <div className='relative flex h-full w-full items-center justify-start gap-2'>
+      <div className='p-2 relative flex items-center justify-start gap-2 bg-white/20 rounded-md cursor-pointer hover:bg-white/50 w-[34px] h-[34px] overflow-hidden hover:w-fit group'>
         <HiOutlinePlus className='' size={18} />
         <div className='hidden  group-hover:block'>Create new fragment</div>
         {!isConnected && (
           <div
             ref={connectRef}
-            className='fixed top-2 left-2 w-full h-full z-10 opacity-0'
+            className='fixed top-2 left-2 w-[100px] h-[34px] z-10 opacity-0'
           >
             <ConnectButton />
           </div>

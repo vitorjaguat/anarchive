@@ -34,6 +34,7 @@ export default function Home({
 
   //single token view:
   // console.log('openTokenData', openTokenData);
+  console.log('projectId', process.env.WALLET_CONNECT_PROJECT_ID);
 
   return (
     <>
