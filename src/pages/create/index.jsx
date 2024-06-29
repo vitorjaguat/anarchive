@@ -408,7 +408,7 @@ export default function CreateIndex() {
   // console.log('editionSize:', editionSize);
   console.log('address:', address);
 
-  if (!greenlistedAccounts.includes(address.toLowerCase())) {
+  if (!greenlistedAccounts.includes(address?.toLowerCase())) {
     return <div className=''>Your address is not greenlisted!</div>;
   }
 
