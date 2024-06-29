@@ -5,6 +5,8 @@ import MintStart from '../../components/create/MintStart';
 import EditionSize from '../../components/create/EditionSize';
 import { useAccount } from 'wagmi';
 import { greenlistedAccounts } from '../../utils/greenlistedAccounts';
+import Link from 'next/link';
+import { IoIosArrowRoundBack } from 'react-icons/io';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
@@ -30,7 +32,8 @@ export default function CreateIndex() {
   const [editionSize, setEditionSize] = useState(
     BigInt('18446744073709551615')
   );
-  const [isProcessingSubmit, setIsProcessingSubmit] = useState(false);
+  const [processingSubmit, setProcessingSubmit] = useState('initial');
+  const [submitMessage, setSubmitMessage] = useState('Create fragment');
 
   // console.log(attMediaRef.current.value);
   console.log('payoutRecipients', payoutRecipients);
@@ -330,7 +333,6 @@ export default function CreateIndex() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsProcessingSubmit(true);
 
     //Validations:
     checkValidation('all');
@@ -341,6 +343,12 @@ export default function CreateIndex() {
       }));
       return;
     }
+
+    //Change state of Submit button:
+    setProcessingSubmit('processing');
+    setSubmitMessage(
+      'Please wait. When prompted, please accept transaction(s) on your wallet.'
+    );
 
     // Create a new FormData object
     const formData = new FormData();
@@ -399,11 +407,29 @@ export default function CreateIndex() {
           editionSize
         );
         console.log('finalResponse:', finalResponse);
+        setProcessingSubmit('success');
+        setSubmitMessage('Successfully created token.');
+        // Reset form:
+        titleRef.current.value = '';
+        descriptionRef.current.value = '';
+        attToRef.current.value = '';
+        attFromRef.current.value = '';
+        attYearRef.current.value = '';
+        attEventRef.current.value = '';
+        attMediaRef.current.value = '';
+        attCreatorRef.current.value = '';
+        attTagsRef.current.value = '';
+        attLocationRef.current.value = '';
+        setImage(null);
+        setMedia(null);
+        priceRef.current.value = '0';
       } catch (error) {
         console.error('Error:', error);
       }
     } catch (error) {
       console.error('Error:', error);
+      setProcessingSubmit('error');
+      setSubmitMessage('Something went wrong. Please try again.');
     }
   };
 
@@ -413,6 +439,7 @@ export default function CreateIndex() {
   if (!greenlistedAccounts.includes(address?.toLowerCase())) {
     return (
       <div className='relative h-screen w-screen flex items-center justify-center'>
+        {/* video bg: */}
         <div className='absolute opacity-40 object-cover w-full h-full z-0'>
           <video
             className='w-full h-full object-cover'
@@ -423,6 +450,15 @@ export default function CreateIndex() {
             playsInline
           />
         </div>
+        {/* back btns */}
+        <Link
+          href='/'
+          className='absolute top-3 left-3 p-2 rounded-md bg-white/20 z-20'
+        >
+          <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
+        </Link>
+
+        {/* content: */}
         <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
           <div className='text-center'>
             It seems that your wallet is not{' '}
@@ -459,11 +495,19 @@ export default function CreateIndex() {
         />
       </div>
 
+      {/* back btn */}
+      <Link
+        href='/'
+        className='absolute top-3 left-3 p-2 rounded-md bg-white/20 z-20'
+      >
+        <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
+      </Link>
+
       {/* content: */}
       <div className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'>
         <div className='max-w-[1200px] min-w-[800px] h-fit bg-slate-400 p-6 rounded-md text-black'>
           <div className='pt-20 pb-16 text-3xl w-full text-center font-bold  animate-bounce'>
-            Create your token
+            <div className=' tracking-wider'>Create your fragment</div>
           </div>
           <div className=''>
             <form className='flex flex-col gap-10' onSubmit={handleSubmit}>
@@ -757,11 +801,20 @@ export default function CreateIndex() {
                     'bg-blue-200 w-full p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 hover:scale-[1.02] ' +
                     (validationError?.all
                       ? ' bg-red-400 hover:bg-red-400 hover:scale-100 text-black/50 cursor-not-allowed'
+                      : '') +
+                    (processingSubmit === 'processing'
+                      ? ' cursor-wait bg-gray-200 hover:bg-gray-200 hover:scale-100'
+                      : '') +
+                    (processingSubmit === 'success'
+                      ? ' bg-green-400 hover:bg-green-400 hover:scale-100'
+                      : '') +
+                    (processingSubmit === 'error'
+                      ? ' bg-red-400 hover:bg-red-400 hover:scale-100'
                       : '')
                   }
                   type='submit'
                 >
-                  Submit
+                  {submitMessage}
                 </button>
                 {validationError?.all && (
                   <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
@@ -769,6 +822,16 @@ export default function CreateIndex() {
                   </div>
                 )}
               </div>
+              <Link
+                href='/'
+                className='absolute bottom-3 left-3 p-2 rounded-md bg-white/20 z-20'
+              >
+                <IoIosArrowRoundBack
+                  color='white'
+                  size={30}
+                  className='opacity-80'
+                />
+              </Link>
             </form>
           </div>
         </div>
