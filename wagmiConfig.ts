@@ -1,6 +1,16 @@
 import { http, createConfig } from 'wagmi';
 import { Chain } from 'wagmi/chains';
 import { mainnet, sepolia, zora } from 'wagmi/chains';
+import { connectorsForWallets } from '@rainbow-me/rainbowkit';
+import {
+  metaMaskWallet,
+  coinbaseWallet,
+  rainbowWallet,
+  walletConnectWallet,
+  rabbyWallet,
+  ledgerWallet,
+  phantomWallet,
+} from '@rainbow-me/rainbowkit/wallets';
 
 // const zora = {
 //   id: 43_114,
@@ -27,11 +37,33 @@ import { mainnet, sepolia, zora } from 'wagmi/chains';
 //   },
 // }  as const satisfies Chain;
 
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [
+        metaMaskWallet,
+        coinbaseWallet,
+        rainbowWallet,
+        walletConnectWallet,
+        rabbyWallet,
+        ledgerWallet,
+        phantomWallet,
+      ],
+    },
+  ],
+  {
+    appName: 'anarchive',
+    projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID,
+  }
+);
+
 export const config = createConfig({
   chains: [zora as Chain],
   transports: {
     [zora.id]: http(),
   },
+  connectors,
 });
 
 // import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
