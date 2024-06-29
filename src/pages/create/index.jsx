@@ -30,6 +30,7 @@ export default function CreateIndex() {
   const [editionSize, setEditionSize] = useState(
     BigInt('18446744073709551615')
   );
+  const [isProcessingSubmit, setIsProcessingSubmit] = useState(false);
 
   // console.log(attMediaRef.current.value);
   console.log('payoutRecipients', payoutRecipients);
@@ -329,6 +330,7 @@ export default function CreateIndex() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsProcessingSubmit(true);
 
     //Validations:
     checkValidation('all');
@@ -406,7 +408,7 @@ export default function CreateIndex() {
   };
 
   // console.log('editionSize:', editionSize);
-  console.log('address:', address);
+  // console.log('address:', address);
 
   if (!greenlistedAccounts.includes(address?.toLowerCase())) {
     return (
@@ -444,7 +446,7 @@ export default function CreateIndex() {
   }
 
   return (
-    <div className='relative w-screen h-screen overflow-y-scroll'>
+    <div className='relative w-screen h-screen overflow-y-auto'>
       {/* video bg: */}
       <div className='fixed top-0 left-0 opacity-40 object-cover w-screen h-screen z-0'>
         <video
@@ -458,10 +460,7 @@ export default function CreateIndex() {
       </div>
 
       {/* content: */}
-      <div
-        className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'
-        style={{ overflowY: 'scroll' }}
-      >
+      <div className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'>
         <div className='max-w-[1200px] min-w-[800px] h-fit bg-slate-400 p-6 rounded-md text-black'>
           <div className='pt-20 pb-16 text-3xl w-full text-center font-bold  animate-bounce'>
             Create your token
