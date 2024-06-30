@@ -116,7 +116,7 @@ export default async function createToken(
           saleStart: BigInt(0), // defaults to 0 (now), in seconds
           saleEnd: BigInt('18446744073709551615'),
           // saleEnd: parsedTokenMintingDuration, // defaults to forever, in seconds
-          maxTokensPerAddress: BigInt(1), // bigint // max tokens that can be minted per address
+          maxTokensPerAddress: BigInt('18446744073709551615'), // bigint // max tokens that can be minted per address
           // currency:   //type Address, if an erc20 mint, the erc20 address.  Leave null for eth mints
         },
         payoutRecipient: parsedPayoutRecipient,
