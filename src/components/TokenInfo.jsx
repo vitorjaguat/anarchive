@@ -79,9 +79,9 @@ export default function TokenInfo({
 
         {/* columns */}
         {openTokenData?.token && (
-          <div className='pl-4 grid grid-cols-2 gap-4 h-[calc(100%-136px)] max-w-[600px]'>
+          <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
             {/* left column */}
-            <div className='flex flex-col justify-between h-full gap-2'>
+            <div className='pb-[46px] flex flex-col justify-between h-full gap-2'>
               {/* image + collect btn */}
               <div className='flex flex-col gap-2'>
                 <div className='relative bg-white/10 rounded-md overflow-hidden w-full flex justify-center items-center min-h-[280px]'>
