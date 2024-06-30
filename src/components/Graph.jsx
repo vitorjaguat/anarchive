@@ -1,13 +1,13 @@
 import { ForceGraph3D } from 'react-force-graph';
-import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
-import { ForceGraphMethods } from 'react-force-graph-3d';
-import {
-  CSS2DRenderer,
-  CSS2DObject,
-} from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { useRef, useState, useEffect } from 'react';
+// import { useRouter } from 'next/router';
+// import { ForceGraphMethods } from 'react-force-graph-3d';
+// import {
+//   CSS2DRenderer,
+//   CSS2DObject,
+// } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as THREE from 'three';
-import { useTokens } from '@reservoir0x/reservoir-kit-ui';
+// import { useTokens } from '@reservoir0x/reservoir-kit-ui';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 import contract from '../utils/contract';
@@ -24,13 +24,34 @@ const Graph = ({
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [spriteMap, setSpriteMap] = useState(new Map());
+  const [isMounted, setIsMounted] = useState(false);
 
-  const isMounted =
-    typeof window !== 'undefined' && typeof document !== 'undefined';
-  const router = useRouter();
-  let extraRenderers = [];
-  let windowWidth = 0;
-  let windowHeight = 0;
+  // const isMounted =
+  //   typeof window !== 'undefined' && typeof document !== 'undefined';
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+    setWindowHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup function to remove the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // const router = useRouter();
+  // let extraRenderers = [];
 
   //events:
 
@@ -55,11 +76,11 @@ const Graph = ({
   //   graphRef.current.zoomToFit(1000);
   // }, [graphRef]);
 
-  if (isMounted) {
-    // extraRenderers = [new CSS2DRenderer()];
-    windowWidth = window.innerWidth;
-    windowHeight = window.innerHeight;
-  }
+  // if (isMounted) {
+  //   // extraRenderers = [new CSS2DRenderer()];
+  //   windowWidth = window.innerWidth;
+  //   windowHeight = window.innerHeight;
+  // }
 
   const handleNodeClick = (node) => {
     const clickedTokenData = allTokens.find(
@@ -101,7 +122,7 @@ const Graph = ({
 
   //graph data logic:
   useEffect(() => {
-    if (allTokens.length > 0 && !showMineIsChecked) {
+    if (!showMineIsChecked) {
       setGraphData(new GraphDataClass(allTokens, sort, filter));
     }
     if (showMineIsChecked && usersFrags.length > 0) {
@@ -118,14 +139,14 @@ const Graph = ({
 
   // link isDestination logic:
   useEffect(() => {
-    if (sort === 'From' && allTokens.length > 0) {
+    if (sort === 'From') {
       const graph = graphRef.current;
       graph.d3Force('link').strength((link) => (link.isDestination ? 0 : 0.03));
     }
-  }, [allTokens, sort]);
+  }, [sort]);
 
-  const graphWidth =
-    openTokenData === 'initial' ? windowWidth : windowWidth - 600;
+  // const graphWidth =
+  //   openTokenData === 'initial' ? windowWidth : windowWidth - 600;
 
   return (
     <div className='relative' onKeyDown={(e) => handleKeyPress(e)}>
@@ -221,7 +242,8 @@ const Graph = ({
           circle.scale.set(1, 1, 1);
           return circle;
         }}
-        extraRenderers={isMounted ? extraRenderers : []}
+        // extraRenderers={isMounted ? extraRenderers : []}
+        // extraRenderers={[]}
         onNodeClick={
           handleNodeClick
           // (node) => {
