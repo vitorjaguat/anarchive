@@ -23,7 +23,7 @@ export default function EditionSize({ editionSize, setEditionSize }) {
       <div className=''>
         <label htmlFor='editionSize'>Edition size: </label>
         <select
-          className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+          className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
           id='editionSize'
           name='editionSize'
           defaultValue={'unlimited'}
@@ -37,13 +37,14 @@ export default function EditionSize({ editionSize, setEditionSize }) {
         <div className=''>
           <label htmlFor='editionSizeNumber'>Max number of copies:</label>
           <input
-            className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+            className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
             // ref={priceRef}
             type='number'
             id='editionSizeNumber'
             name='editionSizeNumber'
             defaultValue='1000'
             step={1}
+            min={1}
             onChange={handleChangeEditionSize}
           />
         </div>

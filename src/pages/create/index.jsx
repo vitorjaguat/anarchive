@@ -186,7 +186,7 @@ export default function CreateIndex() {
         }
         break;
       case 'attMedia':
-        console.log('attMediaRef', attMediaRef.current.value.length);
+        // console.log('attMediaRef', attMediaRef.current.value.length);
         if (attMediaRef.current.value === '') {
           error.attMedia =
             'Attribute "Media" is required. Please select the media type this fragment is related to. This information is important for the generation of The Anarchiving Game data visualizations.';
@@ -295,7 +295,7 @@ export default function CreateIndex() {
           error = { ...error };
           delete error.attEvent;
         }
-        console.log('attMediaRef', attMediaRef.current.value.length);
+        // console.log('attMediaRef', attMediaRef.current.value.length);
         if (attMediaRef.current.value === '') {
           error.attMedia =
             'Attribute "Media" is required. Please select the media type this fragment is related to. This information is important for the generation of The Anarchiving Game data visualizations.';
@@ -419,7 +419,9 @@ export default function CreateIndex() {
         console.log('finalResponse:', finalResponse);
         setTransactionHash(finalResponse.hash);
         setProcessingSubmit('success');
-        setSubmitMessage('Successfully created token.');
+        setSubmitMessage(
+          'Successfully created token. Hash: ' + finalResponse.hash
+        );
         // Reset form:
         titleRef.current.value = '';
         descriptionRef.current.value = '';
@@ -547,7 +549,7 @@ export default function CreateIndex() {
               <div className='flex flex-col justify-between gap-1'>
                 <label htmlFor='title'>Title:</label>
                 <input
-                  className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                  className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
                   ref={titleRef}
                   type='text'
                   id='title'
@@ -567,7 +569,7 @@ export default function CreateIndex() {
                   type='text'
                   id='description'
                   name='description'
-                  className='w-full h-60 px-4 py-3 rounded-lg outline-none font-thin'
+                  className='w-full h-60 px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
                   onChange={() => checkValidation('description')}
                 />
                 {validationError?.description && (
@@ -650,7 +652,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attTo'>To: </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
                     ref={attToRef}
                     type='text'
                     id='attTo'
@@ -666,7 +668,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attFrom'>From: </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
                     ref={attFromRef}
                     type='text'
                     id='attFrom'
@@ -682,7 +684,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attYear'>Year: </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
                     ref={attYearRef}
                     type='number'
                     min={1900}
@@ -700,7 +702,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attEvent'>Event: </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
                     ref={attEventRef}
                     type='text'
                     id='attEvent'
@@ -716,7 +718,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attMedia'>Media: </label>
                   <select
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
                     ref={attMediaRef}
                     id='attMedia'
                     name='attMedia'
@@ -741,7 +743,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attCreator'>Creator: </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
                     ref={attCreatorRef}
                     type='text'
                     id='attCreator'
@@ -757,7 +759,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attTags'>Tags: </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
                     ref={attTagsRef}
                     type='text'
                     id='attTags'
@@ -773,7 +775,7 @@ export default function CreateIndex() {
                 <div className=''>
                   <label htmlFor='attLocation'>Location: </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
                     ref={attLocationRef}
                     type='text'
                     id='attLocation'
@@ -792,9 +794,9 @@ export default function CreateIndex() {
               <div className='flex flex-col gap-2 mt-5'>
                 {/* Price */}
                 <div className=''>
-                  <label htmlFor='price'>Price: </label>
+                  <label htmlFor='price'>Price (ETH): </label>
                   <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
                     ref={priceRef}
                     type='number'
                     id='price'
@@ -802,7 +804,7 @@ export default function CreateIndex() {
                     defaultValue='0'
                     step={0.000001}
                     onChange={() => {
-                      console.log(priceRef.current.value);
+                      // console.log(priceRef.current.value);
                     }}
                   />
                 </div>
