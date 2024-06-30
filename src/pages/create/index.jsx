@@ -34,9 +34,16 @@ export default function CreateIndex() {
   );
   const [processingSubmit, setProcessingSubmit] = useState('initial');
   const [submitMessage, setSubmitMessage] = useState('Create fragment');
+  //fixing hydration error:
+  const [isMounted, setIsMounted] = useState(false);
 
-  // console.log(attMediaRef.current.value);
-  console.log('payoutRecipients', payoutRecipients);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   const handleImageUpload = (event) => {
     setImagePreview(null);
@@ -84,7 +91,7 @@ export default function CreateIndex() {
     }
 
     // if media is an image, show MediaPreview
-    if (mimetype?.includes('image')) {
+    if (mimetype?.includes('image') || mimetype?.includes('video')) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setMediaPreview(reader.result);
@@ -94,6 +101,8 @@ export default function CreateIndex() {
 
     setMedia(file);
   };
+
+  console.log(mediaPreview);
 
   const checkValidation = (field) => {
     let error = { ...validationError };
@@ -434,17 +443,6 @@ export default function CreateIndex() {
     }
   };
 
-  //fixing hydration error:
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  if (!isMounted) {
-    return null;
-  }
-
   // console.log('editionSize:', editionSize);
   // console.log('address:', address);
 
@@ -577,12 +575,23 @@ export default function CreateIndex() {
                   className=''
                   // TODO: add accept attribute to accept only certain file types
                 />
-                {mediaPreview && (
-                  <div className='w-full max-w-[700px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
+                {mediaPreview && mediaPreview?.includes('image') && (
+                  <div className='mt-2 w-full max-w-[700px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
                     <img
                       src={mediaPreview}
                       alt='preview'
                       className='w-full p-3 h-full object-cover'
+                    />
+                  </div>
+                )}
+                {mediaPreview && mediaPreview?.includes('video') && (
+                  <div className='mt-2 w-full max-w-[600px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
+                    <video
+                      src={mediaPreview}
+                      className='w-full p-3 h-full object-cover'
+                      autoPlay
+                      loop
+                      playsInline
                     />
                   </div>
                 )}
