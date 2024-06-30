@@ -175,7 +175,7 @@ export default function PayoutSplits({
       )}
 
       {selectedDiv === 'someoneElse' && (
-        <div className='mt-2 w-full h-fit'>
+        <div className='mt-2 w-full h-fit mb-2'>
           <input
             className='w-[100%] px-4 py-2 rounded-md outline-none'
             type='text'

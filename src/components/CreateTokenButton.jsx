@@ -1,7 +1,7 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { HiOutlinePlus } from 'react-icons/hi';
 import { useAccount } from 'wagmi';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function CreateTokenButton() {
@@ -15,6 +15,16 @@ export default function CreateTokenButton() {
       connectRef.current.click();
     }
   };
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div

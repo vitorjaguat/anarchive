@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import createToken from '../../utils/createToken';
 import PayoutSplits from '../../components/create/PayoutSplits';
 import MintStart from '../../components/create/MintStart';
@@ -407,6 +407,7 @@ export default function CreateIndex() {
           editionSize
         );
         console.log('finalResponse:', finalResponse);
+        setTransactionHash(finalResponse.hash);
         setProcessingSubmit('success');
         setSubmitMessage('Successfully created token.');
         // Reset form:
@@ -433,10 +434,22 @@ export default function CreateIndex() {
     }
   };
 
+  //fixing hydration error:
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
   // console.log('editionSize:', editionSize);
   // console.log('address:', address);
 
   // if (!greenlistedAccounts.includes(address?.toLowerCase())) {
+
   if (
     !greenlistedAccounts.find(
       (addr) => addr.toLowerCase() === address?.toLowerCase()
