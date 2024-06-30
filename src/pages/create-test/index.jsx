@@ -409,18 +409,18 @@ export default function CreateIndex() {
       const payoutRecipient = payoutRecipients;
 
       try {
-        const finalResponse = await createToken(
-          data.uriMetadata,
-          price,
-          mintingDuration,
-          payoutRecipient,
-          editionSize
-        );
-        console.log('finalResponse:', finalResponse);
+        // const finalResponse = await createToken(
+        //   data.uriMetadata,
+        //   price,
+        //   mintingDuration,
+        //   payoutRecipient,
+        //   editionSize
+        // );
+        // console.log('finalResponse:', finalResponse);
         setProcessingSubmit('success');
 
         setSubmitMessage(
-          'Successfully created token. Hash: ' + finalResponse.hash
+          "You've successfully tested our brand new token creation page. Please note that this is a test page, so the token will not be minted. If you really want to be part of our history, please hit the back button and follow the instructions to join our community. Thank you!"
         );
         // Reset form:
         titleRef.current.value = '';
@@ -451,78 +451,78 @@ export default function CreateIndex() {
 
   // if (!greenlistedAccounts.includes(address?.toLowerCase())) {
 
-  if (
-    !greenlistedAccounts.find(
-      (addr) => addr.toLowerCase() === address?.toLowerCase()
-    )
-  ) {
-    return (
-      <div className='relative h-screen w-screen flex items-center justify-center'>
-        {/* video bg: */}
-        <div className='absolute opacity-40 object-cover w-full h-full z-0'>
-          <video
-            className='w-full h-full object-cover'
-            autoPlay
-            muted
-            src='/assets/tag_bg.mp4'
-            loop
-            playsInline
-          />
-        </div>
-        {/* back btns */}
-        <Link
-          href='/'
-          className='absolute top-3 left-3 p-2 rounded-md bg-white/20 z-20'
-        >
-          <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
-        </Link>
+  // if (
+  //   !greenlistedAccounts.find(
+  //     (addr) => addr.toLowerCase() === address?.toLowerCase()
+  //   )
+  // ) {
+  //   return (
+  //     <div className='relative h-screen w-screen flex items-center justify-center'>
+  //       {/* video bg: */}
+  //       <div className='absolute opacity-40 object-cover w-full h-full z-0'>
+  //         <video
+  //           className='w-full h-full object-cover'
+  //           autoPlay
+  //           muted
+  //           src='/assets/tag_bg.mp4'
+  //           loop
+  //           playsInline
+  //         />
+  //       </div>
+  //       {/* back btns */}
+  //       <Link
+  //         href='/'
+  //         className='absolute top-3 left-3 p-2 rounded-md bg-white/20 z-20'
+  //       >
+  //         <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
+  //       </Link>
 
-        {/* content: */}
-        {isConnected && (
-          <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
-            <div className='text-center'>
-              It seems that your wallet is not{' '}
-              <span className='text-[#11ff20]'>greenlisted</span> as a creator
-              within The Anarchiving Game smart contract yet. To start your
-              journey as an Anarchivist, you must join our guild. Just follow
-              the instructions:{' '}
-            </div>
-            <div className='text-[#11ff20] text-xl animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
-              <a
-                href='https://guild.xyz/anarchiving'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                https://guild.xyz/anarchiving
-              </a>
-            </div>
-            <div className=''>
-              Or, if you just want to test out our new token creation page,{' '}
-              <Link
-                className='text-indigo-400 hover:text-indigo-300 animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'
-                href='/create-test'
-              >
-                click here!
-              </Link>
-            </div>
-          </div>
-        )}
-        {!isConnected && (
-          <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
-            <div className='text-center'>
-              In order to create a token, you must connect your wallet first.
-              Then, if you are a{' '}
-              <span className='text-[#11ff20]'>greenlisted</span> creator, you
-              will be automatically redirected to the creation page.
-            </div>
-            <div className='text-[#11ff20] text-base animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
-              <ConnectButton label='Please Connect' />
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
+  //       {/* content: */}
+  //       {isConnected && (
+  //         <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
+  //           <div className='text-center'>
+  //             It seems that your wallet is not{' '}
+  //             <span className='text-[#11ff20]'>greenlisted</span> as a creator
+  //             within The Anarchiving Game smart contract yet. To start your
+  //             journey as an Anarchivist, you must join our guild. Just follow
+  //             the instructions:{' '}
+  //           </div>
+  //           <div className='text-[#11ff20] text-xl animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
+  //             <a
+  //               href='https://guild.xyz/anarchiving'
+  //               target='_blank'
+  //               rel='noopener noreferrer'
+  //             >
+  //               https://guild.xyz/anarchiving
+  //             </a>
+  //           </div>
+  //           <div className=''>
+  //             Or, if you just want to test out our new token creation page,{' '}
+  //             <Link
+  //               className='text-indigo-400 hover:text-indigo-300 animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'
+  //               href='/create-test'
+  //             >
+  //               click here!
+  //             </Link>
+  //           </div>
+  //         </div>
+  //       )}
+  //       {!isConnected && (
+  //         <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
+  //           <div className='text-center'>
+  //             In order to create a token, you must connect your wallet first.
+  //             Then, if you are a{' '}
+  //             <span className='text-[#11ff20]'>greenlisted</span> creator, you
+  //             will be automatically redirected to the creation page.
+  //           </div>
+  //           <div className='text-[#11ff20] text-base animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
+  //             <ConnectButton label='Please Connect' />
+  //           </div>
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className='relative w-screen h-screen overflow-y-auto'>
@@ -540,7 +540,7 @@ export default function CreateIndex() {
 
       {/* back btn */}
       <Link
-        href='/'
+        href='/create'
         className='absolute top-3 left-3 p-2 rounded-md bg-white/20 z-20'
       >
         <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
@@ -880,7 +880,7 @@ export default function CreateIndex() {
                 )}
               </div>
               <Link
-                href='/'
+                href='/create'
                 className='absolute bottom-3 left-3 p-2 rounded-md bg-white/20 z-20'
               >
                 <IoIosArrowRoundBack
