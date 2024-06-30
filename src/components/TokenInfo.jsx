@@ -81,7 +81,7 @@ export default function TokenInfo({
         {openTokenData?.token && (
           <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
             {/* left column */}
-            <div className='pb-[46px] flex flex-col justify-between h-full gap-2'>
+            <div className=' pb-[46px] flex flex-col justify-between h-full gap-2'>
               {/* image + collect btn */}
               <div className='flex flex-col gap-2'>
                 <div className='relative bg-white/10 rounded-md overflow-hidden w-full flex justify-center items-center min-h-[280px]'>
@@ -219,7 +219,7 @@ export default function TokenInfo({
                 </div>
               </div>
 
-              <div className='mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
+              <div className=' pb-[96px] mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
                 <Markdown className=''>
                   {openTokenData.token.description}
                 </Markdown>

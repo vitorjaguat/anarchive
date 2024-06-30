@@ -120,7 +120,7 @@ export default function PayoutSplits({
           <div className='w-full flex flex-col gap-1'>
             <div className='w-full flex justify-between items-center'>
               <input
-                className='w-[100%] px-4 py-2 rounded-md outline-none'
+                className='w-[100%] px-4 py-2 rounded-md outline-none  bg-slate-800 text-slate-200'
                 type='text'
                 name='splitOne'
                 id='splitOne'
@@ -130,7 +130,7 @@ export default function PayoutSplits({
               />
               <div className='mx-1 whitespace-nowrap text-sm'>will receive</div>
               <input
-                className='w-[10%] px-4 py-2 rounded-md outline-none text-center'
+                className='w-[10%] px-4 py-2 rounded-md outline-none text-center bg-slate-800 text-slate-200'
                 type='number'
                 name='percentage1'
                 id='percentage1'
@@ -144,7 +144,7 @@ export default function PayoutSplits({
             </div>
             <div className='w-full flex justify-between items-center'>
               <input
-                className='w-[100%] px-4 py-2 rounded-md outline-none'
+                className='w-[100%] px-4 py-2 rounded-md outline-none bg-slate-800 text-slate-200'
                 type='text'
                 name='splitTwo'
                 id='splitTwo'
@@ -154,7 +154,7 @@ export default function PayoutSplits({
               />
               <div className='mx-1 whitespace-nowrap text-sm'>will receive</div>
               <input
-                className='w-[10%] px-4 py-2 rounded-md outline-none text-center'
+                className='w-[10%] px-4 py-2 rounded-md outline-none text-center bg-slate-800 text-slate-200'
                 type='number'
                 name='percentage2'
                 id='percentage2'
@@ -177,7 +177,7 @@ export default function PayoutSplits({
       {selectedDiv === 'someoneElse' && (
         <div className='mt-2 w-full h-fit mb-2'>
           <input
-            className='w-[100%] px-4 py-2 rounded-md outline-none'
+            className='w-[100%] px-4 py-2 rounded-md outline-none  bg-slate-800 text-slate-200'
             type='text'
             name='someoneElse'
             id='someoneElse'
