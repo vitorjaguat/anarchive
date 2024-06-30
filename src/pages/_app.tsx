@@ -47,7 +47,7 @@ const inter = localFont({
 });
 
 const theme = darkTheme({
-  headlineFont: 'Sans Serif',
+  // headlineFont: 'Sans Serif',
   // font: 'Serif',
   font: inter.style.fontFamily,
   primaryColor: '#323aa8',

@@ -7,6 +7,7 @@ import { useAccount } from 'wagmi';
 import { greenlistedAccounts } from '../../utils/greenlistedAccounts';
 import Link from 'next/link';
 import { IoIosArrowRoundBack } from 'react-icons/io';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
@@ -102,7 +103,7 @@ export default function CreateIndex() {
     setMedia(file);
   };
 
-  console.log(mediaPreview);
+  // console.log(mediaPreview);
 
   const checkValidation = (field) => {
     let error = { ...validationError };
@@ -475,24 +476,40 @@ export default function CreateIndex() {
         </Link>
 
         {/* content: */}
-        <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
-          <div className='text-center'>
-            It seems that your wallet is not{' '}
-            <span className='text-[#11ff20]'>greenlisted</span> as a creator
-            within The Anarchiving Game smart contract yet. To start your
-            journey as an Anarchivist, you must join our guild, and follow
-            instructions from there:{' '}
+        {isConnected && (
+          <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
+            <div className='text-center'>
+              It seems that your wallet is not{' '}
+              <span className='text-[#11ff20]'>greenlisted</span> as a creator
+              within The Anarchiving Game smart contract yet. To start your
+              journey as an Anarchivist, you must join our guild. Just follow
+              the instructions:{' '}
+            </div>
+            <div className='text-[#11ff20] text-xl animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
+              <a
+                href='https://guild.xyz/anarchiving'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                https://guild.xyz/anarchiving
+              </a>
+            </div>
+            {/* <div className='text-sm'>If you arrived here </div> */}
           </div>
-          <div className='text-[#11ff20] text-xl animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
-            <a
-              href='https://guild.xyz/anarchiving'
-              target='_blank'
-              rel='noopener noreferrer'
-            >
-              https://guild.xyz/anarchiving
-            </a>
+        )}
+        {!isConnected && (
+          <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
+            <div className='text-center'>
+              In order to create a token, you must connect your wallet first.
+              Then, if you are a{' '}
+              <span className='text-[#11ff20]'>greenlisted</span> creator, you
+              will be automatically redirected to the creation page.
+            </div>
+            <div className='text-[#11ff20] text-base animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
+              <ConnectButton label='Please Connect' />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -564,7 +581,7 @@ export default function CreateIndex() {
                   <div className=''>Media:</div>
                   <div className='text-sm text-black/80'>
                     This is the media file of your token. Media type can be JPG,
-                    PNG, MP4, PDF, HTML, etc.
+                    PNG, GIF, MP3, MP4, PDF, HTML etc.
                   </div>
                 </label>
                 <input
@@ -573,7 +590,7 @@ export default function CreateIndex() {
                   name='media'
                   id='media'
                   className=''
-                  accept='.jpg, .jpeg, .png, .mp4, .pdf, .html, .mpeg, .wav, .mp3, .ogg, '
+                  accept='.jpg, .jpeg, .png, .mp4, .pdf, .html, .mpeg, .wav, .mp3, .ogg, .gif'
                   // TODO: add accept attribute to accept only certain file types
                 />
                 {mediaPreview && mediaPreview?.includes('image') && (
