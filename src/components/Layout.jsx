@@ -31,10 +31,6 @@ export default function Layout({
   }, []);
   const [infoVisible, setInfoVisible] = useState(false);
 
-  if (pathname === '/create') {
-    return <>{children}</>;
-  }
-
   if (isMobile)
     return (
       <div className='flex flex-col items-center justify-center h-screen px-10 text-center'>
@@ -45,27 +41,33 @@ export default function Layout({
       </div>
     );
 
-  return (
-    <>
-      <div className='relative w-screen h-screen'>
-        <div>{children}</div>
+  if (pathname === '/')
+    return (
+      <>
+        <div className='relative w-screen h-screen'>
+          <div>{children}</div>
 
-        <AppInfoBox setInfoVisible={setInfoVisible} infoVisible={infoVisible} />
-
-        <div className='absolute bottom-0 left-0 right-0 z-[1999]'>
-          <Navbar
-            allTokens={allTokens}
-            sort={sort}
-            setSort={setSort}
-            filter={filter}
-            setFilter={setFilter}
-            showMineIsChecked={showMineIsChecked}
-            setShowMineIsChecked={setShowMineIsChecked}
+          <AppInfoBox
             setInfoVisible={setInfoVisible}
             infoVisible={infoVisible}
           />
+
+          <div className='absolute bottom-0 left-0 right-0 z-[1999]'>
+            <Navbar
+              allTokens={allTokens}
+              sort={sort}
+              setSort={setSort}
+              filter={filter}
+              setFilter={setFilter}
+              showMineIsChecked={showMineIsChecked}
+              setShowMineIsChecked={setShowMineIsChecked}
+              setInfoVisible={setInfoVisible}
+              infoVisible={infoVisible}
+            />
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+
+  return <>{children}</>;
 }
