@@ -6,7 +6,8 @@ import {
   creatorAccountPromise,
 } from './zoraprotocolConfig';
 // import { collectionAddress } from './contract';
-import collectionAddress from './dummyCollectionAddress';
+// import collectionAddress from './dummyCollectionAddress';
+import collectionAddress from './contract';
 import { isAddress, parseEther } from 'viem';
 import { SplitV1Client } from '@0xsplits/splits-sdk';
 
