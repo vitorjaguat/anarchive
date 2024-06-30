@@ -65,7 +65,7 @@ export default async function createToken(
         address: recipient.address,
         percentAllocation: +recipient.percentage,
       })),
-      distributorFeePercent: 0,
+      distributorFeePercent: 2,
     };
 
     // get the deterministic split address, and determine if it has been created or not.
