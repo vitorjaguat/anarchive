@@ -521,7 +521,7 @@ export default function CreateIndex() {
 
       {/* content: */}
       <div className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'>
-        <div className='max-w-[1200px] min-w-[800px] h-fit bg-indigo-400 p-6 rounded-md text-black'>
+        <div className='max-w-[1200px] min-w-[800px] h-fit bg-indigo-400/80 p-6 rounded-md text-black'>
           <div className='pt-20 pb-16 text-3xl w-full text-center font-bold  animate-bounce'>
             <div className=' tracking-wider'>Create your fragment</div>
           </div>
