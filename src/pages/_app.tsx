@@ -120,7 +120,11 @@ export default function App({ Component, pageProps }: AppProps) {
           >
             <RainbowKitProvider modalSize='compact'>
               <ThirdwebProvider
-                clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+                clientId={
+                  process.env.NODE_ENV === 'development'
+                    ? process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID
+                    : process.env.THIRDWEB_CLIENT_ID
+                }
                 // secretKey={process.env.THIRDWEB_CLIENT_SECRET}
               >
                 <main className={`${inter.variable} font-inter`}>
