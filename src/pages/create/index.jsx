@@ -8,6 +8,7 @@ import { greenlistedAccounts } from '../../utils/greenlistedAccounts';
 import Link from 'next/link';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useStorageUpload } from '@thirdweb-dev/react';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
@@ -37,6 +38,7 @@ export default function CreateIndex() {
   const [submitMessage, setSubmitMessage] = useState('Create fragment');
   //fixing hydration error:
   const [isMounted, setIsMounted] = useState(false);
+  const { mutateAsync: upload } = useStorageUpload();
 
   useEffect(() => {
     setIsMounted(true);
@@ -364,36 +366,125 @@ export default function CreateIndex() {
     const formData = new FormData();
 
     // Append the image file to the FormData object
-    formData.append('name', 'test');
-    formData.append('title', titleRef.current.value);
-    formData.append('description', descriptionRef.current.value);
-    formData.append('attTo', attToRef.current.value);
-    formData.append('attFrom', attFromRef.current.value);
-    formData.append('attYear', attYearRef.current.value);
-    formData.append('attEvent', attEventRef.current.value);
-    formData.append('attMedia', attMediaRef.current.value);
-    formData.append('attCreator', attCreatorRef.current.value);
-    formData.append('attTags', attTagsRef.current.value);
-    formData.append('attLocation', attLocationRef.current.value);
+    // formData.append('name', 'test');
+    // formData.append('title', titleRef.current.value);
+    // formData.append('description', descriptionRef.current.value);
+    // formData.append('attTo', attToRef.current.value);
+    // formData.append('attFrom', attFromRef.current.value);
+    // formData.append('attYear', attYearRef.current.value);
+    // formData.append('attEvent', attEventRef.current.value);
+    // formData.append('attMedia', attMediaRef.current.value);
+    // formData.append('attCreator', attCreatorRef.current.value);
+    // formData.append('attTags', attTagsRef.current.value);
+    // formData.append('attLocation', attLocationRef.current.value);
+
+    const name = titleRef.current.value;
+    const description = descriptionRef.current.value;
+    const attTo = attToRef.current.value;
+    const attFrom = attFromRef.current.value;
+    const attYear = attYearRef.current.value;
+    const attEvent = attEventRef.current.value;
+    const attMedia = attMediaRef.current.value;
+    const attCreator = attCreatorRef.current.value;
+    const attTags = attTagsRef.current.value;
+    const attLocation = attLocationRef.current.value;
 
     // TODO: upload media & image to ipfs, then append uri to formData:
 
-    formData.append('image', image);
-    formData.append('media', media);
     try {
-      // Send the FormData object as the request body
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        // },
-        // body: JSON.stringify({ name: 'test', image }),
-        body: formData,
-      });
+      //upload media:
+      let mediaUri = '';
+      let imageUri = '';
+      let metadataUri = '';
+      if (media) {
+        const mediaUriData = await upload({ data: [media] });
+        mediaUri = mediaUriData[0];
+      }
 
-      // Handle the response from the API
-      const data = await response.json();
-      console.log('Response:', data);
+      // check if media mediatype is image:
+      const isTypeImage = media?.type?.includes('image');
+      console.log('isTypeImage', isTypeImage);
+
+      // upload image:
+      if (!isTypeImage && image) {
+        const imageUriData = await upload({ data: [image] });
+        imageUri = imageUriData[0];
+      }
+      console.log('mediaUri', mediaUri);
+      console.log('imageUri', imageUri);
+
+      //construct metadata object:
+      const metadataObj = {
+        name: name,
+        description: description,
+        image: isTypeImage ? mediaUri : imageUri,
+        content: {
+          mime: media?.type,
+          uri: mediaUri,
+        },
+        animation_url: !isTypeImage ? mediaUri : undefined,
+        attributes: [
+          {
+            trait_type: 'To',
+            value: attTo,
+          },
+          {
+            trait_type: 'From',
+            value: attFrom,
+          },
+          {
+            trait_type: 'Year',
+            value: attYear,
+          },
+          {
+            trait_type: 'Event',
+            value: attEvent,
+          },
+          {
+            trait_type: 'Media',
+            value: attMedia,
+          },
+          {
+            trait_type: 'Creator',
+            value: attCreator,
+          },
+          {
+            trait_type: 'Tags',
+            value: attTags,
+          },
+          {
+            trait_type: 'Location',
+            value: attLocation,
+          },
+        ],
+      };
+      if (isTypeImage) {
+        delete metadataObj.animation_url;
+      }
+
+      //upload metadata:
+      const metadata = JSON.stringify(metadataObj);
+      const metadataUriData = await upload({ data: [metadata] });
+      metadataUri = metadataUriData[0];
+      console.log('metadataUri', metadataUri);
+
+      // formData.append('image', image);
+      // formData.append('media', media);
+
+      //   // Send the FormData object as the request body
+      //   const response = await fetch('/api/upload', {
+      //     method: 'POST',
+      //     // headers: {
+      //     //   'Content-Type': 'application/json',
+      //     // },
+      //     // body: JSON.stringify({ name: 'test', image }),
+      //     body: formData,
+      //   });
+
+      //   // Handle the response from the API
+      //   const data = await response.json();
+      //   console.log('Response:', data);
+
       // Get sales config options:
       // price:
       let price;
@@ -410,37 +501,33 @@ export default function CreateIndex() {
       //payoutRecipients:
       const payoutRecipient = payoutRecipients;
 
-      try {
-        const finalResponse = await createToken(
-          data.uriMetadata,
-          price,
-          mintingDuration,
-          payoutRecipient,
-          editionSize
-        );
-        console.log('finalResponse:', finalResponse);
-        setProcessingSubmit('success');
+      const finalResponse = await createToken(
+        metadataUri,
+        price,
+        mintingDuration,
+        payoutRecipient,
+        editionSize
+      );
+      console.log('finalResponse:', finalResponse);
+      setProcessingSubmit('success');
 
-        setSubmitMessage(
-          'Successfully created token. Hash: ' + finalResponse.hash
-        );
-        // Reset form:
-        titleRef.current.value = '';
-        descriptionRef.current.value = '';
-        attToRef.current.value = '';
-        attFromRef.current.value = '';
-        attYearRef.current.value = '';
-        attEventRef.current.value = '';
-        attMediaRef.current.value = '';
-        attCreatorRef.current.value = '';
-        attTagsRef.current.value = '';
-        attLocationRef.current.value = '';
-        setImage(null);
-        setMedia(null);
-        priceRef.current.value = '0';
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      setSubmitMessage(
+        'Successfully created token. Hash: ' + finalResponse.hash
+      );
+      // Reset form:
+      titleRef.current.value = '';
+      descriptionRef.current.value = '';
+      attToRef.current.value = '';
+      attFromRef.current.value = '';
+      attYearRef.current.value = '';
+      attEventRef.current.value = '';
+      attMediaRef.current.value = '';
+      attCreatorRef.current.value = '';
+      attTagsRef.current.value = '';
+      attLocationRef.current.value = '';
+      setImage(null);
+      setMedia(null);
+      priceRef.current.value = '0';
     } catch (error) {
       console.error('Error:', error);
       setProcessingSubmit('error');
