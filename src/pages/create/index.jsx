@@ -376,6 +376,8 @@ export default function CreateIndex() {
     formData.append('attTags', attTagsRef.current.value);
     formData.append('attLocation', attLocationRef.current.value);
 
+    // TODO: upload media & image to ipfs, then append uri to formData:
+
     formData.append('image', image);
     formData.append('media', media);
     try {
