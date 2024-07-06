@@ -180,18 +180,18 @@ export default function TokenInfo({
 
               {/* attributes */}
               <div className='grid grid-cols-2 gap-1'>
-                {openTokenData.token.attributes.map((att, i) => (
+                {openTokenData?.token?.attributes?.map((att, i) => (
                   <div
                     key={i}
                     className='flex flex-col gap-2 text-xs bg-white/10 rounded-md pb-2 h-full'
                   >
                     <div className='text-center text-[10px] bg-white/10'>
-                      {att.key}
+                      {att?.key}
                     </div>
                     <div className='text-center px-2 flex flex-col justify-center h-full gap-1 font-thin'>
-                      {att.key !== 'Content Tags'
-                        ? att.value
-                        : att.value
+                      {att?.key !== 'Content Tags'
+                        ? att?.value
+                        : att?.value
                             .split(',')
                             .map((tag) => <div key={tag}>{tag.trim()}</div>)}
                     </div>
@@ -205,15 +205,15 @@ export default function TokenInfo({
               {/* title + authors */}
               <div className='flex flex-col gap-1'>
                 <div className='pr-4 pt-4 leading-snug'>
-                  {openTokenData.token.name}
+                  {openTokenData.token?.name}
                 </div>
                 <div className='mt-1 text-xs pr-4 font-thin'>
                   Created by{' '}
                   <span className='font-bold'>
                     {
-                      openTokenData.token.attributes.find(
-                        (att) => att.key === 'Creator'
-                      ).value
+                      openTokenData.token?.attributes?.find(
+                        (att) => att?.key === 'Creator'
+                      )?.value
                     }
                   </span>
                 </div>
@@ -221,7 +221,7 @@ export default function TokenInfo({
 
               <div className=' pb-[96px] mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
                 <Markdown className=''>
-                  {openTokenData.token.description}
+                  {openTokenData.token?.description}
                 </Markdown>
               </div>
             </div>
