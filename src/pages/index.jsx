@@ -26,6 +26,7 @@ export default function Home({
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
+  // syncronize the router query with the openTokenData state:
   useEffect(() => {
     // Check if 'token' query parameter exists
     console.log('router.query', router.query);
@@ -37,6 +38,7 @@ export default function Home({
     }
   }, [router.query, allTokens]);
 
+  // Update the URL query parameter when the openTokenData state changes:
   useEffect(() => {
     // Check if openTokenData exists and has a token property
     if (openTokenData && openTokenData.token) {
