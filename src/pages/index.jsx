@@ -51,6 +51,7 @@ export default function Home({
         undefined,
         { shallow: true }
       );
+      console.log('openTokenData', openTokenData);
     }
   }, [openTokenData?.token?.tokenId]);
 
@@ -66,7 +67,12 @@ export default function Home({
 
   return (
     <>
-      <Head />
+      <Head
+        ogImage={
+          openTokenData?.token?.image ||
+          'https://the-anarchive.vercel.app/meta/image2.png'
+        }
+      />
       <main
         className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
       >

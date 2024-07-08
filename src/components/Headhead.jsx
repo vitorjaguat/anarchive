@@ -1,8 +1,8 @@
 import Head from 'next/head';
-import favicon from '../../public/meta/image1.png';
-import ogimage from '../../public/meta/image2.png';
+// import favicon from '../../public/meta/image1.png';
+// import ogimage from '../../public/meta/image2.png';
 
-export default function Headhead() {
+export default function Headhead({ ogImage }) {
   return (
     <>
       <Head>
@@ -26,7 +26,10 @@ export default function Headhead() {
         />
         <meta
           name='twitter:image'
-          content='https://the-anarchive.vercel.app/meta/image2.png'
+          // content='https://the-anarchive.vercel.app/meta/image2.png'
+          content={
+            ogImage || 'https://the-anarchive.vercel.app/meta/image2.png'
+          }
         />
         <meta property='og:type' content='website' />
         <meta property='og:determiner' content='the' />
@@ -38,7 +41,10 @@ export default function Headhead() {
         />
         <meta
           property='og:image'
-          content='https://the-anarchive.vercel.app/meta/image2.png'
+          // content='https://the-anarchive.vercel.app/meta/image2.png'
+          content={
+            ogImage || 'https://the-anarchive.vercel.app/meta/image2.png'
+          }
         />
         <meta property='og:image:type' content='image/png' />
         <meta property='og:image:width' content='1200' />

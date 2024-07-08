@@ -13,7 +13,7 @@ export default function CopyURLButton() {
     <div
       className={
         'mt-1 w-fit flex items-center gap-1 text-xs rounded-md px-2 py-[2px] bg-[#8989dc]/20 hover:bg-[#8989dc]/40 duration-300 cursor-grab ' +
-        (copied && 'bg-[#00ff20]/10 hover:bg-[#00ff20]/30')
+        (copied && 'bg-[#00ff20]/10 hover:bg-[#00ff20]/20')
       }
       onClick={handleCopyLink}
     >
