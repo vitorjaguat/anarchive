@@ -72,9 +72,10 @@ export default function Home({
   const title = tokenDataForOG?.token
     ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
     : 'The Anarchiving Game';
-  const description = tokenDataForOG?.token
-    ? tokenDataForOG?.token?.description?.slice(0, 130) + '...'
-    : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
+  const description =
+    tokenDataForOG?.token && tokenDataForOG?.token?.description
+      ? tokenDataForOG?.token?.description?.slice(0, 126) + '...'
+      : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
 
   return (
     <>
