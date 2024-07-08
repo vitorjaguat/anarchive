@@ -1,11 +1,12 @@
 // import Image from 'next/image';
 // import { Inter } from 'next/font/google';
 import GraphWrapper from '../components/GraphWrapper';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import Filters from '../components/Filters';
 import Head from '../components/Headhead';
 import CreateTokenButton from '../components/CreateTokenButton';
+import { useRouter } from 'next/router';
 
 // const inter = Inter({ subsets: ['latin'] });
 
@@ -23,6 +24,17 @@ export default function Home({
 }) {
   const [openTokenData, setOpenTokenData] = useState('initial');
   const [imageLoaded, setImageLoaded] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if 'token' query parameter exists
+    if (router.query.token) {
+      const clickedTokenData = allTokens.find(
+        (token) => +token.token.tokenId === +router.query.token
+      );
+      setOpenTokenData(clickedTokenData);
+    }
+  }, [router.query, allTokens]);
 
   // console.log(openTokenData);
 
