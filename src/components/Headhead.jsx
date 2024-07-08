@@ -19,13 +19,8 @@ export default function Headhead({ ogImage, tokenDataForOG }) {
           rel='icon'
           href='https://the-anarchive.vercel.app/meta/image1.png'
         />
-        <title>The Anarchiving Game</title>
-        <meta
-          name='description'
-          content={
-            "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined."
-          }
-        />
+        <title>{title}</title>
+        <meta name='description' content={description} />
         <meta name='twitter:card' content='summary_large_image' />
         <meta name='twitter:site' content='@thesphere_as' />
         <meta name='twitter:title' content={title} />
