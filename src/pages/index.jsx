@@ -21,13 +21,13 @@ export default function Home({
   showMineIsChecked,
   filter,
   setFilter,
-  token,
+  tokenDataForOG,
 }) {
   const [openTokenData, setOpenTokenData] = useState('initial');
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
-  console.log('token', token);
+  console.log('tokenDataForOG', tokenDataForOG);
 
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function Home({
     <>
       <Head
         ogImage={
-          token?.token?.image ||
+          tokenDataForOG?.token?.image ||
           'https://the-anarchive.vercel.app/meta/image2.png'
         }
       />
@@ -107,7 +107,7 @@ export default function Home({
 
 export async function getServerSideProps(context) {
   const { fragment } = context.query;
-  let token = null;
+  let tokenDataForOG = null;
 
   // Fetch data based on the query parameter
   const fetchData = async () => {
@@ -129,9 +129,9 @@ export async function getServerSideProps(context) {
   };
   if (fragment) {
     const tokenData = await fetchData();
-    token = tokenData.tokens[0];
+    tokenDataForOG = tokenData.tokens[0];
   }
-  console.log('token', token);
+  console.log('token', tokenDataForOG);
 
   // If no exhibition is found, return a 404 page
   // if (!token) {
@@ -142,7 +142,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      token,
+      tokenDataForOG,
     },
   };
 }
