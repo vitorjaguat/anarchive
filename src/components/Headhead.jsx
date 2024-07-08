@@ -2,14 +2,7 @@ import Head from 'next/head';
 // import favicon from '../../public/meta/image1.png';
 // import ogimage from '../../public/meta/image2.png';
 
-export default function Headhead({ ogImage, tokenDataForOG }) {
-  const ogImageURL = ogImage;
-  const title = tokenDataForOG?.token
-    ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-    : 'The Anarchiving Game';
-  const description = tokenDataForOG?.token
-    ? tokenDataForOG?.token?.description?.slice(0, 130) + '...'
-    : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
+export default function Headhead({ ogImage, title, description }) {
   return (
     <>
       <Head>

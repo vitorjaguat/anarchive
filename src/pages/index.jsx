@@ -68,6 +68,14 @@ export default function Home({
   // console.log('openTokenData', openTokenData);
   // console.log('projectId', process.env.WALLET_CONNECT_PROJECT_ID);
 
+  // dynamic metadata:
+  const title = tokenDataForOG?.token
+    ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
+    : 'The Anarchiving Game';
+  const description = tokenDataForOG?.token
+    ? tokenDataForOG?.token?.description?.slice(0, 130) + '...'
+    : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
+
   return (
     <>
       <Head
@@ -75,7 +83,8 @@ export default function Home({
           tokenDataForOG?.token?.image ||
           'https://the-anarchive.vercel.app/meta/image2.png'
         }
-        tokenData={tokenDataForOG}
+        title={title}
+        description={description}
       />
       <main
         className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
