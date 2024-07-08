@@ -7,7 +7,7 @@ import Filters from '../components/Filters';
 import Head from '../components/Headhead';
 import CreateTokenButton from '../components/CreateTokenButton';
 import { useRouter } from 'next/router';
-
+import collectionAddress from '../utils/contract';
 // const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -21,10 +21,13 @@ export default function Home({
   showMineIsChecked,
   filter,
   setFilter,
+  token,
 }) {
   const [openTokenData, setOpenTokenData] = useState('initial');
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
+
+  console.log('token', token);
 
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
@@ -69,7 +72,7 @@ export default function Home({
     <>
       <Head
         ogImage={
-          openTokenData?.token?.image ||
+          token?.token?.image ||
           'https://the-anarchive.vercel.app/meta/image2.png'
         }
       />
@@ -100,4 +103,46 @@ export default function Home({
       </main>
     </>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { fragment } = context.query;
+  let token = null;
+
+  // Fetch data based on the query parameter
+  const fetchData = async () => {
+    const options = {
+      method: 'GET',
+      headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
+    };
+
+    try {
+      const response = await fetch(
+        `https://api-zora.reservoir.tools/tokens/v6?tokens=${collectionAddress}%3A${fragment}`,
+        options
+      );
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  if (fragment) {
+    const tokenData = await fetchData();
+    token = tokenData.tokens[0];
+  }
+  console.log('token', token);
+
+  // If no exhibition is found, return a 404 page
+  // if (!token) {
+  //   return {
+  //     notFound: true,
+  //   };
+  // }
+
+  return {
+    props: {
+      token,
+    },
+  };
 }

@@ -27,9 +27,7 @@ export default function Headhead({ ogImage }) {
         <meta
           name='twitter:image'
           // content='https://the-anarchive.vercel.app/meta/image2.png'
-          content={
-            ogImage || 'https://the-anarchive.vercel.app/meta/image2.png'
-          }
+          content={ogImage}
         />
         <meta property='og:type' content='website' />
         <meta property='og:determiner' content='the' />
@@ -42,9 +40,7 @@ export default function Headhead({ ogImage }) {
         <meta
           property='og:image'
           // content='https://the-anarchive.vercel.app/meta/image2.png'
-          content={
-            ogImage || 'https://the-anarchive.vercel.app/meta/image2.png'
-          }
+          content={ogImage}
         />
         <meta property='og:image:type' content='image/png' />
         <meta property='og:image:width' content='1200' />
