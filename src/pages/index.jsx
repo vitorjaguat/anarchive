@@ -28,9 +28,10 @@ export default function Home({
 
   useEffect(() => {
     // Check if 'token' query parameter exists
-    if (router.query.token) {
+    console.log('router.query', router.query);
+    if (router.query.fragment) {
       const clickedTokenData = allTokens.find(
-        (token) => +token.token.tokenId === +router.query.token
+        (token) => +token.token.tokenId === +router.query.fragment
       );
       setOpenTokenData(clickedTokenData);
     }
