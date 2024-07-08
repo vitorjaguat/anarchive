@@ -37,7 +37,20 @@ export default function Home({
     }
   }, [router.query, allTokens]);
 
-  // console.log(openTokenData);
+  useEffect(() => {
+    // Check if openTokenData exists and has a token property
+    if (openTokenData && openTokenData.token) {
+      // Update the URL without refreshing the page
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, fragment: openTokenData.token.tokenId },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [openTokenData?.token?.tokenId]);
 
   const handleClickOverlay = useCallback((e) => {
     e.preventDefault();
