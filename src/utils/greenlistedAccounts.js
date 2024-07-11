@@ -13,5 +13,6 @@ export const greenlistedAccounts = [
   '0x852dea1d3b6a373339a8199d9c5ed5a0e705f004',
   '0x13da8cdc5aef1e798905fbe959dd5f4b91aa480e',
   '0xa90797af8267f75f719ae82602e15ab88c261cb4',
+  '0x832eca8e4a82e362aebfd9c44c3eb5f3df060d86',
   '0x0231c1aeF2F168C3C3eF0EFb30827E678b088D62', // test Pedro
 ];
