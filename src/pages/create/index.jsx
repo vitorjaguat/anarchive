@@ -336,7 +336,7 @@ export default function CreateIndex() {
           error = { ...error };
           delete error.attLocation;
         }
-        break;
+        return error;
       default:
         break;
     }
@@ -347,12 +347,13 @@ export default function CreateIndex() {
     e.preventDefault();
 
     //Validations:
-    checkValidation('all');
-    if (Object.keys(validationError).length > 0) {
-      setValidationError((curr) => ({
-        ...curr,
+    const errorsInValidation = checkValidation('all');
+    console.log('errorsInValidation', errorsInValidation);
+    if (Object.keys(errorsInValidation).length > 0) {
+      setValidationError({
+        ...errorsInValidation,
         all: 'Please check the form for errors before submitting.',
-      }));
+      });
       return;
     }
 
