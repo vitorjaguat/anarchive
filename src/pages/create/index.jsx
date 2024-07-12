@@ -349,7 +349,7 @@ export default function CreateIndex() {
     //Validations:
     const errorsInValidation = checkValidation('all');
     console.log('errorsInValidation', errorsInValidation);
-    if (Object.keys(errorsInValidation).length > 0) {
+    if (errorsInValidation && Object.keys(errorsInValidation).length > 0) {
       setValidationError({
         ...errorsInValidation,
         all: 'Please check the form for errors before submitting.',
