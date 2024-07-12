@@ -136,7 +136,7 @@ export default async function createToken(
 
     return { parameters, request, hash, writeResponse };
   } catch (error) {
-    console.error('Error:', error);
-    return error;
+    console.error('Error in createToken.js:', error);
+    return { error };
   }
 }
