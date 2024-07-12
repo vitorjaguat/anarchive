@@ -390,6 +390,8 @@ export default function CreateIndex() {
     const attTags = attTagsRef.current.value;
     const attLocation = attLocationRef.current.value;
 
+    let finalResponse;
+
     // TODO: upload media & image to ipfs, then append uri to formData:
 
     try {
@@ -502,7 +504,7 @@ export default function CreateIndex() {
       //payoutRecipients:
       const payoutRecipient = payoutRecipients;
 
-      const finalResponse = await createToken(
+      finalResponse = await createToken(
         metadataUri,
         price,
         mintingDuration,
@@ -510,30 +512,38 @@ export default function CreateIndex() {
         editionSize
       );
       console.log('finalResponse:', finalResponse);
-      setProcessingSubmit('success');
-
-      setSubmitMessage(
-        'Successfully created token. Hash: ' + finalResponse.hash
-      );
-      // Reset form:
-      titleRef.current.value = '';
-      descriptionRef.current.value = '';
-      attToRef.current.value = '';
-      attFromRef.current.value = '';
-      attYearRef.current.value = '';
-      attEventRef.current.value = '';
-      attMediaRef.current.value = '';
-      attCreatorRef.current.value = '';
-      attTagsRef.current.value = '';
-      attLocationRef.current.value = '';
-      setImage(null);
-      setMedia(null);
-      priceRef.current.value = '0';
+      if (finalResponse && finalResponse?.hash) {
+        setProcessingSubmit('success');
+        setSubmitMessage(
+          'Successfully created token. Hash: ' + finalResponse.hash
+        );
+      }
+      if (finalResponse && finalResponse?.error) {
+        setProcessingSubmit('error');
+        setSubmitMessage('Transaction has failed.');
+        return;
+      }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error handleSubmit on /create:', error);
       setProcessingSubmit('error');
-      setSubmitMessage('Something went wrong. Please try again.');
+      setSubmitMessage('Something went wrong.');
+      if (error) return;
     }
+
+    // Reset form:
+    titleRef.current.value = '';
+    descriptionRef.current.value = '';
+    attToRef.current.value = '';
+    attFromRef.current.value = '';
+    attYearRef.current.value = '';
+    attEventRef.current.value = '';
+    attMediaRef.current.value = '';
+    attCreatorRef.current.value = '';
+    attTagsRef.current.value = '';
+    attLocationRef.current.value = '';
+    setImage(null);
+    setMedia(null);
+    priceRef.current.value = '0';
   };
 
   // console.log('editionSize:', editionSize);
