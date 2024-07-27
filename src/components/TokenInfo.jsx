@@ -6,6 +6,7 @@ import { RxChevronDown } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import LargeMedia from './LargeMedia';
 import Image from 'next/image';
+import CopyURLButton from './CopyURLButton';
 
 export default function TokenInfo({
   openTokenData,
@@ -218,6 +219,9 @@ export default function TokenInfo({
                   </span>
                 </div>
               </div>
+
+              {/* copy link */}
+              <CopyURLButton />
 
               <div className=' pb-[96px] mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
                 <Markdown className=''>

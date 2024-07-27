@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import localFont from '@next/font/local';
 import contract from '../utils/contract';
-import Headhead from '@/components/Headhead';
+// import Headhead from '@/components/Headhead';
 
 import { reservoirChains } from '@reservoir0x/reservoir-sdk';
 import { ReservoirKitProvider, darkTheme } from '@reservoir0x/reservoir-kit-ui';
@@ -95,7 +95,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <Headhead />
+      {/* <Headhead /> */}
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <ReservoirKitProvider
