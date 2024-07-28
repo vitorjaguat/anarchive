@@ -148,6 +148,28 @@ const Graph = ({
   // const graphWidth =
   //   openTokenData === 'initial' ? windowWidth : windowWidth - 600;
 
+  //add padding to node.image before loading it as a texture:
+  const addPaddingToImage = (imageSrc, padding) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous'; // Add this line
+      img.src = imageSrc;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        // canvas.width = img.width + 2 * padding;
+        canvas.width = img.width * 2;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        // ctx.fillStyle = 'transparent'; // or any other color for the padding
+        // ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, img.width, 0);
+        resolve(canvas);
+      };
+      img.onerror = reject;
+    });
+  };
+
   return (
     <div className='relative' onKeyDown={(e) => handleKeyPress(e)}>
       <ForceGraph3D
@@ -187,7 +209,7 @@ const Graph = ({
         linkWidth={(link) => (sort === 'From' ? 20 : 0)}
         // linkDirectionalParticles={(link) => (link.isDestination ? 1 : 0)}
         linkDirectionalParticles={(link) =>
-          link?.isDestination && sort === 'From' ? 10 : 0
+          link?.isDestination && sort === 'From' ? 3 : 0
         }
         linkDirectionalParticleWidth={1}
         linkDirectionalParticleSpeed={0.0025}
@@ -222,18 +244,25 @@ const Graph = ({
           if (spriteMap.get(node.id)) texture = spriteMap.get(node.id);
           else {
             const loader = new THREE.TextureLoader();
-            texture = loader.load(
-              `${node.image}`,
-              (texture) => {
-                texture = texture;
+            addPaddingToImage(node.image, 80)
+              .then((canvas) => {
+                texture = loader.load(canvas.toDataURL());
                 setSpriteMap(spriteMap.set(node.id, texture));
-              },
-              undefined,
-              (err) => console.error({ err })
-            );
+              })
+              .catch((err) => console.error({ err }));
+            // texture = loader.load(
+            //   `${node.image}`,
+            //   (texture) => {
+            //     texture = texture;
+            //     setSpriteMap(spriteMap.set(node.id, texture));
+            //   },
+            //   undefined,
+            //   (err) => console.error({ err })
+            // );
 
             // texture = new THREE.TextureLoader().load(`${node.image}`);
-            setSpriteMap(spriteMap.set(node.id, texture));
+
+            // setSpriteMap(spriteMap.set(node.id, texture));
           }
 
           const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
