@@ -100,7 +100,7 @@ export default function TokenInfo({
                   {(openTokenData?.token?.image.slice(-3) === 'gif' ||
                     openTokenData?.token?.image.slice(-3) === 'svg') && (
                     <img
-                      src={openTokenData.token.image}
+                      src={openTokenData.token.imageSmall}
                       alt={openTokenData.token.name}
                       width={300}
                       height={300}

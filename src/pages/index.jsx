@@ -27,7 +27,7 @@ export default function Home({
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
-  console.log('tokenDataForOG', tokenDataForOG);
+  // console.log('tokenDataForOG', tokenDataForOG);
 
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
