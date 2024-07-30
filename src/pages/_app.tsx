@@ -59,40 +59,6 @@ const wagmiConfig = config;
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
-  //fetch collection tokens:
-  const [allTokens, setAllTokens] = useState([]);
-
-  // sorting tokens:
-  const [sort, setSort] = useState('From');
-  const [showMineIsChecked, setShowMineIsChecked] = useState(false);
-
-  //filter tokens by content tag (searchbar):
-  const [filter, setFilter] = useState([]);
-
-  //fetching token data using API:
-  useEffect(() => {
-    const fetchData = async () => {
-      const options = {
-        method: 'GET',
-        headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
-      };
-
-      try {
-        const response = await fetch(
-          `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
-          options
-        );
-        const data = await response.json();
-        // console.log(data.tokens);
-        setAllTokens(data.tokens);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
     <>
       {/* <Headhead /> */}
@@ -125,26 +91,7 @@ export default function App({ Component, pageProps }: AppProps) {
                 // secretKey={process.env.THIRDWEB_CLIENT_SECRET}
               >
                 <main className={`${inter.variable} font-inter`}>
-                  <Layout
-                    sort={sort}
-                    setSort={setSort}
-                    filter={filter}
-                    setFilter={setFilter}
-                    showMineIsChecked={showMineIsChecked}
-                    setShowMineIsChecked={setShowMineIsChecked}
-                    allTokens={allTokens}
-                  >
-                    {/* <AnimatePresence mode='wait'> */}
-                    <Component
-                      allTokens={allTokens}
-                      sort={sort}
-                      filter={filter}
-                      setFilter={setFilter}
-                      showMineIsChecked={showMineIsChecked}
-                      {...pageProps}
-                    />
-                    {/* </AnimatePresence> */}
-                  </Layout>
+                  <Component {...pageProps} />
                 </main>
               </ThirdwebProvider>
             </RainbowKitProvider>
