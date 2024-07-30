@@ -22,6 +22,9 @@ const Graph = ({
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
+  const [isLoadingGraph, setIsLoadingGraph] = useState(true);
+  const [spheres, setSpheres] = useState([]);
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -66,7 +69,7 @@ const Graph = ({
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
   useEffect(() => {
-    if (account?.address) {
+    if (account?.address && showMineIsChecked) {
       const fetchData = async () => {
         const options = {
           method: 'GET',
@@ -89,9 +92,9 @@ const Graph = ({
       };
       fetchData();
     }
-  }, [account.address]);
+  }, [account.address, showMineIsChecked]);
 
-  //graph data logic:
+  // prepare nodes (as graphData):
   useEffect(() => {
     if (!showMineIsChecked) {
       setGraphData(new GraphDataClass(allTokens, sort, filter));
@@ -103,6 +106,108 @@ const Graph = ({
       setGraphData({ nodes: [], links: [] });
     }
   }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
+
+  //prepare nodes (as spheres):
+  useEffect(() => {
+    setIsLoadingGraph(true);
+
+    const createSphereFromNode = async (node) => {
+      //SQUARES:
+      // const sprite = new THREE.TextureLoader().load(
+      //   node.image || '/favicon.ico'
+      // );
+      // const material = new THREE.SpriteMaterial({ map: sprite });
+      // const spriteObj = new THREE.Sprite(material);
+      // spriteObj.scale.set(90, 90, 90);
+      // return spriteObj;
+
+      //FLAT CIRCLES:
+      // const texture = new THREE.TextureLoader().load(
+      //   node.image || '/favicon.ico'
+      // );
+      // const geometry = new THREE.CircleGeometry(32, 32, 32);
+      // const material = new THREE.MeshBasicMaterial({ map: texture });
+      // const circle = new THREE.Mesh(geometry, material);
+      // circle.scale.set(5, 5, 5);
+      // return circle;
+
+      //SPHERES THAT ROTATE:
+      //storing textures in spriteMap state, so that they are not reloaded every time the graph is rerendered:
+      let texture;
+      let circle;
+
+      if (spriteMap.has(node.id)) {
+        texture = spriteMap.get(node.id);
+        const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        circle = new THREE.Mesh(geometry, material);
+        circle.scale.set(1, 1, 1);
+        return circle;
+      } else {
+        const placeholderGeometry = new THREE.SphereGeometry(10, 32, 32);
+        const placeholderMaterial = new THREE.MeshBasicMaterial({
+          color: 0xcccccc,
+        });
+        const placeholderObject = new THREE.Mesh(
+          placeholderGeometry,
+          placeholderMaterial
+        );
+
+        const loader = new THREE.TextureLoader();
+        texture = loader.load(node.image);
+
+        // duplicateImage(node.image, 80)
+        //   .then(async (canvas) => {
+        //     const canvasUrl = canvas.toDataURL();
+        //     loader.load(
+        //       canvasUrl,
+        //       (txt) => {
+        //         texture = txt;
+        //         spriteMap.set(node.id, txt);
+        //         const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
+        //         const material = new THREE.MeshBasicMaterial({ map: txt });
+        //         circle = new THREE.Mesh(geometry, material);
+        //       },
+        //       undefined,
+        //       (err) => console.error({ err })
+        //     );
+        //   setSpriteMap(spriteMap.set(node.id, texture));
+        //   graphRef.current.refresh();
+        // })
+        // .catch((err) => console.error({ err }));
+        // return placeholderObject.clone();
+        const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        circle = new THREE.Mesh(geometry, material);
+        circle.userData.id = node.id;
+        // console.log('circle', circle);
+        return circle;
+
+        // texture = loader.load(
+        //   `${node.image}`,
+        //   (texture) => {
+        //     texture = texture;
+        //     setSpriteMap(spriteMap.set(node.id, texture));
+        //   },
+        //   undefined,
+        //   (err) => console.error({ err })
+        // );
+
+        // texture = new THREE.TextureLoader().load(`${node.image}`);
+
+        // setSpriteMap(spriteMap.set(node.id, texture));
+      }
+    };
+
+    console.log('graphData', graphData);
+
+    Promise.all(graphData.nodes.map((node) => createSphereFromNode(node))).then(
+      (spheresArr) => {
+        console.log('spheresArr', spheresArr);
+        setSpheres(spheresArr);
+      }
+    );
+  }, [graphData]);
 
   // link isDestination logic:
   useEffect(() => {
@@ -179,82 +284,84 @@ const Graph = ({
           `<div class='node-label'><div class='title'>${node.name}</div><div>${node.group}</div></div>`
         }
         nodeAutoColorBy={'group'}
-        nodeThreeObject={(node) => {
-          //SQUARES:
-          // const sprite = new THREE.TextureLoader().load(
-          //   node.image || '/favicon.ico'
-          // );
-          // const material = new THREE.SpriteMaterial({ map: sprite });
-          // const spriteObj = new THREE.Sprite(material);
-          // spriteObj.scale.set(90, 90, 90);
-          // return spriteObj;
+        nodeThreeObject={(node) =>
+          spheres.find((sphere) => sphere.userData.id === node.id)
+        }
+        // nodeThreeObject={(node) => {
+        //   // console.log('node', node);
+        //   //SQUARES:
+        //   // const sprite = new THREE.TextureLoader().load(
+        //   //   node.image || '/favicon.ico'
+        //   // );
+        //   // const material = new THREE.SpriteMaterial({ map: sprite });
+        //   // const spriteObj = new THREE.Sprite(material);
+        //   // spriteObj.scale.set(90, 90, 90);
+        //   // return spriteObj;
 
-          //FLAT CIRCLES:
-          // const texture = new THREE.TextureLoader().load(
-          //   node.image || '/favicon.ico'
-          // );
-          // const geometry = new THREE.CircleGeometry(32, 32, 32);
-          // const material = new THREE.MeshBasicMaterial({ map: texture });
-          // const circle = new THREE.Mesh(geometry, material);
-          // circle.scale.set(5, 5, 5);
-          // return circle;
+        //   //FLAT CIRCLES:
+        //   // const texture = new THREE.TextureLoader().load(
+        //   //   node.image || '/favicon.ico'
+        //   // );
+        //   // const geometry = new THREE.CircleGeometry(32, 32, 32);
+        //   // const material = new THREE.MeshBasicMaterial({ map: texture });
+        //   // const circle = new THREE.Mesh(geometry, material);
+        //   // circle.scale.set(5, 5, 5);
+        //   // return circle;
 
-          //SPHERES THAT ROTATE:
-          //storing textures in spriteMap state, so that they are not reloaded every time the graph is rerendered:
-          let texture;
-          let circle;
+        //   //SPHERES THAT ROTATE:
+        //   //storing textures in spriteMap state, so that they are not reloaded every time the graph is rerendered:
+        //   let texture;
+        //   let circle;
 
-          if (spriteMap.has(node.id)) {
-            texture = spriteMap.get(node.id);
-            const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
-            const material = new THREE.MeshBasicMaterial({ map: texture });
-            circle = new THREE.Mesh(geometry, material);
-            circle.scale.set(1, 1, 1);
-            return circle;
-          } else {
-            const placeholderGeometry = new THREE.SphereGeometry(10, 32, 32);
-            const placeholderMaterial = new THREE.MeshBasicMaterial({
-              color: 0xcccccc,
-            });
-            const placeholderObject = new THREE.Mesh(
-              placeholderGeometry,
-              placeholderMaterial
-            );
+        //   if (spriteMap.has(node.id)) {
+        //     texture = spriteMap.get(node.id);
+        //     const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
+        //     const material = new THREE.MeshBasicMaterial({ map: texture });
+        //     circle = new THREE.Mesh(geometry, material);
+        //     circle.scale.set(1, 1, 1);
+        //     return circle;
+        //   } else {
+        //     const placeholderGeometry = new THREE.SphereGeometry(10, 32, 32);
+        //     const placeholderMaterial = new THREE.MeshBasicMaterial({
+        //       color: 0xcccccc,
+        //     });
+        //     const placeholderObject = new THREE.Mesh(
+        //       placeholderGeometry,
+        //       placeholderMaterial
+        //     );
 
-            const loader = new THREE.TextureLoader();
-            duplicateImage(node.image, 80)
-              .then((canvas) => {
-                texture = loader.load(canvas.toDataURL());
-                // const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
-                // console.log('texture THEN', texture);
-                // const material = new THREE.MeshBasicMaterial({
-                //   map: texture,
-                // });
-                // circle = new THREE.Mesh(geometry, material);
-                // circle.scale.set(1, 1, 1);
-                setSpriteMap(spriteMap.set(node.id, texture));
-                graphRef.current.refresh();
-              })
-              .catch((err) => console.error({ err }));
-            return placeholderObject.clone();
+        //     const loader = new THREE.TextureLoader();
+        //     duplicateImage(node.image, 80)
+        //       .then((canvas) => {
+        //         texture = loader.load(canvas.toDataURL());
+        //         // const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
+        //         // console.log('texture THEN', texture);
+        //         // const material = new THREE.MeshBasicMaterial({
+        //         //   map: texture,
+        //         // });
+        //         // circle = new THREE.Mesh(geometry, material);
+        //         // circle.scale.set(1, 1, 1);
+        //         setSpriteMap(spriteMap.set(node.id, texture));
+        //         graphRef.current.refresh();
+        //       })
+        //       .catch((err) => console.error({ err }));
+        //     return placeholderObject.clone();
 
-            // texture = loader.load(
-            //   `${node.image}`,
-            //   (texture) => {
-            //     texture = texture;
-            //     setSpriteMap(spriteMap.set(node.id, texture));
-            //   },
-            //   undefined,
-            //   (err) => console.error({ err })
-            // );
+        //     // texture = loader.load(
+        //     //   `${node.image}`,
+        //     //   (texture) => {
+        //     //     texture = texture;
+        //     //     setSpriteMap(spriteMap.set(node.id, texture));
+        //     //   },
+        //     //   undefined,
+        //     //   (err) => console.error({ err })
+        //     // );
 
-            // texture = new THREE.TextureLoader().load(`${node.image}`);
+        //     // texture = new THREE.TextureLoader().load(`${node.image}`);
 
-            // setSpriteMap(spriteMap.set(node.id, texture));
-          }
-        }}
-        // extraRenderers={isMounted ? extraRenderers : []}
-        // extraRenderers={[]}
+        //     // setSpriteMap(spriteMap.set(node.id, texture));
+        //   }
+        // }}
 
         onNodeClick={handleNodeClick}
         nodeThreeObjectExtend={true}

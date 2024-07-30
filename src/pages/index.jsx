@@ -97,7 +97,15 @@ export default function Home({ allTokens, tokenDataForOG }) {
         title={title}
         description={description}
       />
-      <Layout>
+      <Layout
+        setShowMineIsChecked={setShowMineIsChecked}
+        showMineIsChecked={showMineIsChecked}
+        allTokens={allTokens}
+        setSort={setSort}
+        sort={sort}
+        setFilter={setFilter}
+        filter={filter}
+      >
         <main
           className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
         >
