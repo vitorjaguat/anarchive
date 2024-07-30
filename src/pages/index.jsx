@@ -54,7 +54,7 @@ export default function Home({
         undefined,
         { shallow: true }
       );
-      console.log('openTokenData', openTokenData);
+      // console.log('openTokenData', openTokenData);
     } else {
       // Remove the fragment query parameter
       const newQuery = { ...router.query };
@@ -129,6 +129,9 @@ export default function Home({
 }
 
 export async function getServerSideProps(context) {
+  ////////// fetch all tokens:
+
+  ////////// manage the query parameter 'fragment':
   const { fragment } = context.query;
   let tokenDataForOG = null;
 
