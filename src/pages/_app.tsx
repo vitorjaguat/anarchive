@@ -2,7 +2,6 @@ import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import localFont from '@next/font/local';
-import contract from '../utils/contract';
 // import Headhead from '@/components/Headhead';
 
 import { reservoirChains } from '@reservoir0x/reservoir-sdk';
