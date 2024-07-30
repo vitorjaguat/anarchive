@@ -8,21 +8,19 @@ import Head from '../components/Headhead';
 import CreateTokenButton from '../components/CreateTokenButton';
 import { useRouter } from 'next/router';
 import collectionAddress from '../utils/contract';
-// const inter = Inter({ subsets: ['latin'] });
+import Layout from '@/components/Layout';
+import contract from '../utils/contract';
 
-export const metadata = {
-  title: '...',
-  description: '...',
-};
+export default function Home({ allTokens, tokenDataForOG }) {
+  //fetch collection tokens: ok from getServerSideProps!
 
-export default function Home({
-  allTokens,
-  sort,
-  showMineIsChecked,
-  filter,
-  setFilter,
-  tokenDataForOG,
-}) {
+  // sorting tokens:
+  const [sort, setSort] = useState('From');
+  const [showMineIsChecked, setShowMineIsChecked] = useState(false);
+
+  //filter tokens by content tag (searchbar):
+  const [filter, setFilter] = useState([]);
+
   const [openTokenData, setOpenTokenData] = useState('initial');
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
@@ -99,37 +97,59 @@ export default function Home({
         title={title}
         description={description}
       />
-      <main
-        className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
-      >
-        <Filters filter={filter} setFilter={setFilter} />
+      <Layout>
+        <main
+          className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
+        >
+          <Filters filter={filter} setFilter={setFilter} />
 
-        <TokenInfo
-          openTokenData={openTokenData}
-          handleClickOverlay={handleClickOverlay}
-          setImageLoaded={setImageLoaded}
-          imageLoaded={imageLoaded}
-          setOpenTokenData={setOpenTokenData}
-        />
+          <TokenInfo
+            openTokenData={openTokenData}
+            handleClickOverlay={handleClickOverlay}
+            setImageLoaded={setImageLoaded}
+            imageLoaded={imageLoaded}
+            setOpenTokenData={setOpenTokenData}
+          />
 
-        <GraphWrapper
-          allTokens={allTokens}
-          openTokenData={openTokenData}
-          setOpenTokenData={setOpenTokenData}
-          sort={sort}
-          filter={filter}
-          showMineIsChecked={showMineIsChecked}
-          setImageLoaded={setImageLoaded}
-        />
+          <GraphWrapper
+            allTokens={allTokens}
+            openTokenData={openTokenData}
+            setOpenTokenData={setOpenTokenData}
+            sort={sort}
+            filter={filter}
+            showMineIsChecked={showMineIsChecked}
+            setImageLoaded={setImageLoaded}
+          />
 
-        {/* <CreateTokenButton /> */}
-      </main>
+          {/* <CreateTokenButton /> */}
+        </main>
+      </Layout>
     </>
   );
 }
 
 export async function getServerSideProps(context) {
   ////////// fetch all tokens:
+  const fetchAllTokens = async () => {
+    const options = {
+      method: 'GET',
+      headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
+    };
+
+    try {
+      const response = await fetch(
+        `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
+        options
+      );
+      const data = await response.json();
+      console.log(data.tokens);
+      return data.tokens;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const allTokens = await fetchAllTokens();
 
   ////////// manage the query parameter 'fragment':
   const { fragment } = context.query;
@@ -169,6 +189,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       tokenDataForOG,
+      allTokens,
     },
   };
 }
