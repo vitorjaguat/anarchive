@@ -245,10 +245,8 @@ const Graph = ({
           let circle;
 
           if (spriteMap.has(node.id)) {
-            console.log('sprite GET!');
             texture = spriteMap.get(node.id);
             const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
-            console.log('texture IF', texture);
             const material = new THREE.MeshBasicMaterial({ map: texture });
             circle = new THREE.Mesh(geometry, material);
             circle.scale.set(1, 1, 1);
@@ -266,7 +264,6 @@ const Graph = ({
             const loader = new THREE.TextureLoader();
             duplicateImage(node.image, 80)
               .then((canvas) => {
-                console.log('canvas', canvas);
                 texture = loader.load(canvas.toDataURL());
                 // const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
                 // console.log('texture THEN', texture);

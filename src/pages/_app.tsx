@@ -83,7 +83,7 @@ export default function App({ Component, pageProps }: AppProps) {
           options
         );
         const data = await response.json();
-        console.log(data.tokens);
+        // console.log(data.tokens);
         setAllTokens(data.tokens);
       } catch (err) {
         console.error(err);
