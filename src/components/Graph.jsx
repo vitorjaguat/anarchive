@@ -1,13 +1,6 @@
 import { ForceGraph3D } from 'react-force-graph';
 import { useRef, useState, useEffect } from 'react';
-// import { useRouter } from 'next/router';
-// import { ForceGraphMethods } from 'react-force-graph-3d';
-// import {
-//   CSS2DRenderer,
-//   CSS2DObject,
-// } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
 import * as THREE from 'three';
-// import { useTokens } from '@reservoir0x/reservoir-kit-ui';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 import contract from '../utils/contract';
@@ -24,25 +17,17 @@ const Graph = ({
   const graphRef = useRef();
   const [graphData, setGraphData] = useState({ nodes: [], links: [] });
   const [spriteMap, setSpriteMap] = useState(new Map());
-  // const [isMounted, setIsMounted] = useState(false);
   const isMounted = true;
-
-  // const isMounted =
-  //   typeof window !== 'undefined' && typeof document !== 'undefined';
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
-  // useEffect(() => {
-  //   setIsMounted(true);
-  // }, []);
-
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-    setWindowHeight(window.innerHeight);
-  };
-
   useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+    };
+
     window.addEventListener('resize', handleResize);
 
     // Cleanup function to remove the event listener when the component unmounts
@@ -50,9 +35,6 @@ const Graph = ({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  // const router = useRouter();
-  // let extraRenderers = [];
 
   //events:
 
@@ -70,24 +52,12 @@ const Graph = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isMounted]);
-
-  // const handleBackgroundClick = useCallback(() => {
-  //   console.log('graphData', graphData);
-  //   graphRef.current.zoomToFit(1000);
-  // }, [graphRef]);
-
-  // if (isMounted) {
-  //   // extraRenderers = [new CSS2DRenderer()];
-  //   windowWidth = window.innerWidth;
-  //   windowHeight = window.innerHeight;
-  // }
+  }, []);
 
   const handleNodeClick = (node) => {
     const clickedTokenData = allTokens.find(
       (token) => +token.token.tokenId === +node.id
     );
-    // console.log('clickedTokenData', clickedTokenData);
     setImageLoaded(false);
     setOpenTokenData(clickedTokenData);
   };
@@ -134,10 +104,6 @@ const Graph = ({
     }
   }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
 
-  // useEffect(() => {
-
-  // }, [allTokens, sort, filter, showMineIsChecked]);
-
   // link isDestination logic:
   useEffect(() => {
     if (sort === 'From') {
@@ -146,10 +112,7 @@ const Graph = ({
     }
   }, [sort]);
 
-  // const graphWidth =
-  //   openTokenData === 'initial' ? windowWidth : windowWidth - 600;
-
-  //add padding to node.image before loading it as a texture:
+  //duplicate the image on the X axis in order to deform it less:
   const duplicateImage = (imageSrc, padding) => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -172,7 +135,7 @@ const Graph = ({
   };
 
   return (
-    <div className='relative' onKeyDown={(e) => handleKeyPress(e)}>
+    <div className={'relative'} onKeyDown={(e) => handleKeyPress(e)}>
       <ForceGraph3D
         // rendererConfig={{
         //   powerPreference: 'high-performance',
@@ -183,8 +146,6 @@ const Graph = ({
         //container:
         width={windowWidth}
         height={windowHeight - 100}
-        // width={900}
-        // height={900}
         showNavInfo={false}
         nodeRelSize={1}
         //events:
@@ -203,8 +164,7 @@ const Graph = ({
         //links:
         linkColor={(link) =>
           link?.isDestination && sort === 'From'
-            ? // ? 'rgba(255,255,255,0.1)'
-              'rgba (160, 160, 255, 0.1)'
+            ? 'rgba (160, 160, 255, 0.1)'
             : 'rgba(0,0,0,0)'
         }
         linkWidth={(link) => (sort === 'From' ? 20 : 0)}
@@ -296,16 +256,7 @@ const Graph = ({
         // extraRenderers={isMounted ? extraRenderers : []}
         // extraRenderers={[]}
 
-        onNodeClick={
-          handleNodeClick
-          // (node) => {
-          // window.open(
-          //   `https://zora.co/collect/zora:0x8e038a4805d984162028f5978acd894fad310b56/${node.id}`,
-          //   '_blank'
-          // );
-
-          // }
-        }
+        onNodeClick={handleNodeClick}
         nodeThreeObjectExtend={true}
         // graphData={{
         //   nodes: [{ id: 'Harry' }, { id: 'Sally' }, { id: 'Alice' }],
