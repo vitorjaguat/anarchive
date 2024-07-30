@@ -32,7 +32,7 @@ export default function Home({
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
     // Check if 'token' query parameter exists
-    console.log('router.query', router.query);
+    // console.log('router.query', router.query);
     if (router.query.fragment) {
       const clickedTokenData = allTokens.find(
         (token) => +token.token.tokenId === +router.query.fragment
@@ -55,6 +55,18 @@ export default function Home({
         { shallow: true }
       );
       console.log('openTokenData', openTokenData);
+    } else {
+      // Remove the fragment query parameter
+      const newQuery = { ...router.query };
+      delete newQuery.fragment;
+      router.push(
+        {
+          pathname: router.pathname,
+          query: newQuery,
+        },
+        undefined,
+        { shallow: true }
+      );
     }
   }, [openTokenData?.token?.tokenId]);
 
@@ -142,7 +154,7 @@ export async function getServerSideProps(context) {
     const tokenData = await fetchData();
     tokenDataForOG = tokenData.tokens[0];
   }
-  console.log('token', tokenDataForOG);
+  // console.log('token', tokenDataForOG);
 
   // If no exhibition is found, return a 404 page
   // if (!token) {
