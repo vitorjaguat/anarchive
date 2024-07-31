@@ -61,8 +61,6 @@ class GraphDataClass {
     }
     // console.log('this.links', this.links);
   }
-
-  changeAttribute(attribute) {}
 }
 
 export { GraphDataClass };
