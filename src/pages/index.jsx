@@ -10,12 +10,12 @@ import { useRouter } from 'next/router';
 import collectionAddress from '../utils/contract';
 import Layout from '@/components/Layout';
 import contract from '../utils/contract';
-import axios from 'axios';
-import sharp from 'sharp';
+// import axios from 'axios';
+// import sharp from 'sharp';
 
 //creation of spheres:
-import * as THREE from 'three';
-import { GraphDataClass } from '../model/glassDataClass';
+// import * as THREE from 'three';
+// import { GraphDataClass } from '../model/glassDataClass';
 
 export default function Home({ allTokens }) {
   //fetch collection tokens: ok from getServerSideProps!
@@ -165,62 +165,62 @@ export async function getStaticProps(context) {
   const allTokens = await fetchAllTokens();
 
   ////////// create all nodes as spheres:
-  const initialGraphDataComplete = new GraphDataClass(allTokens, 'From', []);
-  const initialGraphData = {
-    nodes: initialGraphDataComplete.nodes,
-    links: initialGraphDataComplete.links,
-  };
+  // const initialGraphDataComplete = new GraphDataClass(allTokens, 'From', []);
+  // const initialGraphData = {
+  //   nodes: initialGraphDataComplete.nodes,
+  //   links: initialGraphDataComplete.links,
+  // };
 
-  //duplicate the image on the X axis in order to deform it less:
-  async function duplicateImageOnXAxis(imgUrl) {
-    // Fetch the image
-    const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
-    const imgBuffer = Buffer.from(response.data, 'binary');
+  // //duplicate the image on the X axis in order to deform it less:
+  // async function duplicateImageOnXAxis(imgUrl) {
+  //   // Fetch the image
+  //   const response = await axios.get(imgUrl, { responseType: 'arraybuffer' });
+  //   const imgBuffer = Buffer.from(response.data, 'binary');
 
-    // Load the image with sharp
-    const img = sharp(imgBuffer);
-    const metadata = await img.metadata();
+  //   // Load the image with sharp
+  //   const img = sharp(imgBuffer);
+  //   const metadata = await img.metadata();
 
-    // Create a new image that's twice the width of the original image
-    const newImg = sharp({
-      create: {
-        width: metadata.width * 2,
-        height: metadata.height,
-        channels: 4,
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
-      },
-    });
+  //   // Create a new image that's twice the width of the original image
+  //   const newImg = sharp({
+  //     create: {
+  //       width: metadata.width * 2,
+  //       height: metadata.height,
+  //       channels: 4,
+  //       background: { r: 0, g: 0, b: 0, alpha: 0 },
+  //     },
+  //   });
 
-    // Draw the original image onto the new image twice
-    const imgWithDuplicate = await newImg
-      .composite([
-        { input: imgBuffer, left: 0, top: 0 },
-        { input: imgBuffer, left: metadata.width, top: 0 },
-      ])
-      // .png()
-      .webp()
-      .toBuffer();
+  //   // Draw the original image onto the new image twice
+  //   const imgWithDuplicate = await newImg
+  //     .composite([
+  //       { input: imgBuffer, left: 0, top: 0 },
+  //       { input: imgBuffer, left: metadata.width, top: 0 },
+  //     ])
+  //     // .png()
+  //     .webp()
+  //     .toBuffer();
 
-    return imgWithDuplicate;
-  }
+  //   return imgWithDuplicate;
+  // }
 
-  // Use the function
-  try {
-    const duplicatedNodes = await Promise.all(
-      initialGraphData.nodes.map(async (node) => {
-        const duplicatedImageBuffer = await duplicateImageOnXAxis(node.image);
-        const duplicatedImageBase64 = duplicatedImageBuffer.toString('base64');
-        return { ...node, image: duplicatedImageBase64 };
-      })
-    );
+  // // Use the function
+  // try {
+  //   const duplicatedNodes = await Promise.all(
+  //     initialGraphData.nodes.map(async (node) => {
+  //       const duplicatedImageBuffer = await duplicateImageOnXAxis(node.image);
+  //       const duplicatedImageBase64 = duplicatedImageBuffer.toString('base64');
+  //       return { ...node, image: duplicatedImageBase64 };
+  //     })
+  //   );
 
-    initialGraphData.nodes = duplicatedNodes;
+  //   initialGraphData.nodes = duplicatedNodes;
 
-    // return { props: { initialGraphData } };
-  } catch (error) {
-    console.error('Error duplicating image:', error);
-    // return { props: {} };
-  }
+  //   // return { props: { initialGraphData } };
+  // } catch (error) {
+  //   console.error('Error duplicating image:', error);
+  //   // return { props: {} };
+  // }
 
   ////////// manage the query parameter 'fragment':
   // const { fragment } = context.query;
