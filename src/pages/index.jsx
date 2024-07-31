@@ -112,7 +112,7 @@ export default function Home({ allTokens }) {
         filter={filter}
       >
         <main
-          className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
+          className={` relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
         >
           <Filters filter={filter} setFilter={setFilter} />
 
