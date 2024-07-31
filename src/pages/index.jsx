@@ -17,8 +17,7 @@ import sharp from 'sharp';
 import * as THREE from 'three';
 import { GraphDataClass } from '../model/glassDataClass';
 
-export default function Home({ allTokens, tokenDataForOG, initialTextures }) {
-  // console.log('initialTextures', initialTextures);
+export default function Home({ allTokens }) {
   //fetch collection tokens: ok from getServerSideProps!
 
   // sorting tokens:
@@ -30,11 +29,11 @@ export default function Home({ allTokens, tokenDataForOG, initialTextures }) {
 
   const [openTokenData, setOpenTokenData] = useState('initial');
   const [imageLoaded, setImageLoaded] = useState(false);
-  const router = useRouter();
 
   // console.log('tokenDataForOG', tokenDataForOG);
 
-  // syncronize the router query with the openTokenData state:
+  // syncronize the router query with the openTokenData state + tokenDataForOG:
+  const router = useRouter();
   useEffect(() => {
     // Check if 'token' query parameter exists
     // console.log('router.query', router.query);
@@ -45,34 +44,37 @@ export default function Home({ allTokens, tokenDataForOG, initialTextures }) {
       setOpenTokenData(clickedTokenData);
     }
   }, [router.query, allTokens]);
+  console.log('openTokenData', openTokenData);
 
   // Update the URL query parameter when the openTokenData state changes:
   useEffect(() => {
     // Check if openTokenData exists and has a token property
-    if (openTokenData && openTokenData.token) {
-      // Update the URL without refreshing the page
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, fragment: openTokenData.token.tokenId },
-        },
-        undefined,
-        { shallow: true }
-      );
-      // console.log('openTokenData', openTokenData);
-    } else {
-      // Remove the fragment query parameter
-      const newQuery = { ...router.query };
-      delete newQuery.fragment;
-      router.push(
-        {
-          pathname: router.pathname,
-          query: newQuery,
-        },
-        undefined,
-        { shallow: true }
-      );
-    }
+    setTimeout(() => {
+      if (openTokenData && openTokenData.token) {
+        // Update the URL without refreshing the page
+        router.push(
+          {
+            pathname: router.pathname,
+            query: { ...router.query, fragment: openTokenData.token.tokenId },
+          },
+          undefined,
+          { shallow: true }
+        );
+        // console.log('openTokenData', openTokenData);
+      } else {
+        // Remove the fragment query parameter
+        const newQuery = { ...router.query };
+        delete newQuery.fragment;
+        router.push(
+          {
+            pathname: router.pathname,
+            query: newQuery,
+          },
+          undefined,
+          { shallow: true }
+        );
+      }
+    }, 300);
   }, [openTokenData?.token?.tokenId]);
 
   const handleClickOverlay = useCallback((e) => {
@@ -81,24 +83,20 @@ export default function Home({ allTokens, tokenDataForOG, initialTextures }) {
     setOpenTokenData(null);
   }, []);
 
-  //single token view:
-  // console.log('openTokenData', openTokenData);
-  // console.log('projectId', process.env.WALLET_CONNECT_PROJECT_ID);
-
   // dynamic metadata:
-  const title = tokenDataForOG?.token
-    ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
+  const title = openTokenData?.token
+    ? openTokenData?.token?.name + ' | The Anarchiving Game'
     : 'The Anarchiving Game';
   const description =
-    tokenDataForOG?.token && tokenDataForOG?.token?.description
-      ? tokenDataForOG?.token?.description?.slice(0, 126) + '...'
+    openTokenData?.token && openTokenData?.token?.description
+      ? openTokenData?.token?.description?.slice(0, 126) + '...'
       : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
 
   return (
     <>
       <Head
         ogImage={
-          tokenDataForOG?.token?.image ||
+          openTokenData?.token?.image ||
           'https://the-anarchive.vercel.app/meta/image2.png'
         }
         title={title}
@@ -167,7 +165,6 @@ export async function getStaticProps(context) {
   const allTokens = await fetchAllTokens();
 
   ////////// create all nodes as spheres:
-  let initialTextures = [];
   const initialGraphDataComplete = new GraphDataClass(allTokens, 'From', []);
   const initialGraphData = {
     nodes: initialGraphDataComplete.nodes,
@@ -226,46 +223,36 @@ export async function getStaticProps(context) {
   }
 
   ////////// manage the query parameter 'fragment':
-  const { fragment } = context.query;
-  let tokenDataForOG = null;
+  // const { fragment } = context.query;
+  // let tokenDataForOG = null;
 
-  // Fetch data based on the query parameter
-  const fetchData = async () => {
-    const options = {
-      method: 'GET',
-      headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
-    };
-
-    try {
-      const response = await fetch(
-        `https://api-zora.reservoir.tools/tokens/v6?tokens=${collectionAddress}%3A${fragment}`,
-        options
-      );
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      console.error(err);
-    }
-  };
-  if (fragment) {
-    const tokenData = await fetchData();
-    tokenDataForOG = tokenData.tokens[0];
-  }
-  // console.log('token', tokenDataForOG);
-
-  // If no exhibition is found, return a 404 page
-  // if (!token) {
-  //   return {
-  //     notFound: true,
+  // // Fetch data based on the query parameter
+  // const fetchData = async () => {
+  //   const options = {
+  //     method: 'GET',
+  //     headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
   //   };
+
+  //   try {
+  //     const response = await fetch(
+  //       `https://api-zora.reservoir.tools/tokens/v6?tokens=${collectionAddress}%3A${fragment}`,
+  //       options
+  //     );
+  //     const data = await response.json();
+  //     return data;
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+  // if (fragment) {
+  //   const tokenData = await fetchData();
+  //   tokenDataForOG = tokenData.tokens[0];
   // }
 
   return {
     props: {
-      tokenDataForOG,
+      // tokenDataForOG,
       allTokens,
-      initialGraphData,
-      initialTextures,
     },
     revalidate: 2 * 60 * 60,
   };
