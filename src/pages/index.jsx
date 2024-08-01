@@ -129,7 +129,7 @@ export default function Home({ allTokens, tokenDataForOG }) {
             setImageLoaded={setImageLoaded}
           />
 
-          {/* <CreateTokenButton /> */}
+          <CreateTokenButton />
         </main>
       </Layout>
     </>
