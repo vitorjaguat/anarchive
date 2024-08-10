@@ -68,6 +68,8 @@ export default function Home({ allTokens, tokenDataForOG }) {
     }
   }, [openTokenData?.token?.tokenId]);
 
+  console.log('allTokens', allTokens);
+
   const handleClickOverlay = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
