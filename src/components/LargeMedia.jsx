@@ -42,7 +42,10 @@ export default function LargeMedia({ token }) {
     token.media = token.imageLarge;
   }
 
-  if (token.media?.includes('.mpeg')) {
+  if (
+    token.media?.includes('.mpeg') ||
+    token?.metadata?.mediaOriginal?.includes('.mpeg')
+  ) {
     return (
       <audio controls autoPlay>
         <source src={token.media} type='audio/mpeg' />
@@ -50,7 +53,10 @@ export default function LargeMedia({ token }) {
     );
   }
 
-  if (token.media?.includes('.pdf')) {
+  if (
+    token.media?.includes('.pdf') ||
+    token?.metadata?.mediaOriginal?.includes('.pdf')
+  ) {
     return (
       //   <embed
       //     src={token.media}
@@ -74,7 +80,10 @@ export default function LargeMedia({ token }) {
     );
   }
 
-  if (token.media?.includes('.svg')) {
+  if (
+    token.media?.includes('.svg') ||
+    token?.metadata?.mediaOriginal?.includes('.svg')
+  ) {
     return (
       <img
         src={token.media}
@@ -88,7 +97,10 @@ export default function LargeMedia({ token }) {
     );
   }
 
-  if (token.media?.includes('.html')) {
+  if (
+    token.media?.includes('.html') ||
+    token?.metadata?.mediaOriginal?.includes('.html')
+  ) {
     const tokenMedia = token.media.split(';')[0];
     // console.log('tokenMedia', tokenMedia);
     return (

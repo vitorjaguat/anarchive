@@ -154,11 +154,11 @@ const Graph = ({
       }
     };
 
-    console.log('graphData', graphData);
+    // console.log('graphData', graphData);
 
     Promise.all(graphData.nodes.map((node) => createSphereFromNode(node))).then(
       (spheresArr) => {
-        console.log('spheresArr', spheresArr);
+        // console.log('spheresArr', spheresArr);
         setSpheres(spheresArr);
       }
     );
