@@ -114,8 +114,8 @@ export default function CreateIndex() {
       case 'title':
         if (titleRef.current.value.length < 1) {
           error.title = 'Title is required!';
-        } else if (titleRef.current.value.length > 100) {
-          error.title = 'Title is too long! Max 120 characters.';
+        } else if (titleRef.current.value.length > 200) {
+          error.title = 'Title is too long! Max 200 characters.';
         } else {
           error = { ...error };
           delete error.title;
@@ -237,8 +237,8 @@ export default function CreateIndex() {
       case 'all':
         if (titleRef.current.value.length < 1) {
           error.title = 'Title is required!';
-        } else if (titleRef.current.value.length > 100) {
-          error.title = 'Title is too long! Max 120 characters.';
+        } else if (titleRef.current.value.length > 200) {
+          error.title = 'Title is too long! Max 200 characters.';
         } else {
           error = { ...error };
           delete error.title;
