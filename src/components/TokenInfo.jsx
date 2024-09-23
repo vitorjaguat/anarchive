@@ -24,6 +24,10 @@ export default function TokenInfo({
   useEffect(() => {
     if (openTokenData && openTokenData?.token) {
       tokenInfoControls.start('visible');
+      console.log(
+        'openTokenData',
+        openTokenData.token.contract + ':' + openTokenData.token.tokenId
+      );
     } else {
       tokenInfoControls.start('hidden');
     }
@@ -166,7 +170,7 @@ export default function TokenInfo({
                     // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
 
                     // openState={mintOpenState}
-                    collectionId={openTokenData.token.contract}
+                    // collectionId={openTokenData.token.contract}
                     // tokenId={openTokenData.token.tokenId}
                     onMintComplete={(data) => console.log(data)}
                     onMintError={(error) => console.log(error)}
