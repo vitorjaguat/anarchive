@@ -8,6 +8,8 @@ import LargeMedia from './LargeMedia';
 import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
 
+import MintBtn from './MintBtn';
+
 export default function TokenInfo({
   openTokenData,
   handleClickOverlay,
@@ -24,10 +26,10 @@ export default function TokenInfo({
   useEffect(() => {
     if (openTokenData && openTokenData?.token) {
       tokenInfoControls.start('visible');
-      console.log(
-        'openTokenData',
-        openTokenData.token.contract + ':' + openTokenData.token.tokenId
-      );
+      // console.log(
+      //   'openTokenData',
+      //   openTokenData.token.contract + ':' + openTokenData.token.tokenId
+      // );
     } else {
       tokenInfoControls.start('hidden');
     }
