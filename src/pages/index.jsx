@@ -68,7 +68,7 @@ export default function Home({ allTokens, tokenDataForOG }) {
     }
   }, [openTokenData?.token?.tokenId]);
 
-  console.log('allTokens', allTokens);
+  // console.log('allTokens', allTokens);
 
   const handleClickOverlay = useCallback((e) => {
     e.preventDefault();
@@ -152,7 +152,7 @@ export async function getServerSideProps(context) {
         options
       );
       const data = await response.json();
-      console.log(data.tokens);
+      // console.log(data.tokens);
       return data.tokens;
     } catch (err) {
       console.error(err);
