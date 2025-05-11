@@ -20,8 +20,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 //thirdweb
 import { ThirdwebProvider } from '@thirdweb-dev/react';
 
-import { useEffect, useState } from 'react';
-
 const inter = localFont({
   src: [
     {

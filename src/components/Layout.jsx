@@ -1,7 +1,8 @@
 import Navbar from './Navbar';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import AppInfoBox from './AppInfoBox';
 import { usePathname } from 'next/navigation';
+import { useIsMobile } from '@/utils/useIsMobile';
 
 export default function Layout({
   children,
@@ -13,31 +14,21 @@ export default function Layout({
   showMineIsChecked,
   setShowMineIsChecked,
 }) {
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useIsMobile();
   const pathname = usePathname();
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    handleResize(); // Check initial window size
-
-    window.addEventListener('resize', handleResize); // Add event listener for window resize
-
-    return () => {
-      window.removeEventListener('resize', handleResize); // Clean up event listener on component unmount
-    };
-  }, []);
   const [infoVisible, setInfoVisible] = useState(false);
 
   if (isMobile)
     return (
-      <div className='flex flex-col items-center justify-center h-screen px-10 text-center'>
-        <h1 className='text-xl'>
-          The Anarchiving Game is currently unavailable on mobile devices.
-          Please open on a desktop computer to enjoy the full experience.
-        </h1>
+      // <div className='flex flex-col items-center justify-center h-screen px-10 text-center'>
+      //   <h1 className='text-xl'>
+      //     The Anarchiving Game is currently unavailable on mobile devices.
+      //     Please open on a desktop computer to enjoy the full experience.
+      //   </h1>
+      // </div>
+      <div className='relative w-screen h-screen overflow-scroll'>
+        {children}
       </div>
     );
 

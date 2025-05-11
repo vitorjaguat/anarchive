@@ -10,10 +10,11 @@ import { useRouter } from 'next/router';
 import collectionAddress from '../utils/contract';
 import Layout from '@/components/Layout';
 import contract from '../utils/contract';
+import { useIsMobile } from '@/utils/useIsMobile';
+import GridViewMobile from '@/components/mobile/GridViewMobile';
 
 export default function Home({ allTokens, tokenDataForOG }) {
-  //fetch collection tokens: ok from getServerSideProps!
-
+  const isMobile = useIsMobile();
   // sorting tokens:
   const [sort, setSort] = useState('From');
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
@@ -25,12 +26,9 @@ export default function Home({ allTokens, tokenDataForOG }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
-  // console.log('tokenDataForOG', tokenDataForOG);
-
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
     // Check if 'token' query parameter exists
-    // console.log('router.query', router.query);
     if (router.query.fragment) {
       const clickedTokenData = allTokens.find(
         (token) => +token.token.tokenId === +router.query.fragment
@@ -68,17 +66,11 @@ export default function Home({ allTokens, tokenDataForOG }) {
     }
   }, [openTokenData?.token?.tokenId]);
 
-  // console.log('allTokens', allTokens);
-
   const handleClickOverlay = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setOpenTokenData(null);
   }, []);
-
-  //single token view:
-  // console.log('openTokenData', openTokenData);
-  // console.log('projectId', process.env.WALLET_CONNECT_PROJECT_ID);
 
   // dynamic metadata:
   const title = tokenDataForOG?.token
@@ -108,31 +100,37 @@ export default function Home({ allTokens, tokenDataForOG }) {
         setFilter={setFilter}
         filter={filter}
       >
-        <main
-          className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
-        >
-          <Filters filter={filter} setFilter={setFilter} />
+        {/* MOBILE */}
+        {isMobile && <GridViewMobile allTokens={allTokens} />}
 
-          <TokenInfo
-            openTokenData={openTokenData}
-            handleClickOverlay={handleClickOverlay}
-            setImageLoaded={setImageLoaded}
-            imageLoaded={imageLoaded}
-            setOpenTokenData={setOpenTokenData}
-          />
+        {/* DESKTOP */}
+        {!isMobile && (
+          <div
+            className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
+          >
+            <Filters filter={filter} setFilter={setFilter} />
 
-          <GraphWrapper
-            allTokens={allTokens}
-            openTokenData={openTokenData}
-            setOpenTokenData={setOpenTokenData}
-            sort={sort}
-            filter={filter}
-            showMineIsChecked={showMineIsChecked}
-            setImageLoaded={setImageLoaded}
-          />
+            <TokenInfo
+              openTokenData={openTokenData}
+              handleClickOverlay={handleClickOverlay}
+              setImageLoaded={setImageLoaded}
+              imageLoaded={imageLoaded}
+              setOpenTokenData={setOpenTokenData}
+            />
 
-          <CreateTokenButton />
-        </main>
+            <GraphWrapper
+              allTokens={allTokens}
+              openTokenData={openTokenData}
+              setOpenTokenData={setOpenTokenData}
+              sort={sort}
+              filter={filter}
+              showMineIsChecked={showMineIsChecked}
+              setImageLoaded={setImageLoaded}
+            />
+
+            <CreateTokenButton />
+          </div>
+        )}
       </Layout>
     </>
   );
