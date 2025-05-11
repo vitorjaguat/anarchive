@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { IoCloseOutline } from 'react-icons/io5';
 import { GoPlusCircle } from 'react-icons/go';
 import { MintModal } from '@reservoir0x/reservoir-kit-ui';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export default function GridOpenToken({
   token,
@@ -13,6 +14,7 @@ export default function GridOpenToken({
   token: ReservoirToken;
   onClose: () => void;
 }) {
+  const { openConnectModal } = useConnectModal();
   useEffect(() => {
     // Lock scroll
     document.body.style.overflow = 'hidden';
@@ -22,12 +24,12 @@ export default function GridOpenToken({
   }, []);
 
   return createPortal(
-    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70'>
+    <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[2px]'>
       <div
-        className='bg-slate-500 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto p-4'
+        className='bg-slate-500 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 blur-none'
         tabIndex={-1}
       >
-        <button className='absolute top-2 right-2' onClick={onClose}>
+        <button className='absolute top-2 right-2 blur-none' onClick={onClose}>
           <IoCloseOutline className='text-white' size={25} />
         </button>
         {/* IMAGE */}
@@ -77,7 +79,7 @@ export default function GridOpenToken({
             // tokenId={openTokenData.token.tokenId}
             onMintComplete={(data) => console.log(data)}
             onMintError={(error) => console.log(error)}
-            onConnectWallet={() => {}}
+            onConnectWallet={openConnectModal}
             token={token.token.contract + ':' + token.token.tokenId}
           />
           {/* <div className=''>Collect</div> */}

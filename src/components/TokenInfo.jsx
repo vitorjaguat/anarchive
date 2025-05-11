@@ -7,6 +7,7 @@ import { BsArrowsFullscreen } from 'react-icons/bs';
 import LargeMedia from './LargeMedia';
 import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export default function TokenInfo({
   openTokenData,
@@ -20,6 +21,7 @@ export default function TokenInfo({
   // console.log('imageLoaded', imageLoaded);
   const tokenInfoControls = useAnimationControls();
   const largeMediaControls = useAnimationControls();
+  const { openConnectModal } = useConnectModal();
 
   useEffect(() => {
     if (openTokenData && openTokenData?.token) {
@@ -113,8 +115,6 @@ export default function TokenInfo({
                         (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
                       }
                       onLoad={(e) => setImageLoaded(true)}
-                      // placeholder='blur'
-                      // blurDataURL='data:,loading'
                       onClick={() => {
                         largeMediaControls.start('visible');
                         setOpenLargeMedia(openTokenData);
@@ -132,8 +132,6 @@ export default function TokenInfo({
                         (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
                       }
                       onLoad={(e) => setImageLoaded(true)}
-                      // placeholder='blur'
-                      // blurDataURL='data:,loading'
                       onClick={() => {
                         largeMediaControls.start('visible');
                         setOpenLargeMedia(openTokenData);
@@ -179,6 +177,7 @@ export default function TokenInfo({
                       ':' +
                       openTokenData.token.tokenId
                     }
+                    onConnectWallet={openConnectModal}
                   />
                 </div>
               </div>
