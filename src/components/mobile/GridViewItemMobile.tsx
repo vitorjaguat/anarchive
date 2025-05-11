@@ -6,6 +6,9 @@ import type {
 } from '../../../types/tokens';
 import { useState } from 'react';
 import GridOpenToken from './GridOpenToken';
+import { MintModal } from '@reservoir0x/reservoir-kit-ui';
+import { GoPlusCircle } from 'react-icons/go';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export default function GridViewItemMobile({
   token,
@@ -13,6 +16,7 @@ export default function GridViewItemMobile({
   token: ReservoirToken;
 }) {
   const [openToken, setOpenToken] = useState<ReservoirToken | null>(null);
+  const { openConnectModal } = useConnectModal();
 
   const handleClick = () => {
     console.log('token', token);
@@ -21,7 +25,7 @@ export default function GridViewItemMobile({
   return (
     <>
       <div
-        className='flex flex-col items-center border-[1px] bg-purple-300/20 border-purple-300/20 rounded-lg w-full'
+        className='w-full flex flex-col items-center border-[1px] bg-purple-300/20 border-purple-300/20 rounded-lg cursor-pointer overflow-hidden'
         onClick={handleClick}
       >
         {/* IMAGE */}
@@ -48,6 +52,43 @@ export default function GridViewItemMobile({
           <div className='text-sm text-gray-400 hyphens-auto'>
             {token.token.description}
           </div>
+        </div>
+        {/* COLLECT (LIKES) */}
+        <div className='w-full bg-slate-600 mt-1 flex gap-2 items-center justify-between px-0 text-xs'>
+          <div className='flex gap-2 pl-1'>
+            <GoPlusCircle size={14} color='' />
+            <div className=''>{token.token.supply}</div>
+          </div>
+          <MintModal
+            chainId={7777777}
+            copyOverrides={{
+              mintTitle: 'Collect your own',
+              mintCtaBuy: 'Collect',
+            }}
+            // normalizeRoyalties={true}
+            trigger={
+              <button
+                className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-[#000000] hover:scale-[1.02] transition-all duration-300'
+                onClick={(e) => e.stopPropagation()}
+              >
+                Collect
+              </button>
+            }
+            // onConnectWallet={() => {
+            //   openConnectModal?.();
+            // }}
+            // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
+            // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
+
+            // openState={mintOpenState}
+            // collectionId={openTokenData.token.contract}
+            // tokenId={openTokenData.token.tokenId}
+            onMintComplete={(data) => console.log(data)}
+            onMintError={(error) => console.log(error)}
+            onConnectWallet={openConnectModal}
+            token={token.token.contract + ':' + token.token.tokenId}
+          />
+          {/* <div className=''>Collect</div> */}
         </div>
       </div>
 
