@@ -58,6 +58,11 @@ export interface Token {
   ownerCount?: number;
   owners?: TokenOwner[];
   market?: TokenMarket;
+  supply?: string | number;
+  remainingSupply?: string | number;
+  tokenId: string;
+  rarity?: string | number;
+  rarityRank?: number | string;
   // Add more fields as needed from the API response
 }
 
