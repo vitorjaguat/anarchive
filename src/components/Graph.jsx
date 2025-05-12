@@ -1,9 +1,10 @@
-import { ForceGraph3D } from 'react-force-graph';
+// import { ForceGraph3D } from 'react-force-graph';
 import { useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 import contract from '../utils/contract';
+import ForceGraph3D from 'react-force-graph-3d';
 
 const Graph = ({
   allTokens,

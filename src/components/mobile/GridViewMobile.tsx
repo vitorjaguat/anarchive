@@ -14,7 +14,7 @@ export default function GridViewMobile({
         })
       ) : !usersFrags || usersFrags.length === 0 ? (
         <div className='w-full flex items-center justify-center text-sm text-gray-400'>
-          No frags found
+          No fragments found.
         </div>
       ) : (
         usersFrags.map((token, i) => {
