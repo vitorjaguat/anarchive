@@ -1,11 +1,12 @@
 import Image from 'next/image';
 import type { ReservoirToken } from '../../../types/tokens';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { IoCloseOutline } from 'react-icons/io5';
 import { GoPlusCircle } from 'react-icons/go';
 import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import LargeMedia from '../LargeMedia';
 
 export default function GridOpenToken({
   token,
@@ -15,6 +16,7 @@ export default function GridOpenToken({
   onClose: () => void;
 }) {
   const { openConnectModal } = useConnectModal();
+  const [openLargeMedia, setOpenLargeMedia] = useState(null);
   useEffect(() => {
     // Lock scroll
     document.body.style.overflow = 'hidden';
@@ -26,7 +28,7 @@ export default function GridOpenToken({
   return createPortal(
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[2px]'>
       <div
-        className='bg-slate-500 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto p-4 blur-none'
+        className='bg-slate-500 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto p-4'
         tabIndex={-1}
       >
         <button className='absolute top-2 right-2 blur-none' onClick={onClose}>
@@ -45,7 +47,7 @@ export default function GridOpenToken({
               //   onLoad={(e) => setImageLoaded(true)}
               onClick={() => {
                 // largeMediaControls.start('visible');
-                // setOpenLargeMedia(token);
+                setOpenLargeMedia(token);
               }}
             />
           )}
@@ -119,6 +121,28 @@ export default function GridOpenToken({
           </div>
         </div>
       </div>
+
+      {/* LARGE MEDIA */}
+      {openLargeMedia && (
+        <div
+          className='absolute inset-0 z-60 flex items-center justify-center bg-black/70 backdrop-blur-[2px]'
+          onClick={() => {
+            console.log('token:', token);
+            setOpenLargeMedia(null);
+          }}
+        >
+          <button
+            className='absolute top-2 right-2 blur-none'
+            onClick={() => setOpenLargeMedia(null)}
+          >
+            <IoCloseOutline className='text-white' size={25} />
+          </button>
+          <LargeMedia
+            token={token.token}
+            // className={'w-full cursor-pointer'}
+          />
+        </div>
+      )}
     </div>,
     document.body
   );
