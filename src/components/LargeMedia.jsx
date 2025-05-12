@@ -1,7 +1,9 @@
 import { TokenMedia } from '@reservoir0x/reservoir-kit-ui';
-import { useEffect, useState } from 'react';
+import { useIsMobile } from '@/utils/useIsMobile';
+// import PDFViewer from '@/components/PDFViewer';
 
 export default function LargeMedia({ token }) {
+  const isMobile = useIsMobile();
   //   const [file, setFile] = useState(null);
 
   //   useEffect(() => {
@@ -57,6 +59,13 @@ export default function LargeMedia({ token }) {
     token.media?.includes('.pdf') ||
     token?.metadata?.mediaOriginal?.includes('.pdf')
   ) {
+    const width = isMobile ? 'auto' : '800';
+    const height = isMobile ? 'auto' : window.innerHeight - 100;
+
+    if (isMobile) {
+      return <iframe src={token.media} width='100%' height='90%'></iframe>;
+    }
+
     return (
       //   <embed
       //     src={token.media}
@@ -74,9 +83,14 @@ export default function LargeMedia({ token }) {
         //   aspectRatio: '4/3',
         // }}
         data={token.media}
-        width='800'
-        height={window.innerHeight - 150}
-      ></object>
+        style={{ height: isMobile ? '60vh' : `${window.innerHeight - 150}px` }}
+        width={width}
+        // height={height}
+      >
+        <p>
+          PDF cannot be displayed. <a href={token.media}>Download PDF</a>
+        </p>
+      </object>
     );
   }
 
@@ -119,6 +133,10 @@ export default function LargeMedia({ token }) {
 
   // console.log('token.media', token.media);
 
+  const maxWidth = isMobile ? '100%' : '80%';
+  const maxHeight = isMobile ? '100%' : '80vh';
+  const borderRadius = isMobile ? 4 : 8;
+
   return (
     <TokenMedia
       token={token}
@@ -127,11 +145,11 @@ export default function LargeMedia({ token }) {
       // modelViewerOptions={}
       style={{
         width: 'fit-content',
-        maxWidth: '80%',
-        maxHeight: '80vh',
+        maxWidth,
+        maxHeight,
         height: 'auto',
         // minHeight: 445,
-        borderRadius: 8,
+        borderRadius,
         // overflow: 'hidden',
         // objectFit: 'contain',
         display: 'flex',
