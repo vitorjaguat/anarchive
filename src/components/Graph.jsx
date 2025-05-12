@@ -7,6 +7,7 @@ import contract from '../utils/contract';
 
 const Graph = ({
   allTokens,
+  usersFrags,
   setOpenTokenData,
   openTokenData,
   sort,
@@ -65,34 +66,34 @@ const Graph = ({
     setOpenTokenData(clickedTokenData);
   };
 
-  // user account logic:
-  const account = useAccount();
-  const [usersFrags, setUsersFrags] = useState([]);
-  useEffect(() => {
-    if (account?.address && showMineIsChecked) {
-      const fetchData = async () => {
-        const options = {
-          method: 'GET',
-          headers: {
-            accept: '*/*',
-            'x-api-key': process.env.RESERVOIR_API_KEY,
-          },
-        };
+  // user account logic: (moved to index.jsx)
+  // const account = useAccount();
+  // const [usersFrags, setUsersFrags] = useState([]);
+  // useEffect(() => {
+  //   if (account?.address && showMineIsChecked) {
+  //     const fetchData = async () => {
+  //       const options = {
+  //         method: 'GET',
+  //         headers: {
+  //           accept: '*/*',
+  //           'x-api-key': process.env.RESERVOIR_API_KEY,
+  //         },
+  //       };
 
-        try {
-          const response = await fetch(
-            `https://api-zora.reservoir.tools/users/${account.address}/tokens/v10?collection=${contract}&limit=200&includeAttributes=true`,
-            options
-          );
-          const data = await response.json();
-          setUsersFrags(data.tokens);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchData();
-    }
-  }, [account.address, showMineIsChecked]);
+  //       try {
+  //         const response = await fetch(
+  //           `https://api-zora.reservoir.tools/users/${account.address}/tokens/v10?collection=${contract}&limit=200&includeAttributes=true`,
+  //           options
+  //         );
+  //         const data = await response.json();
+  //         setUsersFrags(data.tokens);
+  //       } catch (err) {
+  //         console.error(err);
+  //       }
+  //     };
+  //     fetchData();
+  //   }
+  // }, [account.address, showMineIsChecked]);
 
   // prepare nodes (as graphData):
   useEffect(() => {
