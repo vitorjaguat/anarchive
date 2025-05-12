@@ -1,5 +1,6 @@
 import { TokenMedia } from '@reservoir0x/reservoir-kit-ui';
 import { useIsMobile } from '@/utils/useIsMobile';
+
 // import PDFViewer from '@/components/PDFViewer';
 
 export default function LargeMedia({ token }) {
@@ -62,8 +63,15 @@ export default function LargeMedia({ token }) {
     const width = isMobile ? 'auto' : '800';
     const height = isMobile ? 'auto' : window.innerHeight - 100;
 
+    // if (isMobile) {
+    //   return <iframe src={token.media} width='100%' height='90%'></iframe>;
+    // }
     if (isMobile) {
-      return <iframe src={token.media} width='100%' height='90%'></iframe>;
+      // Open PDF in a new tab
+      if (typeof window !== 'undefined') {
+        window.open(token.media, '_blank');
+      }
+      return <div className='text-center py-8'>PDF opened in a new tab.</div>;
     }
 
     return (
@@ -88,7 +96,10 @@ export default function LargeMedia({ token }) {
         // height={height}
       >
         <p>
-          PDF cannot be displayed. <a href={token.media}>Download PDF</a>
+          PDF cannot be displayed.{' '}
+          <a target='_blank' rel='noopener noreferrer' href={token.media}>
+            Download PDF
+          </a>
         </p>
       </object>
     );
