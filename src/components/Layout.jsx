@@ -34,7 +34,10 @@ export default function Layout({
       // </div>
       <div className='relative w-screen h-screen overflow-scroll'>
         <div className=''>{children}</div>
-        <NavbarMobile />
+        <NavbarMobile
+          showMineIsChecked={showMineIsChecked}
+          setShowMineIsChecked={setShowMineIsChecked}
+        />
       </div>
     );
 

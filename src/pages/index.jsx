@@ -12,12 +12,43 @@ import Layout from '@/components/Layout';
 import contract from '../utils/contract';
 import { useIsMobile } from '@/utils/useIsMobile';
 import GridViewMobile from '@/components/mobile/GridViewMobile';
+import { useAccount } from 'wagmi';
 
 export default function Home({ allTokens, tokenDataForOG }) {
   const isMobile = useIsMobile();
+
+  // user account logic:
+  const [showMineIsChecked, setShowMineIsChecked] = useState(false);
+  const account = useAccount();
+  const [usersFrags, setUsersFrags] = useState([]);
+  useEffect(() => {
+    if (account?.address && showMineIsChecked) {
+      const fetchData = async () => {
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: '*/*',
+            'x-api-key': process.env.RESERVOIR_API_KEY,
+          },
+        };
+
+        try {
+          const response = await fetch(
+            `https://api-zora.reservoir.tools/users/${account.address}/tokens/v10?collection=${contract}&limit=200&includeAttributes=true`,
+            options
+          );
+          const data = await response.json();
+          setUsersFrags(data.tokens);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchData();
+    }
+  }, [account.address, showMineIsChecked]);
+
   // sorting tokens:
   const [sort, setSort] = useState('From');
-  const [showMineIsChecked, setShowMineIsChecked] = useState(false);
 
   //filter tokens by content tag (searchbar):
   const [filter, setFilter] = useState([]);
@@ -101,7 +132,13 @@ export default function Home({ allTokens, tokenDataForOG }) {
         filter={filter}
       >
         {/* MOBILE */}
-        {isMobile && <GridViewMobile allTokens={allTokens} />}
+        {isMobile && (
+          <GridViewMobile
+            allTokens={allTokens}
+            showMineIsChecked={showMineIsChecked}
+            usersFrags={usersFrags}
+          />
+        )}
 
         {/* DESKTOP */}
         {!isMobile && (
@@ -126,6 +163,7 @@ export default function Home({ allTokens, tokenDataForOG }) {
               filter={filter}
               showMineIsChecked={showMineIsChecked}
               setImageLoaded={setImageLoaded}
+              usersFrags={usersFrags}
             />
 
             <CreateTokenButton />
