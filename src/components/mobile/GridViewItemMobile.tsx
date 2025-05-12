@@ -71,7 +71,7 @@ export default function GridViewItemMobile({
                 className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-[#000000] hover:scale-[1.02] transition-all duration-300'
                 onClick={(e) => e.stopPropagation()}
               >
-                <span className='translate-y-[1px]'>Collect</span>
+                <span className='translate-y-1'>Collect</span>
               </button>
             }
             // onConnectWallet={() => {
