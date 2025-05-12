@@ -68,10 +68,10 @@ export default function GridViewItemMobile({
             // normalizeRoyalties={true}
             trigger={
               <button
-                className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-[#000000] hover:scale-[1.02] transition-all duration-300'
+                className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-black duration-300'
                 onClick={(e) => e.stopPropagation()}
               >
-                <span className='translate-y-1'>Collect</span>
+                <div className='translate-y-[1px]'>Collect</div>
               </button>
             }
             // onConnectWallet={() => {

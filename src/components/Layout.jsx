@@ -1,8 +1,9 @@
 import Navbar from './Navbar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AppInfoBox from './AppInfoBox';
 import { usePathname } from 'next/navigation';
 import { useIsMobile } from '@/utils/useIsMobile';
+import NavbarMobile from './mobile/NavbarMobile';
 
 export default function Layout({
   children,
@@ -16,10 +17,14 @@ export default function Layout({
 }) {
   const isMobile = useIsMobile();
   const pathname = usePathname();
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const [infoVisible, setInfoVisible] = useState(false);
 
-  if (isMobile)
+  if (isMounted && isMobile)
     return (
       // <div className='flex flex-col items-center justify-center h-screen px-10 text-center'>
       //   <h1 className='text-xl'>
@@ -28,11 +33,12 @@ export default function Layout({
       //   </h1>
       // </div>
       <div className='relative w-screen h-screen overflow-scroll'>
-        {children}
+        <div className=''>{children}</div>
+        <NavbarMobile />
       </div>
     );
 
-  if (pathname === '/')
+  if (isMounted && !isMobile && pathname === '/')
     return (
       <>
         <div className='relative w-screen h-screen'>
