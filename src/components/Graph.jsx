@@ -5,6 +5,7 @@ import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 import contract from '../utils/contract';
 import ForceGraph3D from 'react-force-graph-3d';
+import { useRouter } from 'next/router';
 
 const Graph = ({
   allTokens,
@@ -26,6 +27,7 @@ const Graph = ({
 
   const [isLoadingGraph, setIsLoadingGraph] = useState(true);
   const [spheres, setSpheres] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,6 +64,14 @@ const Graph = ({
   const handleNodeClick = (node) => {
     const clickedTokenData = allTokens.find(
       (token) => +token.token.tokenId === +node.id
+    );
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, fragment: clickedTokenData.token.tokenId },
+      },
+      undefined,
+      { shallow: true }
     );
     setImageLoaded(false);
     setOpenTokenData(clickedTokenData);

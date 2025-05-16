@@ -40,9 +40,9 @@ export default function GridOpenToken({
             <Image
               src={token.token.image}
               alt={token.token.name}
-              layout='responsive'
-              width={1}
-              height={1}
+              //   layout='responsive'
+              width={400}
+              height={400}
               className={'w-full cursor-pointer'}
               //   onLoad={(e) => setImageLoaded(true)}
               onClick={() => {

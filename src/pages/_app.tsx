@@ -16,6 +16,7 @@ import {
 } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { MainContextProvider } from '@/context/mainContext';
 
 //thirdweb
 import { ThirdwebProvider } from '@thirdweb-dev/react';
@@ -59,42 +60,44 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       {/* <Headhead /> */}
-      <WagmiProvider config={wagmiConfig}>
-        <QueryClientProvider client={queryClient}>
-          <ReservoirKitProvider
-            options={{
-              // Reservoir API key which you can generate at https://reservoir.tools/
-              // This is a protected key and displays as 'undefined' on the browser
-              // DO NOT add NEXT_PUBLIC to the key or you'll risk leaking it on the browser
-              apiKey: process.env.RESERVOIR_API_KEY,
-              //CONFIGURABLE: Override any configuration available in RK: https://docs.reservoir.tools/docs/reservoirkit-ui#configuring-reservoirkit-ui
-              // Note that you should at the very least configure the source with your own domain
-              chains: [{ ...reservoirChains.zora, active: true }],
-              // logLevel: 4,
-              // source: source,
-              normalizeRoyalties: true,
-              //CONFIGURABLE: Set your marketplace fee and recipient, (fee is in BPS)
-              // Note that this impacts orders created on your marketplace (offers/listings)
-              // marketplaceFee: 250,
-              // marketplaceFeeRecipient: "0xabc"
-              disablePoweredByReservoir: true,
-              bountyReferrer: '0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea',
-            }}
-            theme={theme}
-          >
-            <RainbowKitProvider modalSize='compact'>
-              <ThirdwebProvider
-                clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
-                // secretKey={process.env.THIRDWEB_CLIENT_SECRET}
-              >
-                <main className={`${inter.variable} font-inter`}>
-                  <Component {...pageProps} />
-                </main>
-              </ThirdwebProvider>
-            </RainbowKitProvider>
-          </ReservoirKitProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
+      <main className={`${inter.variable} font-inter`}>
+        <WagmiProvider config={wagmiConfig}>
+          <QueryClientProvider client={queryClient}>
+            <ReservoirKitProvider
+              options={{
+                // Reservoir API key which you can generate at https://reservoir.tools/
+                // This is a protected key and displays as 'undefined' on the browser
+                // DO NOT add NEXT_PUBLIC to the key or you'll risk leaking it on the browser
+                apiKey: process.env.RESERVOIR_API_KEY,
+                //CONFIGURABLE: Override any configuration available in RK: https://docs.reservoir.tools/docs/reservoirkit-ui#configuring-reservoirkit-ui
+                // Note that you should at the very least configure the source with your own domain
+                chains: [{ ...reservoirChains.zora, active: true }],
+                // logLevel: 4,
+                // source: source,
+                normalizeRoyalties: true,
+                //CONFIGURABLE: Set your marketplace fee and recipient, (fee is in BPS)
+                // Note that this impacts orders created on your marketplace (offers/listings)
+                // marketplaceFee: 250,
+                // marketplaceFeeRecipient: "0xabc"
+                disablePoweredByReservoir: true,
+                bountyReferrer: '0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea',
+              }}
+              theme={theme}
+            >
+              <RainbowKitProvider modalSize='compact'>
+                <ThirdwebProvider
+                  clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+                  // secretKey={process.env.THIRDWEB_CLIENT_SECRET}
+                >
+                  <MainContextProvider>
+                    <Component {...pageProps} />
+                  </MainContextProvider>
+                </ThirdwebProvider>
+              </RainbowKitProvider>
+            </ReservoirKitProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
+      </main>
     </>
   );
 }

@@ -1,7 +1,6 @@
 import { ThirdwebStorage } from '@thirdweb-dev/storage';
 import fs from 'fs';
 import { IncomingForm } from 'formidable';
-import path from 'path';
 
 export const config = {
   api: {

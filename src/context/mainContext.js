@@ -2,16 +2,16 @@ import React, { createContext, useReducer } from 'react';
 
 // Initial state
 const initialState = {
-  currentTokens: [],
+  openToken: 'initial',
 };
 
 // Reducer function
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'CHANGE_TOKENS':
+    case 'CHANGE_OPEN_TOKEN':
       return {
         ...state,
-        currentTokens: action.payload,
+        openToken: action.payload,
       };
     default:
       return state;
@@ -26,16 +26,16 @@ const MainContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   // Function to change tokens
-  const changeTokens = (newTokens) => {
+  const changeOpenToken = (token) => {
     dispatch({
-      type: 'CHANGE_TOKENS',
-      payload: newTokens,
+      type: 'CHANGE_OPEN_TOKEN',
+      payload: token,
     });
   };
 
   return (
     <MainContext.Provider
-      value={{ currentTokens: state.currentTokens, changeTokens }}
+      value={{ openToken: state.openToken, changeOpenToken }}
     >
       {children}
     </MainContext.Provider>

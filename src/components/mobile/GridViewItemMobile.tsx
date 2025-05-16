@@ -4,24 +4,98 @@ import type {
   ReservoirTokensResponse,
   ReservoirToken,
 } from '../../../types/tokens';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import GridOpenToken from './GridOpenToken';
 import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { GoPlusCircle } from 'react-icons/go';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useRouter } from 'next/router';
 
 export default function GridViewItemMobile({
   token,
+  setOpenTokenData,
+  openTokenData,
 }: {
   token: ReservoirToken;
+  setOpenTokenData: (data: ReservoirToken) => void;
+  openTokenData: ReservoirToken | null;
 }) {
   const [openToken, setOpenToken] = useState<ReservoirToken | null>(null);
   const { openConnectModal } = useConnectModal();
+  //   const [isMounted, setIsMounted] = useState(false);
 
-  const handleClick = () => {
-    console.log('token', token);
+  //   useEffect(() => {
+  //     setIsMounted(true);
+  //     return () => {
+  //       setIsMounted(false);
+  //     };
+  //   }, []);
+
+  const router = useRouter();
+
+  const handleClick = (e) => {
+    e.stopPropagation();
     setOpenToken(token);
+    // Check if openTokenData exists and has a token property
+    if (token.token.tokenId) {
+      // Update the URL without refreshing the page
+      router.push(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, fragment: token.token.tokenId },
+        },
+        undefined,
+        { shallow: true }
+      );
+      // console.log('openTokenData', openTokenData);
+    }
+    // else {
+    //   // Remove the fragment query parameter
+    //   const newQuery = { ...router.query };
+    //   delete newQuery.fragment;
+    //   router.push(
+    //     {
+    //       pathname: router.pathname,
+    //       query: newQuery,
+    //     },
+    //     undefined,
+    //     { shallow: true }
+    //   );
+    // }
   };
+
+  //   const handleClick = () => {
+  //     console.log('token', token);
+  //     setOpenToken(token);
+  //   };
+
+  //   useEffect(() => {
+  //     console.log('openTokenData', openTokenData);
+  //   }, [openTokenData]);
+
+  //   if (!isMounted)
+  //     return (
+  //       <>
+  //         <div className=''></div>
+  //         <div className=''></div>
+  //       </>
+  //     );
+
+  const handleClose = () => {
+    // Remove the fragment query parameter
+    const newQuery = { ...router.query };
+    delete newQuery.fragment;
+    router.push(
+      {
+        pathname: router.pathname,
+        query: newQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
+    setOpenToken(null);
+  };
+
   return (
     <>
       <div
@@ -34,9 +108,9 @@ export default function GridViewItemMobile({
             <Image
               src={token.token.image}
               alt={token.token.name}
-              layout='responsive'
-              width={1}
-              height={1}
+              //   layout='responsive'
+              width={400}
+              height={400}
               className={'w-full cursor-pointer'}
               //   onLoad={(e) => setImageLoaded(true)}
               onClick={() => {
@@ -93,9 +167,7 @@ export default function GridViewItemMobile({
       </div>
 
       {/* OPEN TOKEN MODAL */}
-      {openToken && (
-        <GridOpenToken onClose={() => setOpenToken(null)} token={token} />
-      )}
+      {openToken && <GridOpenToken onClose={handleClose} token={token} />}
     </>
   );
 }
