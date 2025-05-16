@@ -4,13 +4,23 @@ export default function GridViewMobile({
   allTokens,
   showMineIsChecked,
   usersFrags,
+  setOpenTokenData,
+  openTokenData,
 }) {
-  console.log('allTokens', allTokens);
+  if (!allTokens || allTokens.length === 0) return null;
+
   return (
     <div className='flex flex-col items-center w-full gap-4 p-2 pb-[90px]'>
       {!showMineIsChecked ? (
         allTokens.map((token, i) => {
-          return <GridViewItemMobile key={i} token={token} />;
+          return (
+            <GridViewItemMobile
+              key={i}
+              token={token}
+              setOpenTokenData={setOpenTokenData}
+              openTokenData={openTokenData}
+            />
+          );
         })
       ) : !usersFrags || usersFrags.length === 0 ? (
         <div className='w-full flex items-center justify-center text-sm text-gray-400'>
@@ -18,7 +28,14 @@ export default function GridViewMobile({
         </div>
       ) : (
         usersFrags.map((token, i) => {
-          return <GridViewItemMobile key={i} token={token} />;
+          return (
+            <GridViewItemMobile
+              key={i}
+              token={token}
+              setOpenTokenData={setOpenTokenData}
+              openTokenData={openTokenData}
+            />
+          );
         })
       )}
     </div>

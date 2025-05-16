@@ -8,6 +8,7 @@ import LargeMedia from './LargeMedia';
 import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useRouter } from 'next/router';
 
 export default function TokenInfo({
   openTokenData,
@@ -22,18 +23,33 @@ export default function TokenInfo({
   const tokenInfoControls = useAnimationControls();
   const largeMediaControls = useAnimationControls();
   const { openConnectModal } = useConnectModal();
+  const router = useRouter();
 
   useEffect(() => {
-    if (openTokenData && openTokenData?.token) {
+    if (openTokenData && openTokenData?.token?.tokenId) {
       tokenInfoControls.start('visible');
       // console.log(
       //   'openTokenData',
       //   openTokenData.token.contract + ':' + openTokenData.token.tokenId
       // );
-    } else {
-      tokenInfoControls.start('hidden');
     }
-  }, [openTokenData]);
+  }, [openTokenData?.token?.tokenId]);
+
+  const handleClose = () => {
+    tokenInfoControls.start('hidden');
+    // Remove the fragment query parameter
+    const newQuery = { ...router.query };
+    delete newQuery.fragment;
+    router.push(
+      {
+        pathname: router.pathname,
+        query: newQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
+    setOpenTokenData(null);
+  };
 
   return (
     <>
@@ -76,10 +92,7 @@ export default function TokenInfo({
         {/* close button */}
         <div
           className='w-full flex justify-center p-1 mb-4 bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer '
-          onClick={() => {
-            tokenInfoControls.start('hidden');
-            setOpenTokenData(null);
-          }}
+          onClick={handleClose}
         >
           <RxChevronDown size={24} />
         </div>
@@ -103,9 +116,9 @@ export default function TokenInfo({
                       <div className='text-sm animate-ping'>loading...</div>
                     </div>
                   )}
-                  {(openTokenData?.token?.image.slice(-3) === 'gif' ||
+                  {/* {(openTokenData?.token?.image.slice(-3) === 'gif' ||
                     openTokenData?.token?.image.slice(-3) === 'svg') && (
-                    <img
+                    <Image
                       src={openTokenData.token.imageSmall}
                       alt={openTokenData.token.name}
                       width={300}
@@ -114,13 +127,13 @@ export default function TokenInfo({
                         'max-w-1/2 max-h-[300px] object-contain cursor-pointer' +
                         (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
                       }
-                      onLoad={(e) => setImageLoaded(true)}
+                      onLoad={() => setImageLoaded(true)}
                       onClick={() => {
                         largeMediaControls.start('visible');
                         setOpenLargeMedia(openTokenData);
                       }}
                     />
-                  )}
+                  )} */}
                   {openTokenData?.token?.image && (
                     <Image
                       src={openTokenData.token.image}
@@ -131,7 +144,7 @@ export default function TokenInfo({
                         'max-w-1/2 max-h-[280px] object-contain cursor-pointer' +
                         (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
                       }
-                      onLoad={(e) => setImageLoaded(true)}
+                      onLoad={() => setImageLoaded(true)}
                       onClick={() => {
                         largeMediaControls.start('visible');
                         setOpenLargeMedia(openTokenData);

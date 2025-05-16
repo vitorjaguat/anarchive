@@ -1,7 +1,7 @@
 // import Image from 'next/image';
 // import { Inter } from 'next/font/google';
 import GraphWrapper from '../components/GraphWrapper';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useContext } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import Filters from '../components/Filters';
 import Head from '../components/Headhead';
@@ -13,6 +13,7 @@ import contract from '../utils/contract';
 import { useIsMobile } from '@/utils/useIsMobile';
 import GridViewMobile from '@/components/mobile/GridViewMobile';
 import { useAccount } from 'wagmi';
+import { MainContext } from '@/context/mainContext';
 
 export default function Home({ allTokens, tokenDataForOG }) {
   const isMobile = useIsMobile();
@@ -54,48 +55,60 @@ export default function Home({ allTokens, tokenDataForOG }) {
   const [filter, setFilter] = useState([]);
 
   const [openTokenData, setOpenTokenData] = useState('initial');
+  const { openToken } = useContext(MainContext);
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
-    // Check if 'token' query parameter exists
     if (router.query.fragment) {
       const clickedTokenData = allTokens.find(
         (token) => +token.token.tokenId === +router.query.fragment
       );
-      setOpenTokenData(clickedTokenData);
+      // Only update if different
+      if (
+        clickedTokenData &&
+        (!openTokenData ||
+          clickedTokenData.token.tokenId !== openTokenData?.token?.tokenId)
+      ) {
+        setOpenTokenData(clickedTokenData);
+      }
     }
-  }, [router.query, allTokens]);
+    // Optionally, handle the case where fragment is removed
+    if (!router.query.fragment && openTokenData) {
+      setOpenTokenData(null);
+    }
+    // eslint-disable-next-line
+  }, [router.query.fragment, allTokens]);
 
   // Update the URL query parameter when the openTokenData state changes:
-  useEffect(() => {
-    // Check if openTokenData exists and has a token property
-    if (openTokenData && openTokenData.token) {
-      // Update the URL without refreshing the page
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, fragment: openTokenData.token.tokenId },
-        },
-        undefined,
-        { shallow: true }
-      );
-      // console.log('openTokenData', openTokenData);
-    } else {
-      // Remove the fragment query parameter
-      const newQuery = { ...router.query };
-      delete newQuery.fragment;
-      router.push(
-        {
-          pathname: router.pathname,
-          query: newQuery,
-        },
-        undefined,
-        { shallow: true }
-      );
-    }
-  }, [openTokenData?.token?.tokenId]);
+  // useEffect(() => {
+  //   // Check if openTokenData exists and has a token property
+  //   if (openTokenData && openTokenData.token) {
+  //     // Update the URL without refreshing the page
+  //     router.push(
+  //       {
+  //         pathname: router.pathname,
+  //         query: { ...router.query, fragment: openTokenData.token.tokenId },
+  //       },
+  //       undefined,
+  //       { shallow: true }
+  //     );
+  //     // console.log('openTokenData', openTokenData);
+  //   } else {
+  //     // Remove the fragment query parameter
+  //     const newQuery = { ...router.query };
+  //     delete newQuery.fragment;
+  //     router.push(
+  //       {
+  //         pathname: router.pathname,
+  //         query: newQuery,
+  //       },
+  //       undefined,
+  //       { shallow: true }
+  //     );
+  //   }
+  // }, [openTokenData]);
 
   const handleClickOverlay = useCallback((e) => {
     e.preventDefault();
@@ -137,6 +150,8 @@ export default function Home({ allTokens, tokenDataForOG }) {
             allTokens={allTokens}
             showMineIsChecked={showMineIsChecked}
             usersFrags={usersFrags}
+            setOpenTokenData={setOpenTokenData}
+            openTokenData={openTokenData}
           />
         )}
 
