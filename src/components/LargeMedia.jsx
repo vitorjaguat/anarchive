@@ -50,7 +50,7 @@ export default function LargeMedia({ token }) {
     token?.metadata?.mediaOriginal?.includes('.mpeg')
   ) {
     return (
-      <audio controls autoPlay>
+      <audio className='z-50' controls autoPlay>
         <source src={token.media} type='audio/mpeg' />
       </audio>
     );
@@ -71,7 +71,9 @@ export default function LargeMedia({ token }) {
       if (typeof window !== 'undefined') {
         window.open(token.media, '_blank');
       }
-      return <div className='text-center py-8'>PDF opened in a new tab.</div>;
+      return (
+        <div className='text-center py-8 z-50'>PDF opened in a new tab.</div>
+      );
     }
 
     return (
@@ -93,6 +95,7 @@ export default function LargeMedia({ token }) {
         data={token.media}
         style={{ height: isMobile ? '60vh' : `${window.innerHeight - 150}px` }}
         width={width}
+        className='z-50'
         // height={height}
       >
         <p>
@@ -117,6 +120,7 @@ export default function LargeMedia({ token }) {
           width: '100%',
           height: '100%',
           objectFit: 'contain',
+          zIndex: 50,
         }}
       />
     );
@@ -137,6 +141,7 @@ export default function LargeMedia({ token }) {
           background: 'white',
           border: 'none',
           overflow: 'hidden',
+          zIndex: 50,
         }}
       ></iframe>
     );
@@ -165,6 +170,7 @@ export default function LargeMedia({ token }) {
         // objectFit: 'contain',
         display: 'flex',
         justifyContent: 'center',
+        zIndex: 50,
       }}
     />
   );

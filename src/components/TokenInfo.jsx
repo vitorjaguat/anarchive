@@ -240,7 +240,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           {/* openLargeMedia modal */}
 
           <motion.div
-            className='absolute top-0 right-0 w-screen h-[calc(100vh-100px)] items-center justify-center bg-black/80 z-[3]'
+            className='absolute top-0 right-0 w-screen h-[calc(100vh-100px)] items-center justify-center bg-black/80 z-50'
             variants={{
               hidden: {
                 opacity: 0,
