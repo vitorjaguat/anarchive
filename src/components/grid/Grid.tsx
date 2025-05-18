@@ -3,7 +3,9 @@ import GridViewItemMobile from '../mobile/GridViewItemMobile';
 // import { Masonry } from 'react-plock';
 import dynamic from 'next/dynamic';
 import useIsMounted from '@/utils/useIsMounted';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { TbArrowsSort } from 'react-icons/tb';
+import { BiSort } from 'react-icons/bi';
 
 const Masonry = dynamic(
   () => import('react-plock').then((mod) => mod.Masonry),
@@ -27,22 +29,62 @@ export default function Grid({
   const mounted = useIsMounted();
 
   const [sortGrid, setSortGrid] = useState('ASC');
+  const [tokens, setTokens] = useState(
+    [...allTokens].sort(
+      (a, b) => Number(a.token.tokenId) - Number(b.token.tokenId)
+    )
+  );
+  useEffect(() => {
+    if (sortGrid === 'ASC') {
+      setTokens(
+        [...allTokens].sort(
+          (a, b) => Number(a.token.tokenId) - Number(b.token.tokenId)
+        )
+      );
+    } else {
+      setTokens(
+        [...allTokens].sort(
+          (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId)
+        )
+      );
+    }
+  }, [allTokens, showMineIsChecked, sortGrid]);
+  console.log('tokens', tokens);
+
+  const handleClickSort = () => {
+    setSortGrid((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'));
+  };
 
   if (!allTokens || allTokens.length === 0 || !mounted) return null;
 
   return (
-    <div className='flex flex-col items-center w-full pt-3'>
+    <div className='flex flex-col items-center w-full pt-3 h-full overflow-y-auto'>
       {/* SORT TOGLE */}
-      <div className='bg-white/10'></div>
+      <div className='flex w-full justify-center z-10 mb-2'>
+        <div
+          className={
+            'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md  ' +
+            (sortGrid === 'DESC' ? 'border-[1px] border-slate-600' : '')
+          }
+        >
+          <button
+            title='Sort by date'
+            className='cursor-pointer'
+            onClick={handleClickSort}
+          >
+            <BiSort size={20} className='text-[#A0A0FF]' />
+          </button>
+        </div>
+      </div>
       {/* GRID */}
       <div className='relative w-full  overflow-y-auto px-14'>
         <div className=' w-full pb-40 '>
           {!showMineIsChecked ? (
             <Masonry
-              items={allTokens}
+              items={tokens}
               config={{
                 columns: [2, 3, 4],
-                gap: [16, 16, 16],
+                gap: [24, 32, 40],
                 media: [1024, 1280, 1536],
                 useBalancedLayout: true,
               }}
