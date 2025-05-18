@@ -1,11 +1,7 @@
 import Image from 'next/image';
-// import * as tokenTypes from '../../../types/tokens';
-import type {
-  ReservoirTokensResponse,
-  ReservoirToken,
-} from '../../../types/tokens';
-import { useState, useEffect } from 'react';
-import GridOpenToken from './GridOpenToken';
+import type { ReservoirToken } from '../../../types/tokens';
+import { useState, useEffect, useContext } from 'react';
+import { MainContext } from '@/context/mainContext';
 import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { GoPlusCircle } from 'react-icons/go';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
@@ -13,29 +9,26 @@ import { useRouter } from 'next/router';
 
 export default function GridViewItemMobile({
   token,
-  setOpenTokenData,
-  openTokenData,
 }: {
   token: ReservoirToken;
-  setOpenTokenData: (data: ReservoirToken) => void;
-  openTokenData: ReservoirToken | null;
 }) {
-  const [openToken, setOpenToken] = useState<ReservoirToken | null>(null);
+  //   const [openToken, setOpenToken] = useState<ReservoirToken | null>(null);
   const { openConnectModal } = useConnectModal();
-  //   const [isMounted, setIsMounted] = useState(false);
+  const { changeOpenToken } = useContext(MainContext);
+  const [isMounted, setIsMounted] = useState(false);
 
-  //   useEffect(() => {
-  //     setIsMounted(true);
-  //     return () => {
-  //       setIsMounted(false);
-  //     };
-  //   }, []);
+  useEffect(() => {
+    setIsMounted(true);
+    return () => {
+      setIsMounted(false);
+    };
+  }, []);
 
   const router = useRouter();
 
   const handleClick = (e) => {
     e.stopPropagation();
-    setOpenToken(token);
+    changeOpenToken(token);
     // Check if openTokenData exists and has a token property
     if (token.token.tokenId) {
       // Update the URL without refreshing the page
@@ -47,91 +40,48 @@ export default function GridViewItemMobile({
         undefined,
         { shallow: true }
       );
-      // console.log('openTokenData', openTokenData);
     }
-    // else {
-    //   // Remove the fragment query parameter
-    //   const newQuery = { ...router.query };
-    //   delete newQuery.fragment;
-    //   router.push(
-    //     {
-    //       pathname: router.pathname,
-    //       query: newQuery,
-    //     },
-    //     undefined,
-    //     { shallow: true }
-    //   );
-    // }
   };
 
-  //   const handleClick = () => {
-  //     console.log('token', token);
-  //     setOpenToken(token);
-  //   };
-
-  //   useEffect(() => {
-  //     console.log('openTokenData', openTokenData);
-  //   }, [openTokenData]);
-
-  //   if (!isMounted)
-  //     return (
-  //       <>
-  //         <div className=''></div>
-  //         <div className=''></div>
-  //       </>
-  //     );
-
-  const handleClose = () => {
-    // Remove the fragment query parameter
-    const newQuery = { ...router.query };
-    delete newQuery.fragment;
-    router.push(
-      {
-        pathname: router.pathname,
-        query: newQuery,
-      },
-      undefined,
-      { shallow: true }
-    );
-    setOpenToken(null);
-  };
-
+  if (!token?.token?.tokenId) return null;
   return (
     <>
       <div
-        className='w-full flex flex-col items-center border-[1px] bg-purple-300/20 border-purple-300/20 rounded-lg cursor-pointer overflow-hidden'
+        className='w-full flex flex-col items-center justify-between border-[1px] bg-purple-300/20 border-purple-300/20 rounded-lg cursor-pointer overflow-hidden'
         onClick={handleClick}
       >
-        {/* IMAGE */}
-        <div className='w-full aspect-square flex items-center bg-black/20'>
-          {token?.token?.image && (
-            <Image
-              src={token.token.image}
-              alt={token.token.name}
-              //   layout='responsive'
-              width={400}
-              height={400}
-              className={'w-full cursor-pointer'}
-              //   onLoad={(e) => setImageLoaded(true)}
-              onClick={() => {
-                // largeMediaControls.start('visible');
-                // setOpenLargeMedia(token);
-              }}
-            />
-          )}
-        </div>
-        {/* DETAILS */}
-        <div className='w-full flex flex-col gap-1 py-2 px-1'>
-          <div className='my-1'>{token.token.name}</div>
-          <div className='text-sm text-gray-400 hyphens-auto'>
-            {token.token.description}
+        <div className='w-full'>
+          {/* IMAGE */}
+          <div className='w-full aspect-square flex items-center bg-black/20'>
+            {token?.token?.image && (
+              <Image
+                src={token.token.image}
+                alt={token.token.name}
+                //   layout='responsive'
+                width={400}
+                height={400}
+                className={'w-full cursor-pointer'}
+                //   onLoad={(e) => setImageLoaded(true)}
+                onClick={() => {
+                  // largeMediaControls.start('visible');
+                  // setOpenLargeMedia(token);
+                }}
+              />
+            )}
+          </div>
+          {/* DETAILS */}
+          <div className='w-full flex flex-col gap-1 py-2 px-1'>
+            <div className='my-1'>{token.token.name}</div>
+            <div className='text-sm text-gray-400 hyphens-auto'>
+              {token.token.description}
+            </div>
           </div>
         </div>
         {/* COLLECT (LIKES) */}
         <div className='w-full bg-slate-600 mt-1 flex gap-2 items-center justify-between px-0 text-xs'>
           <div className='flex gap-2 pl-1'>
             <GoPlusCircle size={14} color='' />
-            <div className=''>{token.token.supply}</div>
+            <div className=''>{token.token.supply || '1'}</div>
           </div>
           <MintModal
             chainId={7777777}
@@ -165,9 +115,6 @@ export default function GridViewItemMobile({
           {/* <div className=''>Collect</div> */}
         </div>
       </div>
-
-      {/* OPEN TOKEN MODAL */}
-      {openToken && <GridOpenToken onClose={handleClose} token={token} />}
     </>
   );
 }

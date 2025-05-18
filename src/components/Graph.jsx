@@ -1,17 +1,16 @@
 // import { ForceGraph3D } from 'react-force-graph';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import * as THREE from 'three';
 import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 import contract from '../utils/contract';
 import ForceGraph3D from 'react-force-graph-3d';
 import { useRouter } from 'next/router';
+import { MainContext } from '@/context/mainContext';
 
 const Graph = ({
   allTokens,
   usersFrags,
-  setOpenTokenData,
-  openTokenData,
   sort,
   showMineIsChecked,
   filter,
@@ -28,6 +27,7 @@ const Graph = ({
   const [isLoadingGraph, setIsLoadingGraph] = useState(true);
   const [spheres, setSpheres] = useState([]);
   const router = useRouter();
+  const { openToken, changeOpenToken } = useContext(MainContext);
 
   useEffect(() => {
     const handleResize = () => {
@@ -74,7 +74,7 @@ const Graph = ({
       { shallow: true }
     );
     setImageLoaded(false);
-    setOpenTokenData(clickedTokenData);
+    changeOpenToken(clickedTokenData);
   };
 
   // user account logic: (moved to index.jsx)
@@ -213,6 +213,7 @@ const Graph = ({
         //   powerPreference: 'high-performance',
         //   antialias: true,
         // }}
+        backgroundColor='#00000000'
         ref={graphRef}
         graphData={graphData}
         //container:
@@ -229,7 +230,7 @@ const Graph = ({
             graphRef.current.zoomToFit(1000);
           }
         }}
-        cooldownTime={openTokenData === 'initial' ? 2000 : Infinity}
+        cooldownTime={openToken === 'initial' ? 2000 : Infinity}
         // cooldownTime={2000}
         cooldownTicks={Infinity}
         warmupTicks={0}

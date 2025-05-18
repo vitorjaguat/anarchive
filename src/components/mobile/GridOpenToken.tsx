@@ -25,6 +25,7 @@ export default function GridOpenToken({
     };
   }, []);
 
+  if (!token?.token?.tokenId) return null;
   return createPortal(
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[2px]'>
       <div
@@ -56,7 +57,7 @@ export default function GridOpenToken({
         <div className='mt-1 flex gap-2 items-center justify-between px-1'>
           <div className='flex gap-2'>
             <GoPlusCircle size={21} color='white' />
-            <div className=''>{token.token.supply}</div>
+            <div className=''>{token?.token?.supply}</div>
           </div>
           <MintModal
             chainId={7777777}
