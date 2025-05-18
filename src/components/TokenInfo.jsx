@@ -47,28 +47,26 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
             }}
             variants={{
               hidden: {
-                // opacity: 0,
-                top: '100%',
-                bottom: 'auto',
+                right: -600,
               },
               visible: {
                 // opacity: 1,
-                top: 0,
-                bottom: 0,
+                right: 0,
                 transition: {
-                  duration: 1.5,
-                  ease: [0.16, 1, 0.3, 1],
+                  duration: 2,
+                  // ease: [0.16, 1, 0.3, 1],
+                  ease: 'easeInOut',
                   // type: 'spring',
                 },
               },
               exit: {
-                top: '100%',
+                right: -600,
                 transition: {
-                  duration: 2,
+                  duration: 1.5,
                   // ease: [0.4, 0.5, 0.7, 1],
-                  type: 'spring',
+                  // type: 'spring',
+                  ease: 'easeInOut',
                 },
-                // bottom: 'auto',
               },
             }}
             initial='hidden'
