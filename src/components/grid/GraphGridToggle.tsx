@@ -19,7 +19,7 @@ export default function GraphGridToggle({
   };
 
   return (
-    <div className='absolute top-3 right-3 flex flex-col gap-3'>
+    <div className='absolute top-3 right-3 flex flex-col gap-3 z-[11]'>
       <div
         className={
           'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md ' +

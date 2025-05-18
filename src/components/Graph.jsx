@@ -218,7 +218,7 @@ const Graph = ({
         graphData={graphData}
         //container:
         width={windowWidth}
-        height={windowHeight - 100}
+        height={windowHeight}
         showNavInfo={false}
         nodeRelSize={1}
         //events:
