@@ -15,13 +15,13 @@ export default function Navbar({
   infoVisible,
 }) {
   return (
-    <div className='w-full flex justify-between items-center bg-slate-800 p-4 select-none h-[100px] z-[1000]'>
+    <div className='w-full flex justify-between items-center p-4 select-none h-[100px] z-[1000] backdrop-blur-[6px] bg-slate-800/20'>
       <div
         className='tracking-widest flex leading-4 z-[1000] hover:text-slate-400 duration-300 cursor-help items-center pr-20'
         onMouseEnter={() => setInfoVisible(true)}
         // onMouseLeave={() => setInfoVisible(false)}
       >
-        <div className='flex flex-col'>
+        <div className='flex flex-col text-white'>
           <div>The</div>
           <div>Anarchiving</div>
           <div>Game</div>
