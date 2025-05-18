@@ -28,10 +28,10 @@ export default function Grid({
 }: GridProps) {
   const mounted = useIsMounted();
 
-  const [sortGrid, setSortGrid] = useState('ASC');
+  const [sortGrid, setSortGrid] = useState('DESC');
   const [tokens, setTokens] = useState(
     [...allTokens].sort(
-      (a, b) => Number(a.token.tokenId) - Number(b.token.tokenId)
+      (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId)
     )
   );
   useEffect(() => {
@@ -49,7 +49,6 @@ export default function Grid({
       );
     }
   }, [allTokens, showMineIsChecked, sortGrid]);
-  console.log('tokens', tokens);
 
   const handleClickSort = () => {
     setSortGrid((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'));

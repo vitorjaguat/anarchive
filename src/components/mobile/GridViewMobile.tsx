@@ -1,10 +1,11 @@
 import GridViewItemMobile from './GridViewItemMobile';
 import GridOpenToken from './GridOpenToken';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { useIsMobile } from '@/utils/useIsMobile';
 import { useRouter } from 'next/router';
 import useIsMounted from '@/utils/useIsMounted';
+import { BiSort } from 'react-icons/bi';
 
 export default function GridViewMobile({
   allTokens,
@@ -31,10 +32,72 @@ export default function GridViewMobile({
     changeOpenToken(null);
   };
 
+  //   sort
+  const [sortGrid, setSortGrid] = useState('DESC');
+  const [tokens, setTokens] = useState(
+    [...allTokens].sort(
+      (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId)
+    )
+  );
+  useEffect(() => {
+    if (sortGrid === 'ASC') {
+      setTokens(
+        [...allTokens].sort(
+          (a, b) => Number(a.token.tokenId) - Number(b.token.tokenId)
+        )
+      );
+    } else {
+      setTokens(
+        [...allTokens].sort(
+          (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId)
+        )
+      );
+    }
+  }, [allTokens, showMineIsChecked, sortGrid]);
+
+  const handleClickSort = () => {
+    setSortGrid((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'));
+  };
+
   if (!allTokens || allTokens.length === 0 || !mounted) return null;
 
   return (
-    <div className='relative flex flex-col items-center w-full gap-4 p-2 pb-[90px]'>
+    <div className='flex flex-col items-center w-full p-2 max-h-[calc(100dvh-72px)] overflow-y-hidden'>
+      {/* SORT TOGLE */}
+      <div className='flex w-full justify-center z-10 mb-2'>
+        <div
+          className={
+            'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md  ' +
+            (sortGrid === 'DESC' ? 'border-[1px] border-slate-600' : '')
+          }
+        >
+          <button
+            title='Sort by date'
+            className='cursor-pointer'
+            onClick={handleClickSort}
+          >
+            <BiSort size={20} className='text-[#A0A0FF]' />
+          </button>
+        </div>
+      </div>
+      {/* GRID */}
+      <div className='relative w-full overflow-y-auto'>
+        <div className='w-full flex flex-col gap-4 pb-40'>
+          {!showMineIsChecked ? (
+            tokens.map((token, i) => {
+              return <GridViewItemMobile key={i} token={token} />;
+            })
+          ) : !usersFrags || usersFrags.length === 0 ? (
+            <div className='w-full flex items-center justify-center text-sm text-gray-400'>
+              No fragments found.
+            </div>
+          ) : (
+            usersFrags.map((token, i) => {
+              return <GridViewItemMobile key={i} token={token} />;
+            })
+          )}
+        </div>
+      </div>
       {/* BG */}
       <div className='site-background'>
         <div className='star-container'>
@@ -45,19 +108,6 @@ export default function GridViewMobile({
           <i></i>
         </div>
       </div>
-      {!showMineIsChecked ? (
-        allTokens.map((token, i) => {
-          return <GridViewItemMobile key={i} token={token} />;
-        })
-      ) : !usersFrags || usersFrags.length === 0 ? (
-        <div className='w-full flex items-center justify-center text-sm text-gray-400'>
-          No fragments found.
-        </div>
-      ) : (
-        usersFrags.map((token, i) => {
-          return <GridViewItemMobile key={i} token={token} />;
-        })
-      )}
       {/* OPEN TOKEN MODAL */}
       {openToken && isMobile && (
         <GridOpenToken onClose={handleClose} token={openToken} />
