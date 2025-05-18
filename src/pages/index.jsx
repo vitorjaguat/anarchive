@@ -14,14 +14,29 @@ import { useIsMobile } from '@/utils/useIsMobile';
 import GridViewMobile from '@/components/mobile/GridViewMobile';
 import { useAccount } from 'wagmi';
 import { MainContext } from '@/context/mainContext';
+import GraphGridToggle from '@/components/grid/GraphGridToggle';
+import Grid from '@/components/grid/Grid';
 
 export default function Home({ allTokens, tokenDataForOG }) {
   const isMobile = useIsMobile();
-
-  // user account logic:
+  // user account states:
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
+  const [view, setView] = useState('graph');
+
+  // dynamic head metadata:
+  const [headTitle, setHeadTitle] = useState(
+    tokenDataForOG?.token
+      ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
+      : 'The Anarchiving Game'
+  );
+  const description =
+    tokenDataForOG?.token && tokenDataForOG?.token?.description
+      ? tokenDataForOG?.token?.description?.slice(0, 126) + '...'
+      : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
+
+  // user account logic:
   useEffect(() => {
     if (account?.address && showMineIsChecked) {
       const fetchData = async () => {
@@ -54,10 +69,13 @@ export default function Home({ allTokens, tokenDataForOG }) {
   //filter tokens by content tag (searchbar):
   const [filter, setFilter] = useState([]);
 
-  const [openTokenData, setOpenTokenData] = useState('initial');
-  const { openToken } = useContext(MainContext);
+  const { openToken, changeOpenToken } = useContext(MainContext);
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    console.log('openToken', openToken);
+  }, [openToken]);
 
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
@@ -68,62 +86,20 @@ export default function Home({ allTokens, tokenDataForOG }) {
       // Only update if different
       if (
         clickedTokenData &&
-        (!openTokenData ||
-          clickedTokenData.token.tokenId !== openTokenData?.token?.tokenId)
+        (!openToken ||
+          clickedTokenData.token.tokenId !== openToken?.token?.tokenId)
       ) {
-        setOpenTokenData(clickedTokenData);
+        changeOpenToken(clickedTokenData);
+        setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
       }
     }
     // Optionally, handle the case where fragment is removed
-    if (!router.query.fragment && openTokenData) {
-      setOpenTokenData(null);
+    if (!router.query.fragment && openToken) {
+      setHeadTitle('The Anarchiving Game');
+      changeOpenToken(null);
     }
     // eslint-disable-next-line
   }, [router.query.fragment, allTokens]);
-
-  // Update the URL query parameter when the openTokenData state changes:
-  // useEffect(() => {
-  //   // Check if openTokenData exists and has a token property
-  //   if (openTokenData && openTokenData.token) {
-  //     // Update the URL without refreshing the page
-  //     router.push(
-  //       {
-  //         pathname: router.pathname,
-  //         query: { ...router.query, fragment: openTokenData.token.tokenId },
-  //       },
-  //       undefined,
-  //       { shallow: true }
-  //     );
-  //     // console.log('openTokenData', openTokenData);
-  //   } else {
-  //     // Remove the fragment query parameter
-  //     const newQuery = { ...router.query };
-  //     delete newQuery.fragment;
-  //     router.push(
-  //       {
-  //         pathname: router.pathname,
-  //         query: newQuery,
-  //       },
-  //       undefined,
-  //       { shallow: true }
-  //     );
-  //   }
-  // }, [openTokenData]);
-
-  const handleClickOverlay = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpenTokenData(null);
-  }, []);
-
-  // dynamic metadata:
-  const title = tokenDataForOG?.token
-    ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-    : 'The Anarchiving Game';
-  const description =
-    tokenDataForOG?.token && tokenDataForOG?.token?.description
-      ? tokenDataForOG?.token?.description?.slice(0, 126) + '...'
-      : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
 
   return (
     <>
@@ -132,7 +108,7 @@ export default function Home({ allTokens, tokenDataForOG }) {
           tokenDataForOG?.token?.image ||
           'https://the-anarchive.vercel.app/meta/image2.png'
         }
-        title={title}
+        title={headTitle}
         description={description}
       />
       <Layout
@@ -150,8 +126,6 @@ export default function Home({ allTokens, tokenDataForOG }) {
             allTokens={allTokens}
             showMineIsChecked={showMineIsChecked}
             usersFrags={usersFrags}
-            setOpenTokenData={setOpenTokenData}
-            openTokenData={openTokenData}
           />
         )}
 
@@ -160,28 +134,48 @@ export default function Home({ allTokens, tokenDataForOG }) {
           <div
             className={`relative bg-[#000012] flex min-h-screen flex-col items-center justify-between max-h-screen overflow-hidden`}
           >
+            {/* BG */}
+            <div className='site-background'>
+              <div className='star-container'>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+            </div>
+
             <Filters filter={filter} setFilter={setFilter} />
 
             <TokenInfo
-              openTokenData={openTokenData}
-              handleClickOverlay={handleClickOverlay}
               setImageLoaded={setImageLoaded}
               imageLoaded={imageLoaded}
-              setOpenTokenData={setOpenTokenData}
             />
 
-            <GraphWrapper
-              allTokens={allTokens}
-              openTokenData={openTokenData}
-              setOpenTokenData={setOpenTokenData}
-              sort={sort}
-              filter={filter}
-              showMineIsChecked={showMineIsChecked}
-              setImageLoaded={setImageLoaded}
-              usersFrags={usersFrags}
-            />
+            {view === 'graph' && (
+              <GraphWrapper
+                allTokens={allTokens}
+                sort={sort}
+                filter={filter}
+                showMineIsChecked={showMineIsChecked}
+                setImageLoaded={setImageLoaded}
+                usersFrags={usersFrags}
+              />
+            )}
+
+            {view === 'grid' && (
+              <Grid
+                allTokens={allTokens}
+                sort={sort}
+                filter={filter}
+                showMineIsChecked={showMineIsChecked}
+                setImageLoaded={setImageLoaded}
+                usersFrags={usersFrags}
+              />
+            )}
 
             <CreateTokenButton />
+            <GraphGridToggle view={view} setView={setView} />
           </div>
         )}
       </Layout>
@@ -238,14 +232,6 @@ export async function getServerSideProps(context) {
     const tokenData = await fetchData();
     tokenDataForOG = tokenData.tokens[0];
   }
-  // console.log('token', tokenDataForOG);
-
-  // If no exhibition is found, return a 404 page
-  // if (!token) {
-  //   return {
-  //     notFound: true,
-  //   };
-  // }
 
   return {
     props: {

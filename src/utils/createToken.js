@@ -47,6 +47,7 @@ export default async function createToken(
   } else if (isAddress(tokenPayoutRecipient)) {
     parsedPayoutRecipient = tokenPayoutRecipient;
   } else if (Array.isArray(tokenPayoutRecipient)) {
+    // case split
     console.log('setting up split');
     // https://docs.zora.co/protocol-sdk/creator/splits
     // setup a splits client
@@ -88,6 +89,8 @@ export default async function createToken(
     }
 
     parsedPayoutRecipient = predicted.splitAddress;
+  } else {
+    parsedPayoutRecipient = creatorAccount; // default to creator account
   }
 
   console.log('parsedPayoutRecipient: ', parsedPayoutRecipient);
