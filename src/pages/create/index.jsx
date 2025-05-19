@@ -467,7 +467,9 @@ export default function CreateIndex() {
       }
       if (finalResponse && finalResponse?.error) {
         setProcessingSubmit('error');
-        setSubmitMessage('Transaction has failed.');
+        setSubmitMessage(
+          'Transaction has failed.' + finalResponse.error.message
+        ); // #TODO JUST FOR DEBUG MOBILE
         return;
       }
     } catch (error) {
@@ -657,7 +659,6 @@ export default function CreateIndex() {
                     id='media'
                     className=''
                     accept='.jpg, .jpeg, .png, .mp4, .pdf, .html, .mpeg, .wav, .mp3, .ogg, .gif'
-                    // TODO: add accept attribute to accept only certain file types
                   />
                   {mediaPreview && mediaPreview?.includes('image') && (
                     <div className='mt-2 w-full max-w-[700px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
@@ -668,6 +669,7 @@ export default function CreateIndex() {
                       />
                     </div>
                   )}
+                  {/* // TODO: media file video is not previewing in mobile */}
                   {mediaPreview && mediaPreview?.includes('video') && (
                     <div className='mt-2 w-full max-w-[600px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
                       <video
