@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useStorageUpload } from '@thirdweb-dev/react';
+import Head from 'next/head';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
@@ -571,390 +572,395 @@ export default function CreateIndex() {
   }
 
   return (
-    <div className='relative w-screen h-screen overflow-y-auto'>
-      {/* video bg: */}
-      <div className='fixed top-0 left-0 opacity-40 object-cover w-screen h-screen z-0'>
-        <video
-          className='w-full h-full object-cover'
-          autoPlay
-          muted
-          src='/assets/tag_bg.mp4'
-          loop
-          playsInline
-        />
-      </div>
+    <>
+      <Head>
+        <title>Create Fragment | The Anarchiving Game</title>
+      </Head>
+      <div className='relative w-screen h-screen overflow-y-auto'>
+        {/* video bg: */}
+        <div className='fixed top-0 left-0 opacity-40 object-cover w-screen h-screen z-0'>
+          <video
+            className='w-full h-full object-cover'
+            autoPlay
+            muted
+            src='/assets/tag_bg.mp4'
+            loop
+            playsInline
+          />
+        </div>
 
-      {/* back btn */}
-      <Link
-        href='/'
-        className='absolute top-3 left-3 w-[34px] h-[34px] flex items-center justify-center rounded-md bg-white/20 z-20'
-      >
-        <IoIosArrowRoundBack
-          size={31}
-          className='opacity-80 text-sph-purple-light'
-        />
-      </Link>
+        {/* back btn */}
+        <Link
+          href='/'
+          className='absolute top-3 left-3 w-[34px] h-[34px] flex items-center justify-center rounded-md bg-white/20 z-20'
+        >
+          <IoIosArrowRoundBack
+            size={31}
+            className='opacity-80 text-sph-purple-light'
+          />
+        </Link>
 
-      {/* content: */}
-      <div className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'>
-        <div className='max-w-[95%] md:max-w-[1200px] md:min-w-[800px] h-fit bg-indigo-400/80 p-2 md:p-6 rounded-md text-black'>
-          <div className='pt-20 pb-16 text-2xl md:text-3xl w-full text-center font-bold  animate-bounce'>
-            <div className=' tracking-wider text-slate-900'>
-              Create your fragment
+        {/* content: */}
+        <div className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'>
+          <div className='max-w-[95%] md:max-w-[1200px] md:min-w-[800px] h-fit bg-indigo-400/80 p-2 md:p-6 rounded-md text-black'>
+            <div className='pt-20 pb-16 text-2xl md:text-3xl w-full text-center font-bold  animate-bounce'>
+              <div className=' tracking-wider text-slate-900'>
+                Create your fragment
+              </div>
             </div>
-          </div>
-          <div className=''>
-            <form className='flex flex-col gap-10' onSubmit={handleSubmit}>
-              <div className='flex flex-col justify-between gap-1'>
-                <label htmlFor='title'>Title:</label>
-                <input
-                  className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
-                  ref={titleRef}
-                  type='text'
-                  id='title'
-                  name='title'
-                  onChange={() => checkValidation('title')}
-                />
-                {validationError?.title && (
-                  <div className='text-orange-700 text-sm'>
-                    {validationError.title}
-                  </div>
-                )}
-              </div>
-              <div className='flex flex-col gap-1'>
-                <label htmlFor='description'>Description:</label>
-                <textarea
-                  ref={descriptionRef}
-                  type='text'
-                  id='description'
-                  name='description'
-                  className='w-full h-60 px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
-                  onChange={() => checkValidation('description')}
-                />
-                {validationError?.description && (
-                  <div className='text-orange-700 text-sm max-w-[700px]'>
-                    {validationError.description}
-                  </div>
-                )}
-              </div>
-              <div className='flex flex-col gap-1'>
-                <label htmlFor='media'>
-                  <div className=''>Media:</div>
-                  <div className='text-sm text-black/80'>
-                    This is the media file of your token. Media type can be JPG,
-                    PNG, GIF, MP3, MP4, PDF, HTML etc.
-                  </div>
-                </label>
-                <input
-                  type='file'
-                  onChange={handleMediaUpload}
-                  name='media'
-                  id='media'
-                  className=''
-                  accept='.jpg, .jpeg, .png, .mp4, .pdf, .html, .mpeg, .wav, .mp3, .ogg, .gif'
-                  // TODO: add accept attribute to accept only certain file types
-                />
-                {mediaPreview && mediaPreview?.includes('image') && (
-                  <div className='mt-2 w-full max-w-[700px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
-                    <img
-                      src={mediaPreview}
-                      alt='preview'
-                      className='w-full p-3 h-full object-cover'
-                    />
-                  </div>
-                )}
-                {mediaPreview && mediaPreview?.includes('video') && (
-                  <div className='mt-2 w-full max-w-[600px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
-                    <video
-                      src={mediaPreview}
-                      className='w-full p-3 h-full object-cover'
-                      autoPlay
-                      loop
-                      playsInline
-                    />
-                  </div>
-                )}
-              </div>
-              {showThumbnailInput && (
+            <div className=''>
+              <form className='flex flex-col gap-10' onSubmit={handleSubmit}>
+                <div className='flex flex-col justify-between gap-1'>
+                  <label htmlFor='title'>Title:</label>
+                  <input
+                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
+                    ref={titleRef}
+                    type='text'
+                    id='title'
+                    name='title'
+                    onChange={() => checkValidation('title')}
+                  />
+                  {validationError?.title && (
+                    <div className='text-orange-700 text-sm'>
+                      {validationError.title}
+                    </div>
+                  )}
+                </div>
                 <div className='flex flex-col gap-1'>
-                  <label htmlFor='thumbnail'>
-                    <div className=''>Thumbnail image:</div>
+                  <label htmlFor='description'>Description:</label>
+                  <textarea
+                    ref={descriptionRef}
+                    type='text'
+                    id='description'
+                    name='description'
+                    className='w-full h-60 px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
+                    onChange={() => checkValidation('description')}
+                  />
+                  {validationError?.description && (
+                    <div className='text-orange-700 text-sm max-w-[700px]'>
+                      {validationError.description}
+                    </div>
+                  )}
+                </div>
+                <div className='flex flex-col gap-1'>
+                  <label htmlFor='media'>
+                    <div className=''>Media:</div>
                     <div className='text-sm text-black/80'>
-                      This is the thumbnail image of your token. Please upload
-                      an image file (JPG, PNG, etc.)
+                      This is the media file of your token. Media type can be
+                      JPG, PNG, GIF, MP3, MP4, PDF, HTML etc.
                     </div>
                   </label>
                   <input
                     type='file'
-                    accept='image/*'
-                    onChange={handleImageUpload}
-                    name='thumbnail'
-                    id='thumbnail'
+                    onChange={handleMediaUpload}
+                    name='media'
+                    id='media'
                     className=''
+                    accept='.jpg, .jpeg, .png, .mp4, .pdf, .html, .mpeg, .wav, .mp3, .ogg, .gif'
+                    // TODO: add accept attribute to accept only certain file types
                   />
-                  {imagePreview && (
-                    <div className='w-full max-w-[400px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
+                  {mediaPreview && mediaPreview?.includes('image') && (
+                    <div className='mt-2 w-full max-w-[700px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
                       <img
-                        src={imagePreview}
+                        src={mediaPreview}
                         alt='preview'
                         className='w-full p-3 h-full object-cover'
                       />
                     </div>
                   )}
-                </div>
-              )}
-
-              <div className='flex flex-col gap-2 mt-5'>
-                <div className='font-bold tracking-widest w-full text-center text-xl'>
-                  Attributes
-                </div>
-                <div className=''>
-                  <label htmlFor='attTo'>To: </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
-                    ref={attToRef}
-                    type='text'
-                    id='attTo'
-                    name='attTo'
-                    onChange={() => checkValidation('attTo')}
-                  />
-                  {validationError?.attTo && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attTo}
+                  {mediaPreview && mediaPreview?.includes('video') && (
+                    <div className='mt-2 w-full max-w-[600px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
+                      <video
+                        src={mediaPreview}
+                        className='w-full p-3 h-full object-cover'
+                        autoPlay
+                        loop
+                        playsInline
+                      />
                     </div>
                   )}
                 </div>
-                <div className=''>
-                  <label htmlFor='attFrom'>From: </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
-                    ref={attFromRef}
-                    type='text'
-                    id='attFrom'
-                    name='attFrom'
-                    onChange={() => checkValidation('attFrom')}
-                  />
-                  {validationError?.attFrom && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attFrom}
-                    </div>
-                  )}
-                </div>
-                <div className=''>
-                  <label htmlFor='attYear'>Year: </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
-                    ref={attYearRef}
-                    type='number'
-                    min={1900}
-                    max={2099}
-                    id='attYear'
-                    name='attYear'
-                    onChange={() => checkValidation('attYear')}
-                  />
-                  {validationError?.attYear && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attYear}
-                    </div>
-                  )}
-                </div>
-                <div className=''>
-                  <label htmlFor='attEvent'>Event: </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
-                    ref={attEventRef}
-                    type='text'
-                    id='attEvent'
-                    name='attEvent'
-                    onChange={() => checkValidation('attEvent')}
-                  />
-                  {validationError?.attEvent && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attEvent}
-                    </div>
-                  )}
-                </div>
-                <div className=''>
-                  <label htmlFor='attMedia'>Media: </label>
-                  <div className='relative w-full'>
-                    <select
-                      className='w-full px-2 md:px-4 py-3 pr-10 rounded-lg outline-none font-thin bg-slate-800 text-slate-200 appearance-none'
-                      ref={attMediaRef}
-                      id='attMedia'
-                      name='attMedia'
-                      defaultValue={''}
-                      onChange={() => checkValidation('attMedia')}
-                    >
-                      <option value=''>Select media type...</option>
-                      <option value='Audio'>Audio</option>
-                      <option value='Code'>Code</option>
-                      <option value='Image'>Image</option>
-                      <option value='Note'>Note</option>
-                      <option value='Slide'>Slide</option>
-                      <option value='Text'>Text</option>
-                      <option value='Video'>Video</option>
-                    </select>
-                    {/* Custom arrow */}
-                    <div className='pointer-events-none absolute inset-y-0 right-2 md:right-4 flex items-center'>
-                      <svg
-                        className='w-4 h-4 text-slate-200'
-                        fill='none'
-                        stroke='currentColor'
-                        strokeWidth='2'
-                        viewBox='0 0 24 24'
-                      >
-                        <path d='M19 9l-7 7-7-7' />
-                      </svg>
-                    </div>
-                  </div>
-                  {validationError?.attMedia && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attMedia}
-                    </div>
-                  )}
-                </div>
-                <div className=''>
-                  <label htmlFor='attCreator'>Creator: </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
-                    ref={attCreatorRef}
-                    type='text'
-                    id='attCreator'
-                    name='attCreator'
-                    onChange={() => checkValidation('attCreator')}
-                  />
-                  {validationError?.attCreator && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attCreator}
-                    </div>
-                  )}
-                </div>
-                <div className=''>
-                  <label htmlFor='attTags'>Tags: </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
-                    ref={attTagsRef}
-                    type='text'
-                    id='attTags'
-                    name='attTags'
-                    onChange={() => checkValidation('attTags')}
-                  />
-                  {validationError?.attTags && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attTags}
-                    </div>
-                  )}
-                </div>
-                <div className=''>
-                  <label htmlFor='attLocation'>Location: </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
-                    ref={attLocationRef}
-                    type='text'
-                    id='attLocation'
-                    name='attLocation'
-                    onChange={() => checkValidation('attLocation')}
-                  />
-                  {validationError?.attLocation && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                      {validationError.attLocation}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Sales config: */}
-              <div className='flex flex-col gap-2 mt-5'>
-                {/* Price */}
-                <div className=''>
-                  <label htmlFor='price'>Price (ETH): </label>
-                  <input
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
-                    ref={priceRef}
-                    type='number'
-                    id='price'
-                    name='price'
-                    defaultValue='0'
-                    step={0.000001}
-                    onChange={() => {
-                      // console.log(priceRef.current.value);
-                    }}
-                  />
-                </div>
-
-                {/* Minting duration */}
-                {/* <div className=''>
-                  <label htmlFor='mintingDuration'>Minting duration: </label>
-                  <select
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin'
-                    ref={mintingDurationRef}
-                    id='mintingDuration'
-                    name='mintingDuration'
-                    defaultValue={'open'}
-                  >
-                    <option value='24h'>24 hours</option>
-                    <option value='1week'>1 week</option>
-                    <option value='1month'>1 month</option>
-                    <option value='3months'>3 months</option>
-                    <option value='6months'>6 months</option>
-                    <option value='1year'>1 year</option>
-                    <option value='open'>OPEN</option>
-                  </select>
-                </div> */}
-
-                {/* Payout/splits */}
-                <PayoutSplits
-                  payoutRecipients={payoutRecipients}
-                  setPayoutRecipients={setPayoutRecipients}
-                />
-                <EditionSize
-                  editionSize={editionSize}
-                  setEditionSize={setEditionSize}
-                />
-                {/* <MintStart /> */}
-              </div>
-
-              {/* Submit button: */}
-              <div className='mt-6'>
-                <button
-                  className={
-                    'bg-blue-200 w-full p-5 leading-none md:leading-normal md:p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 md:hover:scale-[1.02] ' +
-                    (validationError?.all
-                      ? ' bg-red-400 hover:bg-red-400 hover:scale-100 text-black/50 cursor-not-allowed'
-                      : '') +
-                    (processingSubmit === 'processing'
-                      ? ' cursor-wait bg-gray-200 hover:bg-gray-200 hover:scale-100'
-                      : '') +
-                    (processingSubmit === 'success'
-                      ? ' bg-green-400 hover:bg-green-400 hover:scale-100 text-sm flex items-center gap-2 justify-center max-w-[750px]'
-                      : '') +
-                    (processingSubmit === 'error'
-                      ? ' bg-red-400 hover:bg-red-400 hover:scale-100'
-                      : '')
-                  }
-                  type='submit'
-                >
-                  {submitMessage}
-                </button>
-                {validationError?.all && (
-                  <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
-                    {validationError.all}
+                {showThumbnailInput && (
+                  <div className='flex flex-col gap-1'>
+                    <label htmlFor='thumbnail'>
+                      <div className=''>Thumbnail image:</div>
+                      <div className='text-sm text-black/80'>
+                        This is the thumbnail image of your token. Please upload
+                        an image file (JPG, PNG, etc.)
+                      </div>
+                    </label>
+                    <input
+                      type='file'
+                      accept='image/*'
+                      onChange={handleImageUpload}
+                      name='thumbnail'
+                      id='thumbnail'
+                      className=''
+                    />
+                    {imagePreview && (
+                      <div className='w-full max-w-[400px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
+                        <img
+                          src={imagePreview}
+                          alt='preview'
+                          className='w-full p-3 h-full object-cover'
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
-              <Link
-                href='/'
-                className='absolute bottom-3 left-3 rounded-md bg-white/20 z-20 w-[34px] h-[34px] flex items-center justify-center'
-              >
-                <IoIosArrowRoundBack
-                  size={31}
-                  className='opacity-80 text-sph-purple-light'
-                />
-              </Link>
-            </form>
+
+                <div className='flex flex-col gap-2 mt-5'>
+                  <div className='font-bold tracking-widest w-full text-center text-xl'>
+                    Attributes
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attTo'>To: </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
+                      ref={attToRef}
+                      type='text'
+                      id='attTo'
+                      name='attTo'
+                      onChange={() => checkValidation('attTo')}
+                    />
+                    {validationError?.attTo && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attTo}
+                      </div>
+                    )}
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attFrom'>From: </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
+                      ref={attFromRef}
+                      type='text'
+                      id='attFrom'
+                      name='attFrom'
+                      onChange={() => checkValidation('attFrom')}
+                    />
+                    {validationError?.attFrom && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attFrom}
+                      </div>
+                    )}
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attYear'>Year: </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
+                      ref={attYearRef}
+                      type='number'
+                      min={1900}
+                      max={2099}
+                      id='attYear'
+                      name='attYear'
+                      onChange={() => checkValidation('attYear')}
+                    />
+                    {validationError?.attYear && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attYear}
+                      </div>
+                    )}
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attEvent'>Event: </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
+                      ref={attEventRef}
+                      type='text'
+                      id='attEvent'
+                      name='attEvent'
+                      onChange={() => checkValidation('attEvent')}
+                    />
+                    {validationError?.attEvent && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attEvent}
+                      </div>
+                    )}
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attMedia'>Media: </label>
+                    <div className='relative w-full'>
+                      <select
+                        className='w-full px-2 md:px-4 py-3 pr-10 rounded-lg outline-none font-thin bg-slate-800 text-slate-200 appearance-none'
+                        ref={attMediaRef}
+                        id='attMedia'
+                        name='attMedia'
+                        defaultValue={''}
+                        onChange={() => checkValidation('attMedia')}
+                      >
+                        <option value=''>Select media type...</option>
+                        <option value='Audio'>Audio</option>
+                        <option value='Code'>Code</option>
+                        <option value='Image'>Image</option>
+                        <option value='Note'>Note</option>
+                        <option value='Slide'>Slide</option>
+                        <option value='Text'>Text</option>
+                        <option value='Video'>Video</option>
+                      </select>
+                      {/* Custom arrow */}
+                      <div className='pointer-events-none absolute inset-y-0 right-2 md:right-4 flex items-center'>
+                        <svg
+                          className='w-4 h-4 text-slate-200'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                          viewBox='0 0 24 24'
+                        >
+                          <path d='M19 9l-7 7-7-7' />
+                        </svg>
+                      </div>
+                    </div>
+                    {validationError?.attMedia && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attMedia}
+                      </div>
+                    )}
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attCreator'>Creator: </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
+                      ref={attCreatorRef}
+                      type='text'
+                      id='attCreator'
+                      name='attCreator'
+                      onChange={() => checkValidation('attCreator')}
+                    />
+                    {validationError?.attCreator && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attCreator}
+                      </div>
+                    )}
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attTags'>Tags: </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
+                      ref={attTagsRef}
+                      type='text'
+                      id='attTags'
+                      name='attTags'
+                      onChange={() => checkValidation('attTags')}
+                    />
+                    {validationError?.attTags && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attTags}
+                      </div>
+                    )}
+                  </div>
+                  <div className=''>
+                    <label htmlFor='attLocation'>Location: </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
+                      ref={attLocationRef}
+                      type='text'
+                      id='attLocation'
+                      name='attLocation'
+                      onChange={() => checkValidation('attLocation')}
+                    />
+                    {validationError?.attLocation && (
+                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                        {validationError.attLocation}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Sales config: */}
+                <div className='flex flex-col gap-2 mt-5'>
+                  {/* Price */}
+                  <div className=''>
+                    <label htmlFor='price'>Price (ETH): </label>
+                    <input
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin bg-slate-800 text-slate-200'
+                      ref={priceRef}
+                      type='number'
+                      id='price'
+                      name='price'
+                      defaultValue='0'
+                      step={0.000001}
+                      onChange={() => {
+                        // console.log(priceRef.current.value);
+                      }}
+                    />
+                  </div>
+
+                  {/* Minting duration */}
+                  {/* <div className=''>
+                    <label htmlFor='mintingDuration'>Minting duration: </label>
+                    <select
+                      className='w-full px-4 py-3 rounded-lg outline-none font-thin'
+                      ref={mintingDurationRef}
+                      id='mintingDuration'
+                      name='mintingDuration'
+                      defaultValue={'open'}
+                    >
+                      <option value='24h'>24 hours</option>
+                      <option value='1week'>1 week</option>
+                      <option value='1month'>1 month</option>
+                      <option value='3months'>3 months</option>
+                      <option value='6months'>6 months</option>
+                      <option value='1year'>1 year</option>
+                      <option value='open'>OPEN</option>
+                    </select>
+                  </div> */}
+
+                  {/* Payout/splits */}
+                  <PayoutSplits
+                    payoutRecipients={payoutRecipients}
+                    setPayoutRecipients={setPayoutRecipients}
+                  />
+                  <EditionSize
+                    editionSize={editionSize}
+                    setEditionSize={setEditionSize}
+                  />
+                  {/* <MintStart /> */}
+                </div>
+
+                {/* Submit button: */}
+                <div className='mt-6'>
+                  <button
+                    className={
+                      'bg-blue-200 w-full p-5 leading-none md:leading-normal md:p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 md:hover:scale-[1.02] ' +
+                      (validationError?.all
+                        ? ' bg-red-400 hover:bg-red-400 hover:scale-100 text-black/50 cursor-not-allowed'
+                        : '') +
+                      (processingSubmit === 'processing'
+                        ? ' cursor-wait bg-gray-200 hover:bg-gray-200 hover:scale-100'
+                        : '') +
+                      (processingSubmit === 'success'
+                        ? ' bg-green-400 hover:bg-green-400 hover:scale-100 text-sm flex items-center gap-2 justify-center max-w-[750px]'
+                        : '') +
+                      (processingSubmit === 'error'
+                        ? ' bg-red-400 hover:bg-red-400 hover:scale-100'
+                        : '')
+                    }
+                    type='submit'
+                  >
+                    {submitMessage}
+                  </button>
+                  {validationError?.all && (
+                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      {validationError.all}
+                    </div>
+                  )}
+                </div>
+                <Link
+                  href='/'
+                  className='absolute bottom-3 left-3 rounded-md bg-white/20 z-20 w-[34px] h-[34px] flex items-center justify-center'
+                >
+                  <IoIosArrowRoundBack
+                    size={31}
+                    className='opacity-80 text-sph-purple-light'
+                  />
+                </Link>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
