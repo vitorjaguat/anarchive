@@ -15,6 +15,9 @@ module.exports = {
       fontFamily: {
         inter: ['var(--inter-font)'],
       },
+      colors: {
+        'sph-purple-light': '#A0A0FF',
+      },
     },
   },
   plugins: [],

@@ -1,19 +1,18 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { HiOutlinePlus } from 'react-icons/hi';
 import { useAccount } from 'wagmi';
-import { useRef } from 'react';
 import { useRouter } from 'next/router';
 import useIsMounted from '@/utils/useIsMounted';
 
 export default function CreateTokenButton() {
-  const connectRef = useRef();
   const { isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
   const router = useRouter();
   const handleAddClick = () => {
     if (isConnected) {
       router.push('/create');
     } else {
-      connectRef.current.click();
+      openConnectModal();
     }
   };
 
@@ -33,14 +32,6 @@ export default function CreateTokenButton() {
         <div className='w-0 overflow-hidden group-hover:w-auto whitespace-nowrap ml-0 group-hover:ml-2 duration-300 ease-out text-sm'>
           Create new fragment
         </div>
-        {!isConnected && (
-          <div
-            ref={connectRef}
-            className='fixed top-2 left-2 w-[100px] h-[34px] z-10 opacity-0'
-          >
-            <ConnectButton />
-          </div>
-        )}
       </div>
     </div>
   );
