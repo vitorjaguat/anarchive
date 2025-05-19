@@ -64,22 +64,6 @@ export default function CreateIndex() {
     }
 
     setImage(file);
-
-    // base64:
-    // const file = event.target.files[0];
-    // const reader = new FileReader();
-    // reader.onloadend = () => {
-    //   setImage(reader.result);
-    // };
-    // reader.readAsDataURL(file);
-    //In this code, readAsDataURL is used to start reading the contents of the specified Blob or File. When the read operation is finished, the onloadend event handler is called and the result attribute contains a data: URL representing the file's data as a base64 encoded string.
-    // binary:
-    // const file = event.target.files[0];
-    // const reader = new FileReader();
-    // reader.onloadend = () => {
-    //   setImage(reader.result);
-    // };
-    // reader.readAsArrayBuffer(file);
   };
 
   const handleMediaUpload = (event) => {
@@ -104,8 +88,6 @@ export default function CreateIndex() {
 
     setMedia(file);
   };
-
-  // console.log(mediaPreview);
 
   const checkValidation = (field) => {
     let error = { ...validationError };
@@ -153,8 +135,6 @@ export default function CreateIndex() {
         }
         break;
       case 'attYear':
-        // console.log(attYearRef.current.value.length);
-        // console.log(error);
         if (attYearRef.current.value.length === 4) {
           delete error.attYear;
           const valErrObj = validationError;
@@ -188,7 +168,6 @@ export default function CreateIndex() {
         }
         break;
       case 'attMedia':
-        // console.log('attMediaRef', attMediaRef.current.value.length);
         if (attMediaRef.current.value === '') {
           error.attMedia =
             'Attribute "Media" is required. Please select the media type this fragment is related to. This information is important for the generation of The Anarchiving Game data visualizations.';
@@ -297,7 +276,6 @@ export default function CreateIndex() {
           error = { ...error };
           delete error.attEvent;
         }
-        // console.log('attMediaRef', attMediaRef.current.value.length);
         if (attMediaRef.current.value === '') {
           error.attMedia =
             'Attribute "Media" is required. Please select the media type this fragment is related to. This information is important for the generation of The Anarchiving Game data visualizations.';
@@ -366,19 +344,6 @@ export default function CreateIndex() {
     // Create a new FormData object
     const formData = new FormData();
 
-    // Append the image file to the FormData object
-    // formData.append('name', 'test');
-    // formData.append('title', titleRef.current.value);
-    // formData.append('description', descriptionRef.current.value);
-    // formData.append('attTo', attToRef.current.value);
-    // formData.append('attFrom', attFromRef.current.value);
-    // formData.append('attYear', attYearRef.current.value);
-    // formData.append('attEvent', attEventRef.current.value);
-    // formData.append('attMedia', attMediaRef.current.value);
-    // formData.append('attCreator', attCreatorRef.current.value);
-    // formData.append('attTags', attTagsRef.current.value);
-    // formData.append('attLocation', attLocationRef.current.value);
-
     const name = titleRef.current.value;
     const description = descriptionRef.current.value;
     const attTo = attToRef.current.value;
@@ -391,8 +356,6 @@ export default function CreateIndex() {
     const attLocation = attLocationRef.current.value;
 
     let finalResponse;
-
-    // TODO: upload media & image to ipfs, then append uri to formData:
 
     try {
       //upload media:
@@ -470,23 +433,6 @@ export default function CreateIndex() {
       const metadataUriData = await upload({ data: [metadata] });
       metadataUri = metadataUriData[0];
       console.log('metadataUri', metadataUri);
-
-      // formData.append('image', image);
-      // formData.append('media', media);
-
-      //   // Send the FormData object as the request body
-      //   const response = await fetch('/api/upload', {
-      //     method: 'POST',
-      //     // headers: {
-      //     //   'Content-Type': 'application/json',
-      //     // },
-      //     // body: JSON.stringify({ name: 'test', image }),
-      //     body: formData,
-      //   });
-
-      //   // Handle the response from the API
-      //   const data = await response.json();
-      //   console.log('Response:', data);
 
       // Get sales config options:
       // price:
@@ -572,7 +518,7 @@ export default function CreateIndex() {
         {/* back btns */}
         <Link
           href='/'
-          className='absolute top-3 left-3 p-2 rounded-md bg-white/20 z-20'
+          className='absolute top-3 left-3 w-[34px] h-[34px] rounded-md bg-white/20 flex items-center justify-center z-20'
         >
           <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
         </Link>
@@ -641,15 +587,18 @@ export default function CreateIndex() {
       {/* back btn */}
       <Link
         href='/'
-        className='absolute top-3 left-3 p-2 rounded-md bg-white/20 z-20'
+        className='absolute top-3 left-3 w-[34px] h-[34px] flex items-center justify-center rounded-md bg-white/20 z-20'
       >
-        <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
+        <IoIosArrowRoundBack
+          size={31}
+          className='opacity-80 text-sph-purple-light'
+        />
       </Link>
 
       {/* content: */}
       <div className='absolute py-20 w-full min-h-screen flex items-center justify-center bg-black/10 z-10'>
-        <div className='max-w-[1200px] min-w-[800px] h-fit bg-indigo-400/80 p-6 rounded-md text-black'>
-          <div className='pt-20 pb-16 text-3xl w-full text-center font-bold  animate-bounce'>
+        <div className='max-w-[95%] md:max-w-[1200px] md:min-w-[800px] h-fit bg-indigo-400/80 p-2 md:p-6 rounded-md text-black'>
+          <div className='pt-20 pb-16 text-2xl md:text-3xl w-full text-center font-bold  animate-bounce'>
             <div className=' tracking-wider text-slate-900'>
               Create your fragment
             </div>
@@ -827,23 +776,37 @@ export default function CreateIndex() {
                 </div>
                 <div className=''>
                   <label htmlFor='attMedia'>Media: </label>
-                  <select
-                    className='w-full px-4 py-3 rounded-lg outline-none font-thin  bg-slate-800 text-slate-200'
-                    ref={attMediaRef}
-                    id='attMedia'
-                    name='attMedia'
-                    defaultValue={''}
-                    onChange={() => checkValidation('attMedia')}
-                  >
-                    <option value=''>Select media type...</option>
-                    <option value='Audio'>Audio</option>
-                    <option value='Code'>Code</option>
-                    <option value='Image'>Image</option>
-                    <option value='Note'>Note</option>
-                    <option value='Slide'>Slide</option>
-                    <option value='Text'>Text</option>
-                    <option value='Video'>Video</option>
-                  </select>
+                  <div className='relative w-full'>
+                    <select
+                      className='w-full px-2 md:px-4 py-3 pr-10 rounded-lg outline-none font-thin bg-slate-800 text-slate-200 appearance-none'
+                      ref={attMediaRef}
+                      id='attMedia'
+                      name='attMedia'
+                      defaultValue={''}
+                      onChange={() => checkValidation('attMedia')}
+                    >
+                      <option value=''>Select media type...</option>
+                      <option value='Audio'>Audio</option>
+                      <option value='Code'>Code</option>
+                      <option value='Image'>Image</option>
+                      <option value='Note'>Note</option>
+                      <option value='Slide'>Slide</option>
+                      <option value='Text'>Text</option>
+                      <option value='Video'>Video</option>
+                    </select>
+                    {/* Custom arrow */}
+                    <div className='pointer-events-none absolute inset-y-0 right-2 md:right-4 flex items-center'>
+                      <svg
+                        className='w-4 h-4 text-slate-200'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                        viewBox='0 0 24 24'
+                      >
+                        <path d='M19 9l-7 7-7-7' />
+                      </svg>
+                    </div>
+                  </div>
                   {validationError?.attMedia && (
                     <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
                       {validationError.attMedia}
@@ -955,7 +918,7 @@ export default function CreateIndex() {
               <div className='mt-6'>
                 <button
                   className={
-                    'bg-blue-200 w-full p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 hover:scale-[1.02] ' +
+                    'bg-blue-200 w-full p-5 leading-none md:leading-normal md:p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 md:hover:scale-[1.02] ' +
                     (validationError?.all
                       ? ' bg-red-400 hover:bg-red-400 hover:scale-100 text-black/50 cursor-not-allowed'
                       : '') +
@@ -981,12 +944,11 @@ export default function CreateIndex() {
               </div>
               <Link
                 href='/'
-                className='absolute bottom-3 left-3 p-2 rounded-md bg-white/20 z-20'
+                className='absolute bottom-3 left-3 rounded-md bg-white/20 z-20 w-[34px] h-[34px] flex items-center justify-center'
               >
                 <IoIosArrowRoundBack
-                  color='white'
-                  size={30}
-                  className='opacity-80'
+                  size={31}
+                  className='opacity-80 text-sph-purple-light'
                 />
               </Link>
             </form>

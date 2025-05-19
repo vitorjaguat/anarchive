@@ -2,14 +2,12 @@ import { MdPerson } from 'react-icons/md';
 import { MdPerson3 } from 'react-icons/md';
 import { PiAlienBold } from 'react-icons/pi';
 import { useState, useRef } from 'react';
-import { isAddress } from 'viem';
 
 export default function PayoutSplits({
   payoutRecipients,
   setPayoutRecipients,
 }) {
   const [selectedDiv, setSelectedDiv] = useState('');
-  const [numberOfSplitPeople, setNumberOfSplitPeople] = useState(1);
   const percentage1Ref = useRef('50');
   const percentage2Ref = useRef('50');
   const splitAddress1Ref = useRef('');
@@ -76,7 +74,9 @@ export default function PayoutSplits({
         <div
           className={
             'w-1/3 p-3 flex flex-col items-center justify-center bg-white/40 hover:bg-white/60 duration-300 cursor-pointer rounded-md text-sm' +
-            (payoutRecipients === 'me' ? ' border-zinc-100 border-[1px]' : '')
+            (payoutRecipients === 'me'
+              ? ' bg-white/60 border-white border-[1px]'
+              : '')
           }
           onClick={handleClickMe}
         >
@@ -88,7 +88,9 @@ export default function PayoutSplits({
         <div
           className={
             'w-1/3 p-3 flex flex-col items-center justify-center bg-white/40 hover:bg-white/60 duration-300 cursor-pointer rounded-md text-sm' +
-            (selectedDiv === 'split' ? ' border-zinc-100 border-[1px]' : '')
+            (selectedDiv === 'split'
+              ? ' bg-white border-white border-[1px]'
+              : '')
           }
           onClick={handleClickSplit}
         >
@@ -108,9 +110,9 @@ export default function PayoutSplits({
           onClick={handleClickSomeoneElse}
         >
           <div className=''>
-            <PiAlienBold size={26} />
+            <PiAlienBold size={25} />
           </div>
-          <div className=''>Someone else</div>
+          <div className='text-center leading-4 mt-1'>Someone else</div>
         </div>
       </div>
 
@@ -120,7 +122,7 @@ export default function PayoutSplits({
           <div className='w-full flex flex-col gap-1'>
             <div className='w-full flex justify-between items-center'>
               <input
-                className='w-[100%] px-4 py-2 rounded-md outline-none  bg-slate-800 text-slate-200'
+                className='w-[100%] px-2 md:px-4 py-2 rounded-md outline-none  bg-slate-800 text-slate-200'
                 type='text'
                 name='splitOne'
                 id='splitOne'
@@ -128,9 +130,11 @@ export default function PayoutSplits({
                 ref={splitAddress1Ref}
                 onChange={updateSplitArr}
               />
-              <div className='mx-1 whitespace-nowrap text-sm'>will receive</div>
+              <div className='mx-1 leading-3 md:leading-normal md:whitespace-nowrap text-sm'>
+                will receive
+              </div>
               <input
-                className='w-[10%] px-4 py-2 rounded-md outline-none text-center bg-slate-800 text-slate-200'
+                className='w-fit md:w-[10%] px-2 md:px-4 py-2 rounded-md outline-none text-center bg-slate-800 text-slate-200'
                 type='number'
                 name='percentage1'
                 id='percentage1'
@@ -144,7 +148,7 @@ export default function PayoutSplits({
             </div>
             <div className='w-full flex justify-between items-center'>
               <input
-                className='w-[100%] px-4 py-2 rounded-md outline-none bg-slate-800 text-slate-200'
+                className='w-[100%] px-2 md:px-4 py-2 rounded-md outline-none bg-slate-800 text-slate-200'
                 type='text'
                 name='splitTwo'
                 id='splitTwo'
@@ -152,9 +156,11 @@ export default function PayoutSplits({
                 ref={splitAddress2Ref}
                 onChange={updateSplitArr}
               />
-              <div className='mx-1 whitespace-nowrap text-sm'>will receive</div>
+              <div className='mx-1 leading-3 md:leading-normal md:whitespace-nowrap text-sm'>
+                will receive
+              </div>
               <input
-                className='w-[10%] px-4 py-2 rounded-md outline-none text-center bg-slate-800 text-slate-200'
+                className='w-fit md:w-[10%] px-2 md:px-4 py-2 rounded-md outline-none text-center bg-slate-800 text-slate-200'
                 type='number'
                 name='percentage2'
                 id='percentage2'
@@ -166,7 +172,7 @@ export default function PayoutSplits({
               />
               %
             </div>
-            <div className='mt-1 w-full flex justify-end text-lg'>
+            <div className='pr-2 md:pr-0 mt-1 w-full flex gap-2 justify-end text-lg'>
               <div className=''>Total:</div>
               <div className='w-[10%] text-right'>100%</div>
             </div>
@@ -177,11 +183,11 @@ export default function PayoutSplits({
       {selectedDiv === 'someoneElse' && (
         <div className='mt-2 w-full h-fit mb-2'>
           <input
-            className='w-[100%] px-4 py-2 rounded-md outline-none  bg-slate-800 text-slate-200'
+            className='w-[100%] px-2 md:px-4 py-2 rounded-md outline-none  bg-slate-800 text-sm md:text-base text-slate-200'
             type='text'
             name='someoneElse'
             id='someoneElse'
-            placeholder='0x... (the address that will receive 100% the funds)'
+            placeholder='0x... (the address that will receive 100%)'
             ref={someoneElseAddressRef}
             onChange={() =>
               setPayoutRecipients(someoneElseAddressRef.current.value)

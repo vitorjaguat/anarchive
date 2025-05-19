@@ -1,5 +1,5 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { BsFillPlusCircleFill } from 'react-icons/bs';
+import CreateTokenButtonMobile from './CreateTokenButtonMobile';
 
 export default function NavbarMobile({
   showMineIsChecked,
@@ -16,9 +16,7 @@ export default function NavbarMobile({
         </div>
 
         {/* CREATE BUTTON */}
-        <div className=''>
-          <BsFillPlusCircleFill size={24} className='text-[#A0A0FF]' />
-        </div>
+        <CreateTokenButtonMobile />
 
         {/* CONNECT BUTTON */}
         <div className='flex flex-col gap-1'>
