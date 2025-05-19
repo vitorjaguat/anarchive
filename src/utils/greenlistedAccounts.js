@@ -16,4 +16,5 @@ export const greenlistedAccounts = [
   '0x832eca8e4a82e362aebfd9c44c3eb5f3df060d86',
   '0xf8d1d34956cea24718cf8687588d6fedbc6d9aa6',
   '0x0231c1aeF2F168C3C3eF0EFb30827E678b088D62', // test Pedro
+  '0x1E264D4ba338Cde08b18dbA20FC1690fb65a9Dd4', // test Jaguat mobile
 ];
