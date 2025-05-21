@@ -3,7 +3,7 @@ import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { useEffect, useState, useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
-import { RxChevronDown } from 'react-icons/rx';
+import { RxChevronRight } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import LargeMedia from './LargeMedia';
 import Image from 'next/image';
@@ -40,7 +40,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
       {openToken?.token?.tokenId && (
         <>
           <motion.div
-            className='absolute min-w-[600px] right-0 bg-slate-700 pb-6 h-full z-20'
+            className='absolute min-w-[600px] right-0 bg-slate-700 h-[calc(100%-100px)] z-20 flex'
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -60,7 +60,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                 },
               },
               exit: {
-                right: -600,
+                right: -616,
                 transition: {
                   duration: 1.5,
                   // ease: [0.4, 0.5, 0.7, 1],
@@ -75,20 +75,20 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           >
             {/* close button */}
             <div
-              className='w-full flex justify-center p-1 mb-4 bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer '
+              className='w-4 h-fit py-2 rounded-s-md flex justify-center bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer translate-x-[-100%]'
               onClick={handleClose}
             >
-              <RxChevronDown size={24} />
+              <RxChevronRight size={24} />
             </div>
 
             {/* columns */}
             {openToken?.token && (
-              <div className='pl-4 grid grid-cols-2 gap-4 max-w-[600px]'>
+              <div className='pt-4 grid grid-cols-2 gap-4 max-w-[576px]'>
                 {/* left column */}
-                <div className=' pb-[46px] flex flex-col justify-between h-full gap-2'>
+                <div className=' pb-4 flex flex-col justify-between h-full gap-2'>
                   {/* image + collect btn */}
                   <div className='flex flex-col gap-2'>
-                    <div className='relative bg-white/10 rounded-md overflow-hidden w-full flex justify-center items-center min-h-[280px]'>
+                    <div className='relative  bg-white/10 rounded-md overflow-hidden w-full flex justify-center items-center min-h-[280px]'>
                       {!imageLoaded && (
                         // <Image
                         //   src='/assets/loading284x284.png'

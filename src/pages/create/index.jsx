@@ -10,6 +10,7 @@ import { IoIosArrowRoundBack } from 'react-icons/io';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useStorageUpload } from '@thirdweb-dev/react';
 import Head from 'next/head';
+import { IoIosRefresh } from 'react-icons/io';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
@@ -40,6 +41,9 @@ export default function CreateIndex() {
   //fixing hydration error:
   const [isMounted, setIsMounted] = useState(false);
   const { mutateAsync: upload } = useStorageUpload();
+  const [submitPhaseOneMedia, setSubmitPhaseOneMedia] = useState(false);
+  const [submitPhaseTwoMetadata, setSubmitPhaseTwoMetadata] = useState(false);
+  const [submitPhaseThreeToken, setSubmitPhaseThreeToken] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -322,6 +326,34 @@ export default function CreateIndex() {
     setValidationError({ ...error });
   };
 
+  const handleRefresh = () => {
+    setProcessingSubmit('initial');
+    setSubmitMessage('Create fragment');
+    setSubmitPhaseOneMedia(false);
+    setSubmitPhaseTwoMetadata(false);
+    setSubmitPhaseThreeToken(false);
+
+    titleRef.current.value = '';
+    descriptionRef.current.value = '';
+    attToRef.current.value = '';
+    attFromRef.current.value = '';
+    attYearRef.current.value = '';
+    attEventRef.current.value = '';
+    attMediaRef.current.value = '';
+    attCreatorRef.current.value = '';
+    attTagsRef.current.value = '';
+    attLocationRef.current.value = '';
+    setImage(null);
+    setMedia(null);
+    priceRef.current.value = '0';
+    setValidationError({});
+    setShowThumbnailInput(false);
+    setMediaPreview(null);
+    setImagePreview(null);
+    setPayoutRecipients('me');
+    setEditionSize(BigInt('18446744073709551615'));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -379,6 +411,7 @@ export default function CreateIndex() {
       }
       console.log('mediaUri', mediaUri);
       console.log('imageUri', imageUri);
+      setSubmitPhaseOneMedia(true);
 
       //construct metadata object:
       const metadataObj = {
@@ -434,6 +467,7 @@ export default function CreateIndex() {
       const metadataUriData = await upload({ data: [metadata] });
       metadataUri = metadataUriData[0];
       console.log('metadataUri', metadataUri);
+      setSubmitPhaseTwoMetadata(true);
 
       // Get sales config options:
       // price:
@@ -464,11 +498,12 @@ export default function CreateIndex() {
         setSubmitMessage(
           'Successfully created token. Hash: ' + finalResponse.hash
         );
+        setSubmitPhaseThreeToken(true);
       }
       if (finalResponse && finalResponse?.error) {
         setProcessingSubmit('error');
         setSubmitMessage(
-          'Transaction has failed.' + finalResponse.error.message
+          'Transaction has failed. ' + finalResponse.error.message
         ); // #TODO JUST FOR DEBUG MOBILE
         return;
       }
@@ -925,7 +960,7 @@ export default function CreateIndex() {
                 <div className='mt-6'>
                   <button
                     className={
-                      'bg-blue-200 w-full p-5 leading-none md:leading-normal md:p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 md:hover:scale-[1.02] ' +
+                      'bg-blue-200 w-full p-2 min-h-16 md:min-h-none leading-none md:leading-normal md:p-6 mt-3 text-lg text-black rounded-lg hover:bg-blue-300 duration-300 md:hover:scale-[1.02] overflow-hidden ' +
                       (validationError?.all
                         ? ' bg-red-400 hover:bg-red-400 hover:scale-100 text-black/50 cursor-not-allowed'
                         : '') +
@@ -936,12 +971,52 @@ export default function CreateIndex() {
                         ? ' bg-green-400 hover:bg-green-400 hover:scale-100 text-sm flex items-center gap-2 justify-center max-w-[750px]'
                         : '') +
                       (processingSubmit === 'error'
-                        ? ' bg-red-400 hover:bg-red-400 hover:scale-100'
+                        ? ' bg-red-400 hover:bg-red-400 hover:scale-100 text-sm md:text-base'
                         : '')
                     }
-                    type='submit'
+                    type={processingSubmit === 'initial' ? 'submit' : 'button'}
                   >
                     {submitMessage}
+                    {processingSubmit === 'processing' && (
+                      <div className='flex flex-col text-xs md:text-sm'>
+                        <div className=''>
+                          <span className=''>
+                            Phase 1: uploading your media...{' '}
+                          </span>
+                          {!submitPhaseOneMedia ? (
+                            <span className=' animate-pulse text-red-500'>
+                              PLEASE WAIT
+                            </span>
+                          ) : (
+                            <span className=' text-green-500'>DONE</span>
+                          )}
+                        </div>
+                        <div className=''>
+                          <span className=''>
+                            Phase 2: uploading your metadata...{' '}
+                          </span>
+                          {!submitPhaseTwoMetadata ? (
+                            <span className=' animate-pulse text-red-500'>
+                              PLEASE WAIT
+                            </span>
+                          ) : (
+                            <span className=' text-green-500'>DONE</span>
+                          )}
+                        </div>
+                        <div className=''>
+                          <span className=''>
+                            Phase 3: creating your token...{' '}
+                          </span>
+                          {!submitPhaseThreeToken ? (
+                            <span className=' animate-pulse text-red-500'>
+                              PLEASE WAIT
+                            </span>
+                          ) : (
+                            <span className=' text-green-500'>DONE</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </button>
                   {validationError?.all && (
                     <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
@@ -958,6 +1033,14 @@ export default function CreateIndex() {
                     className='opacity-80 text-sph-purple-light'
                   />
                 </Link>
+                {['success', 'error'].includes(processingSubmit) && (
+                  <div
+                    className='absolute bottom-3 right-3 rounded-md bg-white/20 z-20 w-[34px] h-[34px] flex items-center justify-center'
+                    onClick={handleRefresh}
+                  >
+                    <IoIosRefresh className='text-sph-purple-light' size={18} />
+                  </div>
+                )}
               </form>
             </div>
           </div>
