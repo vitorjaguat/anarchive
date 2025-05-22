@@ -119,6 +119,38 @@ const Graph = ({
     }
   }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
 
+  function createCircularTexture(imageUrl, size = 128) {
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, size, size);
+
+        // Draw circular clipping path
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+
+        // Draw the image inside the circle
+        ctx.drawImage(img, 0, 0, size, size);
+        ctx.restore();
+
+        // Create texture
+        const texture = new THREE.Texture(canvas);
+        texture.needsUpdate = true;
+        resolve(texture);
+      };
+      img.onerror = reject;
+      img.src = imageUrl;
+    });
+  }
+
   //prepare nodes (as spheres):
   useEffect(() => {
     setIsLoadingGraph(true);
@@ -148,21 +180,29 @@ const Graph = ({
 
       if (spriteMap.has(node.id)) {
         texture = spriteMap.get(node.id);
-        const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
-        const material = new THREE.MeshBasicMaterial({ map: texture });
-        circle = new THREE.Mesh(geometry, material);
-        circle.scale.set(1, 1, 1);
-        return circle;
+        const material = new THREE.SpriteMaterial({ map: texture });
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(30, 30, 1);
+        sprite.userData.id = node.id;
+        return sprite;
+        // circle = new THREE.Mesh(geometry, material);
+        // circle.scale.set(1, 1, 1);
+        // return circle;
       } else {
         const loader = new THREE.TextureLoader();
         texture = loader.load(node.image);
 
-        const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
-        const material = new THREE.MeshBasicMaterial({ map: texture });
-        circle = new THREE.Mesh(geometry, material);
-        circle.userData.id = node.id;
-        // console.log('circle', circle);
-        return circle;
+        // const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
+        const material = new THREE.SpriteMaterial({ map: texture });
+        const sprite = new THREE.Sprite(material);
+        sprite.scale.set(30, 30, 1); // Adjust size as needed
+        sprite.userData.id = node.id;
+        return sprite;
+
+        // circle = new THREE.Mesh(geometry, material);
+        // circle.userData.id = node.id;
+        // // console.log('circle', circle);
+        // return circle;
       }
     };
 
@@ -184,27 +224,27 @@ const Graph = ({
     }
   }, [sort]);
 
-  //duplicate the image on the X axis in order to deform it less:
-  const duplicateImage = (imageSrc, padding) => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous'; // Add this line
-      img.src = imageSrc;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        // canvas.width = img.width + 2 * padding;
-        canvas.width = img.width * 2;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        // ctx.fillStyle = 'transparent'; // or any other color for the padding
-        // ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
-        ctx.drawImage(img, img.width, 0);
-        resolve(canvas);
-      };
-      img.onerror = reject;
-    });
-  };
+  // //duplicate the image on the X axis in order to deform it less:
+  // const duplicateImage = (imageSrc, padding) => {
+  //   return new Promise((resolve, reject) => {
+  //     const img = new Image();
+  //     img.crossOrigin = 'anonymous'; // Add this line
+  //     img.src = imageSrc;
+  //     img.onload = () => {
+  //       const canvas = document.createElement('canvas');
+  //       // canvas.width = img.width + 2 * padding;
+  //       canvas.width = img.width * 2;
+  //       canvas.height = img.height;
+  //       const ctx = canvas.getContext('2d');
+  //       // ctx.fillStyle = 'transparent'; // or any other color for the padding
+  //       // ctx.fillRect(0, 0, canvas.width, canvas.height);
+  //       ctx.drawImage(img, 0, 0);
+  //       ctx.drawImage(img, img.width, 0);
+  //       resolve(canvas);
+  //     };
+  //     img.onerror = reject;
+  //   });
+  // };
 
   return (
     <div className={'relative'} onKeyDown={(e) => handleKeyPress(e)}>
@@ -220,7 +260,7 @@ const Graph = ({
         width={windowWidth}
         height={windowHeight}
         showNavInfo={false}
-        nodeRelSize={1}
+        // nodeRelSize={1}
         //events:
         // onBackgroundClick={handleBackgroundClick}
         onEngineStop={() => {
@@ -234,13 +274,14 @@ const Graph = ({
         // cooldownTime={2000}
         cooldownTicks={Infinity}
         warmupTicks={0}
+        // linkVisibility={false}
         //links:
         linkColor={(link) =>
           link?.isDestination && sort === 'From'
             ? 'rgba (160, 160, 255, 0.1)'
             : 'rgba(0,0,0,0)'
         }
-        linkWidth={(link) => (sort === 'From' ? 20 : 0)}
+        linkWidth={sort === 'From' ? 20 : 0}
         // linkDirectionalParticles={(link) => (link.isDestination ? 1 : 0)}
         linkDirectionalParticles={(link) =>
           link?.isDestination && sort === 'From' ? 3 : 0
@@ -252,9 +293,25 @@ const Graph = ({
           `<div class='node-label'><div class='title'>${node.name}</div><div>${node.group}</div></div>`
         }
         nodeAutoColorBy={'group'}
-        nodeThreeObject={(node) =>
-          spheres.find((sphere) => sphere.userData.id === node.id)
-        }
+        // nodeThreeObject={(node) =>
+        //   spheres.find((sphere) => sphere.userData.id === node.id)
+        // }
+        nodeThreeObject={(node) => {
+          const sprite = spheres.find((s) => s.userData.id === node.id);
+          if (sprite) return sprite;
+
+          // Return an invisible placeholder to suppress the default sphere
+          const geometry = new THREE.SphereGeometry(0.001, 8, 8);
+          const material = new THREE.MeshBasicMaterial({
+            visible: false,
+            transparent: true,
+            opacity: 0,
+          });
+
+          const mesh = new THREE.Mesh(geometry, material);
+          return mesh;
+        }}
+        nodeRelSize={0.001}
         // nodeThreeObject={(node) => {
         //   // console.log('node', node);
         //   //SQUARES:
@@ -333,13 +390,6 @@ const Graph = ({
 
         onNodeClick={handleNodeClick}
         nodeThreeObjectExtend={true}
-        // graphData={{
-        //   nodes: [{ id: 'Harry' }, { id: 'Sally' }, { id: 'Alice' }],
-        //   links: [
-        //     { source: 'Harry', target: 'Sally' },
-        //     { source: 'Harry', target: 'Alice' },
-        //   ],
-        // }}
       />
     </div>
   );
