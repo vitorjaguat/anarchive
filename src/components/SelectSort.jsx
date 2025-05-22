@@ -1,5 +1,5 @@
 export default function SelectSort({
-  setSort,
+  changeSort,
   sort,
   setShowMineIsChecked,
   showMineIsChecked,
@@ -11,7 +11,7 @@ export default function SelectSort({
         name='sort'
         id='sort'
         className='text-black text-sm font-thin px-3 flex items-center py-0 bg-slate-400 rounded-md w-full outline-none max-w-32'
-        onChange={(e) => setSort(e.target.value)}
+        onChange={(e) => changeSort(e.target.value)}
         // style={{
         //   transition: 'all 0.3s ease',
         //   cursor: 'pointer',

@@ -9,7 +9,7 @@ export default function Layout({
   children,
   allTokens,
   sort,
-  setSort,
+  changeSort,
   filter,
   setFilter,
   showMineIsChecked,
@@ -56,7 +56,7 @@ export default function Layout({
             <Navbar
               allTokens={allTokens}
               sort={sort}
-              setSort={setSort}
+              changeSort={changeSort}
               filter={filter}
               setFilter={setFilter}
               showMineIsChecked={showMineIsChecked}

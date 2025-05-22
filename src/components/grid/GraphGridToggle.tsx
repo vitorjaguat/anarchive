@@ -3,19 +3,19 @@ import { CiGrid41 } from 'react-icons/ci';
 
 export default function GraphGridToggle({
   view,
-  setView,
+  changeView,
 }: {
   view: 'graph' | 'grid';
-  setView: (view: string) => void;
+  changeView: (view: string) => void;
 }) {
   const handleClickGraph = () => {
     if (view === 'graph') return;
-    setView('graph');
+    changeView('graph');
   };
 
   const handleClickGrid = () => {
     if (view === 'grid') return;
-    setView('grid');
+    changeView('grid');
   };
 
   return (
