@@ -2,11 +2,13 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Search from './Search';
 import SelectSort from './SelectSort';
 import { GoQuestion } from 'react-icons/go';
+import { useContext } from 'react';
+import { MainContext } from '@/context/mainContext';
 
 export default function Navbar({
   allTokens,
   sort,
-  setSort,
+  changeSort,
   filter,
   setFilter,
   showMineIsChecked,
@@ -14,6 +16,8 @@ export default function Navbar({
   setInfoVisible,
   infoVisible,
 }) {
+  const { view } = useContext(MainContext);
+
   return (
     <div className='w-full flex justify-between items-center p-4 select-none h-[100px] z-[1000] backdrop-blur-[6px] bg-slate-800/20'>
       <div
@@ -36,14 +40,16 @@ export default function Navbar({
       </div>
 
       <div className='flex justify-end w-full h-full gap-10'>
-        <div className='min-w-[130px]'>
-          <SelectSort
-            setSort={setSort}
-            sort={sort}
-            setShowMineIsChecked={setShowMineIsChecked}
-            showMineIsChecked={showMineIsChecked}
-          />
-        </div>
+        {view === 'graph' && (
+          <div className='min-w-[130px]'>
+            <SelectSort
+              changeSort={changeSort}
+              sort={sort}
+              setShowMineIsChecked={setShowMineIsChecked}
+              showMineIsChecked={showMineIsChecked}
+            />
+          </div>
+        )}
         <Search allTokens={allTokens} setFilter={setFilter} />
         <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
           <ConnectButton />

@@ -23,7 +23,6 @@ export default function Home({ allTokens, tokenDataForOG }) {
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
-  const [view, setView] = useState('graph');
 
   // dynamic head metadata:
   const [headTitle, setHeadTitle] = useState(
@@ -63,13 +62,11 @@ export default function Home({ allTokens, tokenDataForOG }) {
     }
   }, [account.address, showMineIsChecked]);
 
-  // sorting tokens:
-  const [sort, setSort] = useState('From');
-
   //filter tokens by content tag (searchbar):
   const [filter, setFilter] = useState([]);
 
-  const { openToken, changeOpenToken } = useContext(MainContext);
+  const { openToken, changeOpenToken, sort, changeSort, view, changeView } =
+    useContext(MainContext);
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
@@ -115,7 +112,7 @@ export default function Home({ allTokens, tokenDataForOG }) {
         setShowMineIsChecked={setShowMineIsChecked}
         showMineIsChecked={showMineIsChecked}
         allTokens={allTokens}
-        setSort={setSort}
+        changeSort={changeSort}
         sort={sort}
         setFilter={setFilter}
         filter={filter}
@@ -175,7 +172,7 @@ export default function Home({ allTokens, tokenDataForOG }) {
             )}
 
             <CreateTokenButton />
-            <GraphGridToggle view={view} setView={setView} />
+            <GraphGridToggle view={view} changeView={changeView} />
           </div>
         )}
       </Layout>
