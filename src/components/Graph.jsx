@@ -77,35 +77,6 @@ const Graph = ({
     changeOpenToken(clickedTokenData);
   };
 
-  // user account logic: (moved to index.jsx)
-  // const account = useAccount();
-  // const [usersFrags, setUsersFrags] = useState([]);
-  // useEffect(() => {
-  //   if (account?.address && showMineIsChecked) {
-  //     const fetchData = async () => {
-  //       const options = {
-  //         method: 'GET',
-  //         headers: {
-  //           accept: '*/*',
-  //           'x-api-key': process.env.RESERVOIR_API_KEY,
-  //         },
-  //       };
-
-  //       try {
-  //         const response = await fetch(
-  //           `https://api-zora.reservoir.tools/users/${account.address}/tokens/v10?collection=${contract}&limit=200&includeAttributes=true`,
-  //           options
-  //         );
-  //         const data = await response.json();
-  //         setUsersFrags(data.tokens);
-  //       } catch (err) {
-  //         console.error(err);
-  //       }
-  //     };
-  //     fetchData();
-  //   }
-  // }, [account.address, showMineIsChecked]);
-
   // prepare nodes (as graphData):
   useEffect(() => {
     if (!showMineIsChecked) {
@@ -155,65 +126,8 @@ const Graph = ({
   useEffect(() => {
     setIsLoadingGraph(true);
 
-    const createSphereFromNode = async (node) => {
-      // SQUARES:
-      // const sprite = new THREE.TextureLoader().load(node.image);
-      // const material = new THREE.SpriteMaterial({ map: sprite });
-      // const spriteObj = new THREE.Sprite(material);
-      // spriteObj.userData.id = node.id;
-      // spriteObj.scale.set(90, 90, 90);
-      // return spriteObj;
-
-      //FLAT CIRCLES:
-      // const texture = new THREE.TextureLoader().load(node.image);
-      // const geometry = new THREE.CircleGeometry(32, 32, 32);
-      // const material = new THREE.MeshBasicMaterial({ map: texture });
-      // const circle = new THREE.Mesh(geometry, material);
-      // circle.userData.id = node.id;
-      // circle.scale.set(1, 1, 1);
-      // return circle;
-
-      //SPHERES THAT ROTATE:
-      //storing textures in spriteMap state, so that they are not reloaded every time the graph is rerendered:
-      let texture;
-      let circle;
-
-      if (spriteMap.has(node.id)) {
-        texture = spriteMap.get(node.id);
-        const material = new THREE.SpriteMaterial({ map: texture });
-        const sprite = new THREE.Sprite(material);
-        sprite.scale.set(30, 30, 1);
-        sprite.userData.id = node.id;
-        return sprite;
-        // circle = new THREE.Mesh(geometry, material);
-        // circle.scale.set(1, 1, 1);
-        // return circle;
-      } else {
-        const loader = new THREE.TextureLoader();
-        texture = loader.load(node.image);
-
-        // const geometry = new THREE.SphereGeometry(10, 32, 32); //(radius, widthSegments, heightSegments)
-        const material = new THREE.SpriteMaterial({ map: texture });
-        const sprite = new THREE.Sprite(material);
-        sprite.scale.set(30, 30, 1); // Adjust size as needed
-        sprite.userData.id = node.id;
-        return sprite;
-
-        // circle = new THREE.Mesh(geometry, material);
-        // circle.userData.id = node.id;
-        // // console.log('circle', circle);
-        // return circle;
-      }
-    };
-
-    // console.log('graphData', graphData);
-
-    Promise.all(graphData.nodes.map((node) => createSphereFromNode(node))).then(
-      (spheresArr) => {
-        // console.log('spheresArr', spheresArr);
-        setSpheres(spheresArr);
-      }
-    );
+    const spheresArr = graphData.nodes.map((node) => getOrCreateSprite(node));
+    setSpheres(spheresArr);
   }, [graphData]);
 
   // link isDestination logic:
@@ -224,35 +138,32 @@ const Graph = ({
     }
   }, [sort]);
 
-  // //duplicate the image on the X axis in order to deform it less:
-  // const duplicateImage = (imageSrc, padding) => {
-  //   return new Promise((resolve, reject) => {
-  //     const img = new Image();
-  //     img.crossOrigin = 'anonymous'; // Add this line
-  //     img.src = imageSrc;
-  //     img.onload = () => {
-  //       const canvas = document.createElement('canvas');
-  //       // canvas.width = img.width + 2 * padding;
-  //       canvas.width = img.width * 2;
-  //       canvas.height = img.height;
-  //       const ctx = canvas.getContext('2d');
-  //       // ctx.fillStyle = 'transparent'; // or any other color for the padding
-  //       // ctx.fillRect(0, 0, canvas.width, canvas.height);
-  //       ctx.drawImage(img, 0, 0);
-  //       ctx.drawImage(img, img.width, 0);
-  //       resolve(canvas);
-  //     };
-  //     img.onerror = reject;
-  //   });
-  // };
+  const spriteCache = useRef(new Map());
+
+  const getOrCreateSprite = (node) => {
+    if (spriteCache.current.has(node.id)) {
+      return spriteCache.current.get(node.id);
+    }
+    const texture = new THREE.TextureLoader().load(node.image);
+    const material = new THREE.SpriteMaterial({ map: texture });
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(30, 30, 1);
+    sprite.userData.id = node.id;
+    spriteCache.current.set(node.id, sprite);
+    return sprite;
+  };
+
+  useEffect(() => {
+    spriteCache.current.clear();
+  }, [allTokens, usersFrags]);
 
   return (
     <div className={'relative'} onKeyDown={(e) => handleKeyPress(e)}>
       <ForceGraph3D
-        // rendererConfig={{
-        //   powerPreference: 'high-performance',
-        //   antialias: true,
-        // }}
+        rendererConfig={{
+          powerPreference: 'high-performance',
+          antialias: false,
+        }}
         backgroundColor='#00000000'
         ref={graphRef}
         graphData={graphData}
