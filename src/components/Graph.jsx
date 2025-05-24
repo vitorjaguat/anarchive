@@ -162,10 +162,18 @@ const Graph = ({
 
   const getOrCreateSprite = (node) => {
     const isSelected =
-      openToken && String(openToken.tokenId) === String(node.id);
+      openToken && String(openToken.token.tokenId) === String(node.id);
+
+    console.log(
+      `getOrCreateSprite - node: ${node.id}, isSelected: ${isSelected}, openToken.tokenId: ${openToken?.token?.tokenId}`
+    );
+
     if (!isSelected && spriteCache.current.has(node.id)) {
+      console.log(`Returning cached sprite for node: ${node.id}`);
       return spriteCache.current.get(node.id);
     }
+
+    console.log(`Creating new sprite for node: ${node.id}`);
     const texture = new THREE.TextureLoader().load(node.image);
     const material = new THREE.SpriteMaterial({ map: texture });
     const sprite = new THREE.Sprite(material);
@@ -174,30 +182,61 @@ const Graph = ({
 
     if (isSelected) {
       console.log('Selected node:', node.id);
+
+      // Create a proper glow with transparency at the edges
       const canvas = document.createElement('canvas');
       canvas.width = 256;
       canvas.height = 256;
       const ctx = canvas.getContext('2d');
-      ctx.fillStyle = 'rgba(0,255,0,1)';
+
+      // Create a radial gradient
+      const gradient = ctx.createRadialGradient(
+        128,
+        128,
+        30, // Inner circle (start of gradient)
+        128,
+        128,
+        128 // Outer circle (end of gradient)
+      );
+
+      // Add color stops for the gradient
+      gradient.addColorStop(0, 'rgba(0,255,0,0.7)'); // More opaque in center
+      gradient.addColorStop(1, 'rgba(0,255,0,0)'); // Transparent at edges
+
+      // Fill with gradient
+      ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 256, 256);
-      const texture = new THREE.Texture(canvas);
-      texture.needsUpdate = true;
+
+      // Create texture and material
+      const glowTexture = new THREE.Texture(canvas);
+      glowTexture.needsUpdate = true;
       const glowMaterial = new THREE.SpriteMaterial({
-        map: texture,
+        map: glowTexture,
         transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthTest: false,
       });
+
+      // CREATE THE GLOW SPRITE
       const glowSprite = new THREE.Sprite(glowMaterial);
-      glowSprite.scale.set(120, 120, 1);
+      glowSprite.scale.set(60, 60, 1);
+      glowSprite.position.set(0, 0, -0.1); // Behind main sprite
+      glowSprite.renderOrder = 0; // Render first
 
-      sprite.renderOrder = 1;
+      // Set sprite properties
+      sprite.position.set(0, 0, 0); // In front
+      sprite.renderOrder = 1; // Render second
 
+      // Create group with both sprites
       const group = new THREE.Group();
-      group.add(glowSprite);
-      group.add(sprite);
+      group.add(glowSprite); // Add glow first (behind)
+      group.add(sprite); // Add main sprite second (in front)
       group.userData.id = node.id;
+
       return group;
     }
 
+    // Cache and return normal sprite for non-selected nodes
     spriteCache.current.set(node.id, sprite);
     return sprite;
   };
@@ -207,10 +246,13 @@ const Graph = ({
   }, [allTokens, usersFrags]);
 
   useEffect(() => {
+    console.log('openToken changed:', openToken);
     if (openToken && openToken.tokenId) {
+      console.log('Clearing cache for tokenId:', openToken.tokenId);
       // Remove only the selected node from cache so it will be rebuilt with glow
       spriteCache.current.delete(String(openToken.tokenId));
       // Also update spheres array for ForceGraph3D
+      console.log('Rebuilding spheres...');
       setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
     }
   }, [openToken]);
