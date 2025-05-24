@@ -62,6 +62,10 @@ const Graph = ({
   }, []);
 
   const handleNodeClick = (node) => {
+    if (node.id === openToken?.token?.tokenId) {
+      return;
+    }
+
     const clickedTokenData = allTokens.find(
       (token) => +token.token.tokenId === +node.id
     );
@@ -254,6 +258,62 @@ const Graph = ({
       // Also update spheres array for ForceGraph3D
       console.log('Rebuilding spheres...');
       setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
+    }
+  }, [openToken]);
+
+  const focusOnNode = (nodeId) => {
+    if (!graphRef.current) return;
+
+    const node = graphData.nodes.find((n) => n.id === nodeId);
+    if (!node) return;
+
+    const nodePos = {
+      x: node.x || 0,
+      y: node.y || 0,
+      z: node.z || 0,
+    };
+
+    // Calculate camera position for left-side centering
+    const distance = 250;
+    const horizontalShift = windowWidth * 0.3; // Adjust this value to fine-tune positioning
+
+    const cameraPos = {
+      x: nodePos.x + horizontalShift, // Positive value moves camera right
+      y: nodePos.y,
+      z: nodePos.z + distance,
+    };
+
+    // Create a look-at point slightly to the left of the node
+    const lookAtPos = {
+      x: nodePos.x + windowWidth * 0.1, // Shift look-at point left
+      y: nodePos.y,
+      z: nodePos.z,
+    };
+
+    graphRef.current.cameraPosition(cameraPos, lookAtPos, 1200);
+  };
+
+  // Add effect to focus on selected node
+  useEffect(() => {
+    if (openToken && openToken.token && openToken.token.tokenId) {
+      // Small delay to ensure the glow effect is rendered first
+      setTimeout(() => {
+        focusOnNode(String(openToken.token.tokenId));
+      }, 300);
+    }
+  }, [openToken, graphData.nodes]);
+
+  const resetCamera = () => {
+    if (!graphRef.current) return;
+
+    // Reset to default view
+    graphRef.current.zoomToFit(1000);
+  };
+
+  // Call this when closing the token modal
+  useEffect(() => {
+    if (!openToken || openToken === 'initial') {
+      resetCamera();
     }
   }, [openToken]);
 
