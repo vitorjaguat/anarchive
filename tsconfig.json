@@ -27,7 +27,8 @@
     "src/pages/index.jsx",
     "src/utils/createToken.js",
     "src/utils/createToken.js",
-    "src/utils/zoraprotocolConfig.js"
+    "src/utils/zoraprotocolConfig.js",
+    "src/components/ConnectButton.jsx"
   ],
   "exclude": ["node_modules"]
 }

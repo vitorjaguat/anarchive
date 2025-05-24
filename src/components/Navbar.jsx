@@ -1,9 +1,9 @@
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 import Search from './Search';
 import SelectSort from './SelectSort';
 import { GoQuestion } from 'react-icons/go';
 import { useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
+import ConnectBtn from './ConnectButton';
 
 export default function Navbar({
   allTokens,
@@ -52,7 +52,7 @@ export default function Navbar({
         )}
         <Search allTokens={allTokens} setFilter={setFilter} />
         <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
-          <ConnectButton />
+          <ConnectBtn />
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ module.exports = {
       },
       colors: {
         'sph-purple-light': '#A0A0FF',
+        'sph-green': '#01ff00',
       },
     },
   },
