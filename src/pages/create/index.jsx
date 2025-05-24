@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import createToken from '../../utils/createToken';
 import PayoutSplits from '../../components/create/PayoutSplits';
-import MintStart from '../../components/create/MintStart';
 import EditionSize from '../../components/create/EditionSize';
 import { useAccount } from 'wagmi';
 import { greenlistedAccounts } from '../../utils/greenlistedAccounts';
@@ -22,6 +21,8 @@ export default function CreateIndex() {
   const [imagePreview, setImagePreview] = useState(null);
   const titleRef = useRef('');
   const descriptionRef = useRef('');
+  const mediaInputRef = useRef('');
+  const imageThumbInputRef = useRef('');
   const attToRef = useRef('');
   const attFromRef = useRef('');
   const attYearRef = useRef('');
@@ -53,25 +54,15 @@ export default function CreateIndex() {
     return null;
   }
 
-  const handleImageUpload = (event) => {
-    setImagePreview(null);
-
-    const file = event.target.files[0];
-    const mimetype = file?.type;
-
-    // if media is an image, show ImagePreview
-    if (mimetype?.includes('image')) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+  const handleMediaUpload = (event) => {
+    // remove error if any:
+    if (validationError?.media) {
+      // const error = { ...validationError };
+      // delete error.media;
+      // setValidationError(error);
+      checkValidation('media');
     }
 
-    setImage(file);
-  };
-
-  const handleMediaUpload = (event) => {
     setMediaPreview(null);
     setShowThumbnailInput(false);
     const file = event.target.files[0];
@@ -92,6 +83,33 @@ export default function CreateIndex() {
     }
 
     setMedia(file);
+  };
+
+  const handleImageUpload = (event) => {
+    // remove error if any:
+    if (validationError?.imageThumb) {
+      // const error = { ...validationError };
+      // delete error.imageThumb;
+      // setValidationError(error);
+      checkValidation('imageThumb');
+    }
+
+    // remove image preview if any:
+    setImagePreview(null);
+
+    const file = event.target.files[0];
+    const mimetype = file?.type;
+
+    // if media is an image, show ImagePreview
+    if (mimetype?.includes('image')) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    setImage(file);
   };
 
   const checkValidation = (field) => {
@@ -115,6 +133,28 @@ export default function CreateIndex() {
         } else {
           error = { ...error };
           delete error.description;
+        }
+        break;
+      case 'media':
+        if (!mediaInputRef.current.value) {
+          error.media = 'You must upload a media file for your token.';
+        } else {
+          error = { ...error };
+          delete error.media;
+        }
+        break;
+      case 'imageThumb':
+        if (media && !media?.type?.includes('image')) {
+          if (!imageThumbInputRef.current.value) {
+            error.imageThumb =
+              'You must upload a thumbnail image for your token.';
+          } else {
+            error = { ...error };
+            delete error.imageThumb;
+          }
+        } else {
+          error = { ...error };
+          delete error.imageThumb;
         }
         break;
       case 'attTo':
@@ -234,6 +274,21 @@ export default function CreateIndex() {
           error = { ...error };
           delete error.description;
         }
+        if (!media) {
+          error.media = 'You must upload a media file for your token.';
+        } else {
+          error = { ...error };
+          delete error.media;
+        }
+        if (media && !media?.type?.includes('image')) {
+          if (!image) {
+            error.imageThumb =
+              'You must upload a thumbnail image for your token.';
+          }
+        } else {
+          error = { ...error };
+          delete error.imageThumb;
+        }
         if (attToRef.current.value.length < 1) {
           error.attTo =
             'Attribute "To" is required. Tell us who/which organization this fragment is dedicated to. This information is important for the generation of The Anarchiving Game data visualizations.';
@@ -324,6 +379,7 @@ export default function CreateIndex() {
         break;
     }
     setValidationError({ ...error });
+    return error;
   };
 
   const handleRefresh = () => {
@@ -335,6 +391,10 @@ export default function CreateIndex() {
 
     titleRef.current.value = '';
     descriptionRef.current.value = '';
+    mediaInputRef.current.value = '';
+    if (imageThumbInputRef.current) {
+      imageThumbInputRef.current.value = '';
+    }
     attToRef.current.value = '';
     attFromRef.current.value = '';
     attYearRef.current.value = '';
@@ -360,6 +420,7 @@ export default function CreateIndex() {
     //Validations:
     const errorsInValidation = checkValidation('all');
     console.log('errorsInValidation', errorsInValidation);
+    console.log('media from submit', media);
     if (errorsInValidation && Object.keys(errorsInValidation).length > 0) {
       setValidationError({
         ...errorsInValidation,
@@ -373,9 +434,6 @@ export default function CreateIndex() {
     setSubmitMessage(
       'Please wait. When prompted, please accept transaction(s) on your wallet.'
     );
-
-    // Create a new FormData object
-    const formData = new FormData();
 
     const name = titleRef.current.value;
     const description = descriptionRef.current.value;
@@ -402,7 +460,7 @@ export default function CreateIndex() {
 
       // check if media mediatype is image:
       const isTypeImage = media?.type?.includes('image');
-      console.log('isTypeImage', isTypeImage);
+      // console.log('isTypeImage', isTypeImage);
 
       // upload image:
       if (!isTypeImage && image) {
@@ -503,7 +561,7 @@ export default function CreateIndex() {
       if (finalResponse && finalResponse?.error) {
         setProcessingSubmit('error');
         setSubmitMessage(
-          'Transaction has failed. ' + finalResponse.error.message
+          'Transaction has failed. ' + finalResponse.error?.cause?.details
         ); // #TODO JUST FOR DEBUG MOBILE
         return;
       }
@@ -541,70 +599,85 @@ export default function CreateIndex() {
     )
   ) {
     return (
-      <div className='relative h-screen w-screen flex items-center justify-center'>
-        {/* video bg: */}
-        <div className='absolute opacity-40 object-cover w-full h-full z-0'>
-          <video
-            className='w-full h-full object-cover'
-            autoPlay
-            muted
-            src='/assets/tag_bg.mp4'
-            loop
-            playsInline
+      <>
+        <Head>
+          <title>Create Fragment | The Anarchiving Game</title>
+          <meta charSet='utf-8' />
+          <meta name='viewport' content='width=device-width' />
+          <link
+            rel='icon'
+            href='https://the-anarchive.vercel.app/meta/image1.png'
           />
-        </div>
-        {/* back btns */}
-        <Link
-          href='/'
-          className='absolute top-3 left-3 w-[34px] h-[34px] rounded-md bg-white/20 flex items-center justify-center z-20'
-        >
-          <IoIosArrowRoundBack color='white' size={30} className='opacity-80' />
-        </Link>
+        </Head>
+        <div className='relative h-screen w-screen flex items-center justify-center'>
+          {/* video bg: */}
+          <div className='absolute opacity-40 object-cover w-full h-full z-0'>
+            <video
+              className='w-full h-full object-cover'
+              autoPlay
+              muted
+              src='/assets/tag_bg.mp4'
+              loop
+              playsInline
+            />
+          </div>
+          {/* back btns */}
+          <Link
+            href='/'
+            className='absolute top-3 left-3 w-[34px] h-[34px] rounded-md bg-white/20 flex items-center justify-center z-20'
+          >
+            <IoIosArrowRoundBack
+              color='white'
+              size={30}
+              className='opacity-80'
+            />
+          </Link>
 
-        {/* content: */}
-        {isConnected && (
-          <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
-            <div className='text-center'>
-              It seems that your wallet is not{' '}
-              <span className='text-[#11ff20]'>greenlisted</span> as a creator
-              within The Anarchiving Game smart contract yet. To start your
-              journey as an Anarchivist, you must join our guild. Just follow
-              the instructions:{' '}
+          {/* content: */}
+          {isConnected && (
+            <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
+              <div className='text-center'>
+                It seems that your wallet is not{' '}
+                <span className='text-[#11ff20]'>greenlisted</span> as a creator
+                within The Anarchiving Game smart contract yet. To start your
+                journey as an Anarchivist, you must join our guild. Just follow
+                the instructions:{' '}
+              </div>
+              <div className='text-[#11ff20] text-xl animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
+                <a
+                  href='https://guild.xyz/anarchiving'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  https://guild.xyz/anarchiving
+                </a>
+              </div>
+              <div className=''>
+                Or, if you just want to test out our new token creation page,{' '}
+                <Link
+                  className='text-indigo-400 hover:text-indigo-300 animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'
+                  href='/create-test'
+                >
+                  click here!
+                </Link>
+              </div>
             </div>
-            <div className='text-[#11ff20] text-xl animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
-              <a
-                href='https://guild.xyz/anarchiving'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                https://guild.xyz/anarchiving
-              </a>
+          )}
+          {!isConnected && (
+            <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
+              <div className='text-center'>
+                In order to create a token, you must connect your wallet first.
+                Then, if you are a{' '}
+                <span className='text-[#11ff20]'>greenlisted</span> creator, you
+                will be automatically redirected to the creation page.
+              </div>
+              <div className='text-[#11ff20] text-base animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
+                <ConnectButton label='Please Connect' />
+              </div>
             </div>
-            <div className=''>
-              Or, if you just want to test out our new token creation page,{' '}
-              <Link
-                className='text-indigo-400 hover:text-indigo-300 animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'
-                href='/create-test'
-              >
-                click here!
-              </Link>
-            </div>
-          </div>
-        )}
-        {!isConnected && (
-          <div className='p-10 bg-black/40 flex flex-col gap-7 max-w-[700px] justify-center items-center z-10'>
-            <div className='text-center'>
-              In order to create a token, you must connect your wallet first.
-              Then, if you are a{' '}
-              <span className='text-[#11ff20]'>greenlisted</span> creator, you
-              will be automatically redirected to the creation page.
-            </div>
-            <div className='text-[#11ff20] text-base animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'>
-              <ConnectButton label='Please Connect' />
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </>
     );
   }
 
@@ -612,6 +685,12 @@ export default function CreateIndex() {
     <>
       <Head>
         <title>Create Fragment | The Anarchiving Game</title>
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width' />
+        <link
+          rel='icon'
+          href='https://the-anarchive.vercel.app/meta/image1.png'
+        />
       </Head>
       <div className='relative w-screen h-screen overflow-y-auto'>
         {/* video bg: */}
@@ -658,7 +737,7 @@ export default function CreateIndex() {
                     onChange={() => checkValidation('title')}
                   />
                   {validationError?.title && (
-                    <div className='text-orange-700 text-sm'>
+                    <div className='text-orange-800 text-sm'>
                       {validationError.title}
                     </div>
                   )}
@@ -674,7 +753,7 @@ export default function CreateIndex() {
                     onChange={() => checkValidation('description')}
                   />
                   {validationError?.description && (
-                    <div className='text-orange-700 text-sm max-w-[700px]'>
+                    <div className='text-orange-800 text-sm max-w-[700px]'>
                       {validationError.description}
                     </div>
                   )}
@@ -689,12 +768,18 @@ export default function CreateIndex() {
                   </label>
                   <input
                     type='file'
+                    ref={mediaInputRef}
                     onChange={handleMediaUpload}
                     name='media'
                     id='media'
                     className=''
                     accept='.jpg, .jpeg, .png, .mp4, .pdf, .html, .mpeg, .wav, .mp3, .ogg, .gif'
                   />
+                  {validationError?.media && (
+                    <div className='text-orange-700 text-sm'>
+                      {validationError.media}
+                    </div>
+                  )}
                   {mediaPreview && mediaPreview?.includes('image') && (
                     <div className='mt-2 w-full max-w-[700px] h-fit bg-slate-300 flex items-center justify-center rounded-lg '>
                       <img
@@ -728,6 +813,7 @@ export default function CreateIndex() {
                     </label>
                     <input
                       type='file'
+                      ref={imageThumbInputRef}
                       accept='image/*'
                       onChange={handleImageUpload}
                       name='thumbnail'
@@ -741,6 +827,11 @@ export default function CreateIndex() {
                           alt='preview'
                           className='w-full p-3 h-full object-cover'
                         />
+                      </div>
+                    )}
+                    {validationError?.imageThumb && (
+                      <div className='text-orange-800 text-sm'>
+                        {validationError.imageThumb}
                       </div>
                     )}
                   </div>
@@ -761,7 +852,7 @@ export default function CreateIndex() {
                       onChange={() => checkValidation('attTo')}
                     />
                     {validationError?.attTo && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attTo}
                       </div>
                     )}
@@ -777,7 +868,7 @@ export default function CreateIndex() {
                       onChange={() => checkValidation('attFrom')}
                     />
                     {validationError?.attFrom && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attFrom}
                       </div>
                     )}
@@ -795,7 +886,7 @@ export default function CreateIndex() {
                       onChange={() => checkValidation('attYear')}
                     />
                     {validationError?.attYear && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attYear}
                       </div>
                     )}
@@ -811,7 +902,7 @@ export default function CreateIndex() {
                       onChange={() => checkValidation('attEvent')}
                     />
                     {validationError?.attEvent && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attEvent}
                       </div>
                     )}
@@ -850,7 +941,7 @@ export default function CreateIndex() {
                       </div>
                     </div>
                     {validationError?.attMedia && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attMedia}
                       </div>
                     )}
@@ -866,7 +957,7 @@ export default function CreateIndex() {
                       onChange={() => checkValidation('attCreator')}
                     />
                     {validationError?.attCreator && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attCreator}
                       </div>
                     )}
@@ -882,7 +973,7 @@ export default function CreateIndex() {
                       onChange={() => checkValidation('attTags')}
                     />
                     {validationError?.attTags && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attTags}
                       </div>
                     )}
@@ -898,7 +989,7 @@ export default function CreateIndex() {
                       onChange={() => checkValidation('attLocation')}
                     />
                     {validationError?.attLocation && (
-                      <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                      <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                         {validationError.attLocation}
                       </div>
                     )}
@@ -1019,7 +1110,7 @@ export default function CreateIndex() {
                     )}
                   </button>
                   {validationError?.all && (
-                    <div className='text-orange-700 text-sm max-w-[700px] mb-2'>
+                    <div className='text-orange-800 text-sm max-w-[700px] mb-2'>
                       {validationError.all}
                     </div>
                   )}
