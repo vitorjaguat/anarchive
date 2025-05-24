@@ -122,13 +122,33 @@ const Graph = ({
     });
   }
 
+  function createGlowTexture(size = 256, color = 'rgba(0,255,0,1)') {
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createRadialGradient(
+      size / 2,
+      size / 2,
+      size / 8,
+      size / 2,
+      size / 2,
+      size / 2
+    );
+    gradient.addColorStop(0, color);
+    gradient.addColorStop(1, 'rgba(0,255,0,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }
+
   //prepare nodes (as spheres):
   useEffect(() => {
     setIsLoadingGraph(true);
-
-    const spheresArr = graphData.nodes.map((node) => getOrCreateSprite(node));
-    setSpheres(spheresArr);
-  }, [graphData]);
+    setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
+  }, [graphData, openToken]);
 
   // link isDestination logic:
   useEffect(() => {
@@ -141,7 +161,9 @@ const Graph = ({
   const spriteCache = useRef(new Map());
 
   const getOrCreateSprite = (node) => {
-    if (spriteCache.current.has(node.id)) {
+    const isSelected =
+      openToken && String(openToken.tokenId) === String(node.id);
+    if (!isSelected && spriteCache.current.has(node.id)) {
       return spriteCache.current.get(node.id);
     }
     const texture = new THREE.TextureLoader().load(node.image);
@@ -149,6 +171,33 @@ const Graph = ({
     const sprite = new THREE.Sprite(material);
     sprite.scale.set(30, 30, 1);
     sprite.userData.id = node.id;
+
+    if (isSelected) {
+      console.log('Selected node:', node.id);
+      const canvas = document.createElement('canvas');
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'rgba(0,255,0,1)';
+      ctx.fillRect(0, 0, 256, 256);
+      const texture = new THREE.Texture(canvas);
+      texture.needsUpdate = true;
+      const glowMaterial = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+      });
+      const glowSprite = new THREE.Sprite(glowMaterial);
+      glowSprite.scale.set(120, 120, 1);
+
+      sprite.renderOrder = 1;
+
+      const group = new THREE.Group();
+      group.add(glowSprite);
+      group.add(sprite);
+      group.userData.id = node.id;
+      return group;
+    }
+
     spriteCache.current.set(node.id, sprite);
     return sprite;
   };
@@ -156,6 +205,15 @@ const Graph = ({
   useEffect(() => {
     spriteCache.current.clear();
   }, [allTokens, usersFrags]);
+
+  useEffect(() => {
+    if (openToken && openToken.tokenId) {
+      // Remove only the selected node from cache so it will be rebuilt with glow
+      spriteCache.current.delete(String(openToken.tokenId));
+      // Also update spheres array for ForceGraph3D
+      setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
+    }
+  }, [openToken]);
 
   return (
     <div className={'relative'} onKeyDown={(e) => handleKeyPress(e)}>
