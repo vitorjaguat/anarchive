@@ -154,6 +154,14 @@ const Graph = ({
     setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
   }, [graphData, openToken]);
 
+  // Add memoization for spheres
+  const spheresDeps = [graphData.nodes.length, openToken?.token?.tokenId];
+
+  useEffect(() => {
+    setIsLoadingGraph(true);
+    setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
+  }, spheresDeps);
+
   // link isDestination logic:
   useEffect(() => {
     if (sort === 'From') {
@@ -168,25 +176,44 @@ const Graph = ({
     const isSelected =
       openToken && String(openToken.token.tokenId) === String(node.id);
 
-    console.log(
-      `getOrCreateSprite - node: ${node.id}, isSelected: ${isSelected}, openToken.tokenId: ${openToken?.token?.tokenId}`
-    );
-
     if (!isSelected && spriteCache.current.has(node.id)) {
-      console.log(`Returning cached sprite for node: ${node.id}`);
       return spriteCache.current.get(node.id);
     }
 
-    console.log(`Creating new sprite for node: ${node.id}`);
-    const texture = new THREE.TextureLoader().load(node.image);
+    // Dispose of existing texture if it exists
+    if (spriteCache.current.has(node.id)) {
+      const oldSprite = spriteCache.current.get(node.id);
+      if (oldSprite.material && oldSprite.material.map) {
+        oldSprite.material.map.dispose();
+      }
+      if (oldSprite.material) {
+        oldSprite.material.dispose();
+      }
+    }
+
+    const texture = new THREE.TextureLoader().load(
+      node.image,
+      // onLoad
+      () => {
+        console.log(`Texture loaded for node: ${node.id}`);
+      },
+      // onProgress
+      undefined,
+      // onError
+      (error) => {
+        console.error(`Failed to load texture for node: ${node.id}`, error);
+        // Use a fallback texture or color
+        if (sprite.material) {
+          sprite.material.color.set(0x999999);
+        }
+      }
+    );
     const material = new THREE.SpriteMaterial({ map: texture });
     const sprite = new THREE.Sprite(material);
     sprite.scale.set(30, 30, 1);
     sprite.userData.id = node.id;
 
     if (isSelected) {
-      console.log('Selected node:', node.id);
-
       // Create a proper glow with transparency at the edges
       const canvas = document.createElement('canvas');
       canvas.width = 256;
@@ -246,17 +273,32 @@ const Graph = ({
   };
 
   useEffect(() => {
+    // Dispose of all cached sprites before clearing
+    spriteCache.current.forEach((sprite) => {
+      if (sprite.material && sprite.material.map) {
+        sprite.material.map.dispose();
+      }
+      if (sprite.material) {
+        sprite.material.dispose();
+      }
+    });
     spriteCache.current.clear();
   }, [allTokens, usersFrags]);
 
   useEffect(() => {
-    console.log('openToken changed:', openToken);
-    if (openToken && openToken.tokenId) {
-      console.log('Clearing cache for tokenId:', openToken.tokenId);
-      // Remove only the selected node from cache so it will be rebuilt with glow
-      spriteCache.current.delete(String(openToken.tokenId));
-      // Also update spheres array for ForceGraph3D
-      console.log('Rebuilding spheres...');
+    if (openToken && openToken.token && openToken.token.tokenId) {
+      // Dispose of the specific sprite before removing from cache
+      const nodeId = String(openToken.token.tokenId);
+      if (spriteCache.current.has(nodeId)) {
+        const sprite = spriteCache.current.get(nodeId);
+        if (sprite.material && sprite.material.map) {
+          sprite.material.map.dispose();
+        }
+        if (sprite.material) {
+          sprite.material.dispose();
+        }
+      }
+      spriteCache.current.delete(nodeId);
       setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
     }
   }, [openToken]);
