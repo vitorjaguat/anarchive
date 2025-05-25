@@ -4,8 +4,8 @@ import { FiFilter } from 'react-icons/fi';
 export default function Filters({ filter, setFilter }) {
   // console.log(filter);
   return (
-    <div className='absolute top-4 left-4 z-[4] '>
-      <div className=''>
+    <div className='absolute top-3 left-0 z-[4] w-full'>
+      <div className='px-16 flex gap-2 flex-wrap justify-center'>
         {filter.map((f) => (
           <div
             key={f}
@@ -13,7 +13,9 @@ export default function Filters({ filter, setFilter }) {
           >
             <div className='flex gap-3 items-center'>
               <FiFilter size={14} />
-              {f}
+              <span className='text-sm whitespace-nowrap font-light translate-y-[1px]'>
+                {f}
+              </span>
             </div>
 
             <div

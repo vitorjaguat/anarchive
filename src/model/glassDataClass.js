@@ -5,12 +5,14 @@ class GraphDataClass {
       this.filteredTokens = tokenArr;
     } else {
       this.filteredTokens = tokenArr?.filter((tk) => {
-        let attribute = tk.token.attributes.find((att) => att.key === 'Tags');
-        let attributeValue = attribute ? attribute.value.toLowerCase() : '';
-
-        return filtersArr.every((f) =>
-          attributeValue.includes(f.toLowerCase())
+        let attribute = tk.token.attributes.find(
+          (att) => att.key === 'Tags' || att.key === 'Content Tags'
         );
+        if (!attribute) return false;
+        let attributeValue = attribute.value.toLowerCase();
+
+        // Changed from .every() to .some() for OR logic instead of AND
+        return filtersArr.some((f) => attributeValue.includes(f.toLowerCase()));
       });
     }
     // console.log('this.filteredTokens', this.filteredTokens);

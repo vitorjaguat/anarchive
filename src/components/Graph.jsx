@@ -219,7 +219,7 @@ const Graph = ({
     const texture = new THREE.TextureLoader().load(
       node.image,
       (loadedTexture) => {
-        console.log(`Texture loaded for node: ${node.id}`);
+        // console.log(`Texture loaded for node: ${node.id}`);
         // Get the image to calculate aspect ratio
         const img = loadedTexture.image;
         const aspectRatio = img.width / img.height;

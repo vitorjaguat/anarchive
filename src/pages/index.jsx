@@ -17,12 +17,14 @@ import { MainContext } from '@/context/mainContext';
 import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
 
-export default function Home({ allTokens, tokenDataForOG }) {
+export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const isMobile = useIsMobile();
   // user account states:
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
+  console.log('allTokens', allTokens);
+  console.log('allTags', allTags);
 
   // dynamic head metadata:
   const [headTitle, setHeadTitle] = useState(
@@ -112,6 +114,7 @@ export default function Home({ allTokens, tokenDataForOG }) {
         setShowMineIsChecked={setShowMineIsChecked}
         showMineIsChecked={showMineIsChecked}
         allTokens={allTokens}
+        allTags={allTags}
         changeSort={changeSort}
         sort={sort}
         setFilter={setFilter}
@@ -203,6 +206,20 @@ export async function getServerSideProps(context) {
 
   const allTokens = await fetchAllTokens();
 
+  ////////// get all tags:
+  const allTagsSet = new Set();
+  allTokens.forEach((token) => {
+    const tagsString = token.token?.attributes?.find(
+      (attr) => attr?.key === 'Tags' || attr?.key === 'Content Tags'
+    )?.value;
+    if (!tagsString) return;
+    const tagsArray = tagsString ? tagsString.split(', ') : [];
+    tagsArray.forEach((tag) => {
+      allTagsSet.add(tag);
+    });
+  });
+  const allTags = Array.from(allTagsSet).sort();
+
   ////////// manage the query parameter 'fragment':
   const { fragment } = context.query;
   let tokenDataForOG = null;
@@ -234,6 +251,7 @@ export async function getServerSideProps(context) {
     props: {
       tokenDataForOG,
       allTokens,
+      allTags,
     },
   };
 }
