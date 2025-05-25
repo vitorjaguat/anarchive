@@ -8,6 +8,7 @@ import NavbarMobile from './mobile/NavbarMobile';
 export default function Layout({
   children,
   allTokens,
+  allTags,
   sort,
   changeSort,
   filter,
@@ -55,6 +56,7 @@ export default function Layout({
           <div className='absolute bottom-0 left-0 right-0 z-[1999]'>
             <Navbar
               allTokens={allTokens}
+              allTags={allTags}
               sort={sort}
               changeSort={changeSort}
               filter={filter}

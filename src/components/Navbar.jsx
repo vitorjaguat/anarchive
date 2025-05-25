@@ -4,9 +4,11 @@ import { GoQuestion } from 'react-icons/go';
 import { useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import ConnectBtn from './ConnectButton';
+import SelectTag from './SelectTag';
 
 export default function Navbar({
   allTokens,
+  allTags,
   sort,
   changeSort,
   filter,
@@ -50,7 +52,8 @@ export default function Navbar({
             />
           </div>
         )}
-        <Search allTokens={allTokens} setFilter={setFilter} />
+        {/* <Search allTokens={allTokens} setFilter={setFilter} /> */}
+        <SelectTag allTags={allTags} setFilter={setFilter} filter={filter} />
         <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
           <ConnectBtn />
         </div>
