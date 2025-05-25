@@ -154,7 +154,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                         }}
                         // normalizeRoyalties={true}
                         trigger={
-                          <button className='w-full bg-slate-800/90 text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'>
+                          <button className='w-full bg-sph-purple-light text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'>
                             Collect
                           </button>
                         }

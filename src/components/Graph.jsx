@@ -94,59 +94,59 @@ const Graph = ({
     }
   }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
 
-  function createCircularTexture(imageUrl, size = 128) {
-    return new Promise((resolve, reject) => {
-      const img = new window.Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, size, size);
+  // function createCircularTexture(imageUrl, size = 128) {
+  //   return new Promise((resolve, reject) => {
+  //     const img = new window.Image();
+  //     img.crossOrigin = 'anonymous';
+  //     img.onload = () => {
+  //       const canvas = document.createElement('canvas');
+  //       canvas.width = size;
+  //       canvas.height = size;
+  //       const ctx = canvas.getContext('2d');
+  //       ctx.clearRect(0, 0, size, size);
 
-        // Draw circular clipping path
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.clip();
+  //       // Draw circular clipping path
+  //       ctx.save();
+  //       ctx.beginPath();
+  //       ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
+  //       ctx.closePath();
+  //       ctx.clip();
 
-        // Draw the image inside the circle
-        ctx.drawImage(img, 0, 0, size, size);
-        ctx.restore();
+  //       // Draw the image inside the circle
+  //       ctx.drawImage(img, 0, 0, size, size);
+  //       ctx.restore();
 
-        // Create texture
-        const texture = new THREE.Texture(canvas);
-        texture.needsUpdate = true;
-        resolve(texture);
-      };
-      img.onerror = reject;
-      img.src = imageUrl;
-    });
-  }
+  //       // Create texture
+  //       const texture = new THREE.Texture(canvas);
+  //       texture.needsUpdate = true;
+  //       resolve(texture);
+  //     };
+  //     img.onerror = reject;
+  //     img.src = imageUrl;
+  //   });
+  // }
 
-  function createGlowTexture(size = 256, color = 'rgba(0,255,0,1)') {
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-    const gradient = ctx.createRadialGradient(
-      size / 2,
-      size / 2,
-      size / 8,
-      size / 2,
-      size / 2,
-      size / 2
-    );
-    gradient.addColorStop(0, color);
-    gradient.addColorStop(1, 'rgba(0,255,0,0)');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, size, size);
-    const texture = new THREE.Texture(canvas);
-    texture.needsUpdate = true;
-    return texture;
-  }
+  // function createGlowTexture(size = 256, color = 'rgba(0,255,0,1)') {
+  //   const canvas = document.createElement('canvas');
+  //   canvas.width = size;
+  //   canvas.height = size;
+  //   const ctx = canvas.getContext('2d');
+  //   const gradient = ctx.createRadialGradient(
+  //     size / 2,
+  //     size / 2,
+  //     size / 8,
+  //     size / 2,
+  //     size / 2,
+  //     size / 2
+  //   );
+  //   gradient.addColorStop(0, color);
+  //   gradient.addColorStop(1, 'rgba(0,255,0,0)');
+  //   ctx.fillStyle = gradient;
+  //   ctx.fillRect(0, 0, size, size);
+  //   const texture = new THREE.Texture(canvas);
+  //   texture.needsUpdate = true;
+  //   return texture;
+  // }
 
   //prepare nodes (as spheres):
   useEffect(() => {
@@ -180,37 +180,71 @@ const Graph = ({
       return spriteCache.current.get(node.id);
     }
 
-    // Dispose of existing texture if it exists
-    if (spriteCache.current.has(node.id)) {
-      const oldSprite = spriteCache.current.get(node.id);
-      if (oldSprite.material && oldSprite.material.map) {
-        oldSprite.material.map.dispose();
-      }
-      if (oldSprite.material) {
-        oldSprite.material.dispose();
-      }
-    }
+    // Create a promise-based texture loader to get image dimensions
+    const createProportionalTexture = (imageUrl) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
 
+          // Calculate aspect ratio
+          const aspectRatio = img.width / img.height;
+
+          // Set canvas size maintaining aspect ratio
+          const baseSize = 256;
+          if (aspectRatio > 1) {
+            // Landscape image
+            canvas.width = baseSize;
+            canvas.height = baseSize / aspectRatio;
+          } else {
+            // Portrait or square image
+            canvas.width = baseSize * aspectRatio;
+            canvas.height = baseSize;
+          }
+
+          // Draw image maintaining proportions
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          const texture = new THREE.Texture(canvas);
+          texture.needsUpdate = true;
+          resolve({ texture, aspectRatio });
+        };
+        img.src = imageUrl;
+      });
+    };
+
+    // For now, use the standard texture loader, but we'll enhance it
     const texture = new THREE.TextureLoader().load(
       node.image,
-      // onLoad
-      () => {
+      (loadedTexture) => {
         console.log(`Texture loaded for node: ${node.id}`);
+        // Get the image to calculate aspect ratio
+        const img = loadedTexture.image;
+        const aspectRatio = img.width / img.height;
+
+        // Adjust sprite scale based on aspect ratio
+        if (aspectRatio > 1) {
+          // Landscape: keep width, reduce height
+          sprite.scale.set(30, 30 / aspectRatio, 1);
+        } else {
+          // Portrait: keep height, reduce width
+          sprite.scale.set(30 * aspectRatio, 30, 1);
+        }
       },
-      // onProgress
       undefined,
-      // onError
       (error) => {
         console.error(`Failed to load texture for node: ${node.id}`, error);
-        // Use a fallback texture or color
         if (sprite.material) {
           sprite.material.color.set(0x999999);
         }
       }
     );
+
     const material = new THREE.SpriteMaterial({ map: texture });
     const sprite = new THREE.Sprite(material);
-    sprite.scale.set(30, 30, 1);
+    sprite.scale.set(30, 30, 1); // Default scale, will be adjusted in onLoad
     sprite.userData.id = node.id;
 
     if (isSelected) {
@@ -224,14 +258,14 @@ const Graph = ({
       const gradient = ctx.createRadialGradient(
         128,
         128,
-        30, // Inner circle (start of gradient)
+        50, // Inner circle (start of gradient)
         128,
         128,
         128 // Outer circle (end of gradient)
       );
 
       // Add color stops for the gradient
-      gradient.addColorStop(0, 'rgba(0,255,0,0.7)'); // More opaque in center
+      gradient.addColorStop(0, 'rgba(0,255,0,0.85)'); // More opaque in center
       gradient.addColorStop(1, 'rgba(0,255,0,0)'); // Transparent at edges
 
       // Fill with gradient
@@ -397,10 +431,13 @@ const Graph = ({
         linkWidth={sort === 'From' ? 20 : 0}
         // linkDirectionalParticles={(link) => (link.isDestination ? 1 : 0)}
         linkDirectionalParticles={(link) =>
-          link?.isDestination && sort === 'From' ? 3 : 0
+          link?.isDestination && sort === 'From' ? 2 : 0
         }
         linkDirectionalParticleWidth={1}
-        linkDirectionalParticleSpeed={0.0025}
+        linkDirectionalParticleSpeed={0.001}
+        linkDirectionalParticleResolution={4}
+        enablePointerInteraction={true}
+        enableNavigationControls={true}
         //nodes:
         nodeLabel={(node) =>
           `<div class='node-label'><div class='title'>${node.name}</div><div>${node.group}</div></div>`
