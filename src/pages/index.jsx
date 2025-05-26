@@ -215,7 +215,7 @@ export async function getServerSideProps(context) {
     if (!tagsString) return;
     const tagsArray = tagsString ? tagsString.split(', ') : [];
     tagsArray.forEach((tag) => {
-      allTagsSet.add(tag);
+      allTagsSet.add(tag.toLowerCase());
     });
   });
   const allTags = Array.from(allTagsSet).sort();

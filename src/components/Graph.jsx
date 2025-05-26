@@ -166,7 +166,9 @@ const Graph = ({
   useEffect(() => {
     if (sort === 'From') {
       const graph = graphRef.current;
-      graph.d3Force('link').strength((link) => (link.isDestination ? 0 : 0.03));
+      graph
+        .d3Force('link')
+        .strength((link) => (link.isDestination ? 0.0008 : 0.03));
     }
   }, [sort]);
 
