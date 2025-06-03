@@ -35,20 +35,50 @@ export default function Grid({
     )
   );
   useEffect(() => {
+    let filteredTokens = [...allTokens];
+
+    // Apply tag filtering first
+    if (filter && filter.length > 0) {
+      filteredTokens = allTokens.filter((token) => {
+        const tagsAttribute = token.token.attributes?.find(
+          (attr) => attr.key === 'Tags' || attr.key === 'Content Tags'
+        );
+
+        if (!tagsAttribute) return false;
+
+        const tagsValue = tagsAttribute.value.toLowerCase();
+
+        // Check if any of the filter tags are included in the token's tags
+        return filter.some((filterTag) =>
+          tagsValue.includes(filterTag.toLowerCase())
+        );
+      });
+    }
+
+    // Apply user fragments filtering
+    if (showMineIsChecked) {
+      filteredTokens = filteredTokens.filter((token) =>
+        usersFrags.some(
+          (userFrag) => userFrag.token.tokenId === token.token.tokenId
+        )
+      );
+    }
+
+    // Apply sorting
     if (sortGrid === 'ASC') {
       setTokens(
-        [...allTokens].sort(
+        filteredTokens.sort(
           (a, b) => Number(a.token.tokenId) - Number(b.token.tokenId)
         )
       );
     } else {
       setTokens(
-        [...allTokens].sort(
+        filteredTokens.sort(
           (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId)
         )
       );
     }
-  }, [allTokens, showMineIsChecked, sortGrid]);
+  }, [allTokens, showMineIsChecked, sortGrid, filter, usersFrags]);
 
   const handleClickSort = () => {
     setSortGrid((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'));
@@ -57,7 +87,7 @@ export default function Grid({
   if (!allTokens || allTokens.length === 0 || !mounted) return null;
 
   return (
-    <div className='flex flex-col items-center w-full pt-3 h-full overflow-y-auto'>
+    <div className='flex flex-col items-center w-full pt-3 h-full overflow-y-auto scroll-smooth'>
       {/* SORT TOGLE */}
       <div className='flex w-full justify-center z-10 mb-2'>
         <div
@@ -76,8 +106,8 @@ export default function Grid({
         </div>
       </div>
       {/* GRID */}
-      <div className='relative w-full  overflow-y-auto px-14'>
-        <div className=' w-full pb-40 '>
+      <div className='relative w-full  overflow-y-auto px-14 scroll-smooth'>
+        <div className=' w-full pb-40 scroll-smooth'>
           {!showMineIsChecked ? (
             <Masonry
               items={tokens}
@@ -87,6 +117,7 @@ export default function Grid({
                 media: [1024, 1280, 1536],
                 useBalancedLayout: true,
               }}
+              className=' scroll-smooth'
               as='div'
               render={(token: ReservoirToken, i: number) => (
                 <GridViewItemMobile key={i} token={token} />
@@ -105,6 +136,7 @@ export default function Grid({
                 media: [1024, 1280, 1536],
                 useBalancedLayout: true,
               }}
+              className=' scroll-smooth'
               as='div'
               render={(token: ReservoirToken, i: number) => (
                 <GridViewItemMobile key={i} token={token} />
