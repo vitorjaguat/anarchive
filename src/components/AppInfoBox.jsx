@@ -88,7 +88,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
               >
                 The Sphere
               </a>
-              's creative journey.
+              &apos;s creative journey.
             </div>
             <div className='text-white'>
               Think of a fractal and proliferating archive: an open-ended canvas
