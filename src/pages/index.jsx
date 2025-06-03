@@ -23,8 +23,6 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
-  console.log('allTokens', allTokens);
-  console.log('allTags', allTags);
 
   // dynamic head metadata:
   const [headTitle, setHeadTitle] = useState(
@@ -215,6 +213,7 @@ export async function getServerSideProps(context) {
     if (!tagsString) return;
     const tagsArray = tagsString ? tagsString.split(', ') : [];
     tagsArray.forEach((tag) => {
+      if (tag.length === 0) return; // skip empty tags
       allTagsSet.add(tag.toLowerCase());
     });
   });

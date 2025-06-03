@@ -92,7 +92,7 @@ export default function LargeMedia({ token }) {
         //   height: '100%',
         //   aspectRatio: '4/3',
         // }}
-        data={token.media}
+        data={token.media + '#toolbar=0'}
         style={{ height: isMobile ? '60vh' : `${window.innerHeight - 150}px` }}
         width={width}
         className='z-50'

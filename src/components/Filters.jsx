@@ -1,8 +1,14 @@
 import { VscClose } from 'react-icons/vsc';
 import { FiFilter } from 'react-icons/fi';
+import { useContext } from 'react';
+import { MainContext } from '@/context/mainContext';
 
 export default function Filters({ filter, setFilter }) {
-  // console.log(filter);
+  const { view } = useContext(MainContext);
+
+  if (view !== 'graph') return null; // Only show filters in graph view
+  if (!filter || filter.length === 0) return null; // Don't render if no filters are applied
+
   return (
     <div className='absolute top-3 left-0 z-[4] w-full'>
       <div className='px-16 flex gap-2 flex-wrap justify-center'>
