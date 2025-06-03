@@ -1,6 +1,6 @@
 import Markdown from 'react-markdown';
 import { MintModal } from '@reservoir0x/reservoir-kit-ui';
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import { RxChevronRight } from 'react-icons/rx';
@@ -136,7 +136,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                         />
                       )}
                       <div
-                        className='absolute bottom-2 right-2 cursor-pointer'
+                        className='absolute bottom-2 right-2 cursor-pointer mix-blend-difference'
                         onClick={() => {
                           largeMediaControls.start('visible');
                           setOpenLargeMedia(openToken);

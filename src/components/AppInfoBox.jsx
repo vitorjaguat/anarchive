@@ -75,19 +75,26 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
           </div>
           <div className='p-4 flex flex-col gap-4 text-sm'>
             <div className='text-white'>
-              The Anarchiving Game is a shared contract deployed on Zora&apos;s
-              mainnet that records The Sphere&apos;s evolution, capturing its
-              journey and milestones. This initiative enables collaborators to
-              mint, share, and collect digital objects at minimal costs,
-              promoting open access and diversity in the field of live arts.
+              The Anarchiving Game is a participatory web3 protocol embodying
+              the spirit of innovation and interdependence constitutive of the
+              live arts. Based on a shared contract deployed on the Zora Chain,
+              The Anarchiving Game enables players to mint, share and collect
+              fragments of{' '}
+              <a
+                href='https://www.thesphere.as/'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='font-bold text-slate-400 hover:text-slate-50 duration-300'
+              >
+                The Sphere
+              </a>
+              's creative journey.
             </div>
             <div className='text-white'>
-              When participants create fragments, they are building together the
-              The Sphere&apos;s Anarchive as a dynamic, participatory open
-              canvas where community&apos;s memories and creativity are
-              continuously interpreted and reimagined, challenging traditional
-              archiving methods, creating a fluid narrative through artistic
-              collaboration.
+              Think of a fractal and proliferating archive: an open-ended canvas
+              where the collective memory and creative outputs of The Sphere's
+              community are not only preserved, but continually re-envisioned
+              and synthetically expanded upon.
             </div>
             <div className='text-white'>
               The Anarchiving Game is supported by{' '}
@@ -142,7 +149,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                <BsTwitterX size={20} />
+                <BsTwitterX size={19} />
               </a>
               <a
                 className=' hover:scale-125 duration-500'
@@ -150,7 +157,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
                 target='_blank'
                 rel='noopener noreferrer'
               >
-                <BsYoutube size={20} />
+                <BsYoutube size={22} />
               </a>
               <a
                 className=' hover:scale-125 duration-500'
@@ -161,8 +168,8 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
                 <img
                   src='/icons/logo-farcaster.svg'
                   alt='Farcaster'
-                  width={20}
-                  height={20}
+                  width={19}
+                  height={19}
                 />
               </a>
               <a
@@ -200,7 +207,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
               </div>
             </div>
             <div className='flex flex-col items-start w-full text-xs'>
-              <div className=''>beta v.0.2 - June 2024</div>
+              <div className=''>beta v0.3 - June 2025</div>
               <div className=''>
                 Developed by{' '}
                 <a
