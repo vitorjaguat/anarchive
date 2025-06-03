@@ -92,9 +92,9 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
             </div>
             <div className='text-white'>
               Think of a fractal and proliferating archive: an open-ended canvas
-              where the collective memory and creative outputs of The Sphere's
-              community are not only preserved, but continually re-envisioned
-              and synthetically expanded upon.
+              where the collective memory and creative outputs of The
+              Sphere&apos;s community are not only preserved, but continually
+              re-envisioned and synthetically expanded upon.
             </div>
             <div className='text-white'>
               The Anarchiving Game is supported by{' '}
