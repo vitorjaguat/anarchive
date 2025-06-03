@@ -42,16 +42,15 @@ export default function Navbar({
       </div>
 
       <div className='flex justify-end w-full h-full gap-10'>
-        {view === 'graph' && (
-          <div className='min-w-[130px]'>
-            <SelectSort
-              changeSort={changeSort}
-              sort={sort}
-              setShowMineIsChecked={setShowMineIsChecked}
-              showMineIsChecked={showMineIsChecked}
-            />
-          </div>
-        )}
+        <div className='min-w-[130px]'>
+          <SelectSort
+            changeSort={changeSort}
+            sort={sort}
+            setShowMineIsChecked={setShowMineIsChecked}
+            showMineIsChecked={showMineIsChecked}
+            view={view}
+          />
+        </div>
         {/* <Search allTokens={allTokens} setFilter={setFilter} /> */}
         <SelectTag allTags={allTags} setFilter={setFilter} filter={filter} />
         <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
