@@ -53,9 +53,7 @@ export default function Navbar({
           </div>
         )}
         {/* <Search allTokens={allTokens} setFilter={setFilter} /> */}
-        {view === 'graph' && (
-          <SelectTag allTags={allTags} setFilter={setFilter} filter={filter} />
-        )}
+        <SelectTag allTags={allTags} setFilter={setFilter} filter={filter} />
         <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
           <ConnectBtn />
         </div>

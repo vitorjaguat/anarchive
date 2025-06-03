@@ -40,7 +40,6 @@ export default function SelectTag({ allTags, setFilter, filter }) {
   const handleTagSelect = (tag) => {
     if (!filter.includes(tag)) {
       const newSelectedTags = [...filter, tag];
-      // setSelectedTags(newSelectedTags);
       setFilter(newSelectedTags);
     }
     setSearchTerm('');
@@ -49,12 +48,11 @@ export default function SelectTag({ allTags, setFilter, filter }) {
 
   const handleTagRemove = (tagToRemove) => {
     const newSelectedTags = filter.filter((tag) => tag !== tagToRemove);
-    // setSelectedTags(newSelectedTags);
     setFilter(newSelectedTags);
+    setIsOpen(false);
   };
 
   const clearAllTags = () => {
-    // setSelectedTags([]);
     setFilter([]);
   };
 
@@ -74,8 +72,12 @@ export default function SelectTag({ allTags, setFilter, filter }) {
                 filteredTags.map((tag) => (
                   <button
                     key={tag}
-                    onClick={() => handleTagSelect(tag)}
-                    disabled={filter.includes(tag)}
+                    onClick={
+                      filter.includes(tag)
+                        ? () => handleTagRemove(tag)
+                        : () => handleTagSelect(tag)
+                    }
+                    // disabled={filter.includes(tag)}
                     className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-600 transition-colors flex items-center justify-between ${
                       filter.includes(tag)
                         ? 'text-gray-400 cursor-not-allowed'
