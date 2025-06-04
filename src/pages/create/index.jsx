@@ -652,7 +652,7 @@ export default function CreateIndex() {
                   https://guild.xyz/anarchiving
                 </a>
               </div>
-              <div className=''>
+              {/* <div className=''>
                 Or, if you just want to test out our new token creation page,{' '}
                 <Link
                   className='text-indigo-400 hover:text-indigo-300 animate-pulse hover:animate-none hover:scale-105 duration-300 ease-in-out'
@@ -660,7 +660,7 @@ export default function CreateIndex() {
                 >
                   click here!
                 </Link>
-              </div>
+              </div> */}
             </div>
           )}
           {!isConnected && (
