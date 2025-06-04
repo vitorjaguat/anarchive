@@ -182,11 +182,14 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
 }
 
 export async function getServerSideProps(context) {
-  ////////// fetch all tokens:
   const fetchAllTokens = async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
     const options = {
       method: 'GET',
       headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
+      signal: controller.signal,
     };
 
     try {
@@ -194,63 +197,64 @@ export async function getServerSideProps(context) {
         `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
         options
       );
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
-      // console.log(data.tokens);
-      return data.tokens;
+      return data.tokens || [];
     } catch (err) {
-      console.error(err);
+      clearTimeout(timeoutId);
+      console.error('Error fetching tokens:', err);
+      return [];
     }
   };
 
-  const allTokens = await fetchAllTokens();
+  try {
+    const allTokens = await fetchAllTokens();
 
-  ////////// get all tags:
-  const allTagsSet = new Set();
-  allTokens.forEach((token) => {
-    const tagsString = token.token?.attributes?.find(
-      (attr) => attr?.key === 'Tags' || attr?.key === 'Content Tags'
-    )?.value;
-    if (!tagsString) return;
-    const tagsArray = tagsString ? tagsString.split(', ') : [];
-    tagsArray.forEach((tag) => {
-      if (tag.length === 0) return; // skip empty tags
-      allTagsSet.add(tag.toLowerCase());
+    // Process tags
+    const allTagsSet = new Set();
+    allTokens.forEach((token) => {
+      const tagsString = token.token?.attributes?.find(
+        (attr) => attr?.key === 'Tags' || attr?.key === 'Content Tags'
+      )?.value;
+      if (!tagsString) return;
+      const tagsArray = tagsString ? tagsString.split(', ') : [];
+      tagsArray.forEach((tag) => {
+        if (tag.length === 0) return;
+        allTagsSet.add(tag.toLowerCase());
+      });
     });
-  });
-  const allTags = Array.from(allTagsSet).sort();
+    const allTags = Array.from(allTagsSet).sort();
 
-  ////////// manage the query parameter 'fragment':
-  const { fragment } = context.query;
-  let tokenDataForOG = null;
+    // Find token for OG data - NO ADDITIONAL FETCH NEEDED
+    const { fragment } = context.query;
+    let tokenDataForOG = null;
 
-  // Fetch data based on the query parameter
-  const fetchData = async () => {
-    const options = {
-      method: 'GET',
-      headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
-    };
-
-    try {
-      const response = await fetch(
-        `https://api-zora.reservoir.tools/tokens/v6?tokens=${collectionAddress}%3A${fragment}`,
-        options
+    if (fragment) {
+      tokenDataForOG = allTokens.find(
+        (token) => String(token.token.tokenId) === String(fragment)
       );
-      const data = await response.json();
-      return data;
-    } catch (err) {
-      console.error(err);
     }
-  };
-  if (fragment) {
-    const tokenData = await fetchData();
-    tokenDataForOG = tokenData.tokens[0];
-  }
 
-  return {
-    props: {
-      tokenDataForOG,
-      allTokens,
-      allTags,
-    },
-  };
+    return {
+      props: {
+        tokenDataForOG: tokenDataForOG || null,
+        allTokens,
+        allTags,
+      },
+    };
+  } catch (error) {
+    console.error('Error in getServerSideProps:', error);
+    return {
+      props: {
+        tokenDataForOG: null,
+        allTokens: [],
+        allTags: [],
+      },
+    };
+  }
 }
