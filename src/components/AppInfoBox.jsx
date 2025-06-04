@@ -97,7 +97,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
               re-envisioned and synthetically expanded upon.
             </div>
             <div className='text-white'>
-              The Anarchiving Game is supported by{' '}
+              The Anarchiving Game was supported by{' '}
               <a
                 href='https://proud-paprika-325.notion.site/The-winning-projects-from-our-Open-Call-for-New-Models-for-Interdependence-and-Ownership-in-Art-and--b36baccbfe094012834f52b05d87dc4b'
                 target='_blank'
@@ -113,7 +113,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
                 rel='noopener noreferrer'
                 className='font-bold text-slate-400 hover:text-slate-50 duration-300'
               >
-                Serpentine Arts Technologies
+                Serpentine’s Future Art Ecosystems
               </a>{' '}
               and{' '}
               <a
