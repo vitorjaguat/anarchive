@@ -168,7 +168,7 @@ const Graph = ({
       const graph = graphRef.current;
       graph
         .d3Force('link')
-        .strength((link) => (link.isDestination ? 0.0008 : 0.03));
+        .strength((link) => (link.isDestination ? 0.0001 : 0.003));
     }
   }, [sort]);
 
@@ -427,7 +427,7 @@ const Graph = ({
         //links:
         linkColor={(link) =>
           link?.isDestination && sort === 'From'
-            ? 'rgba (160, 160, 255, 0.1)'
+            ? 'rgba (160, 160, 255, 0.025)'
             : 'rgba(0,0,0,0)'
         }
         linkWidth={sort === 'From' ? 20 : 0}
