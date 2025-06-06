@@ -103,7 +103,7 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
       <Head
         ogImage={
           tokenDataForOG?.token?.image ||
-          'https://the-anarchive.vercel.app/meta/image2.png'
+          'https://the-anarchive.vercel.app/meta/ogImage2025.jpg'
         }
         title={headTitle}
         description={description}

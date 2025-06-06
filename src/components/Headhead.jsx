@@ -6,7 +6,8 @@ export default function Headhead({
   description,
   canonicalUrl,
 }) {
-  const baseUrl = 'https://anarchiving.thesphere.as';
+  // const baseUrl = 'https://anarchiving.thesphere.as';
+  const baseUrl = 'http://localhost:3003'; // Use localhost for local development
   const fullCanonicalUrl = canonicalUrl ? `${baseUrl}${canonicalUrl}` : baseUrl;
 
   return (
@@ -23,7 +24,7 @@ export default function Headhead({
         content='E-rfv8y0H2rARZRDdhSs4yLkXMv4Bzxa69GBcc2oH_4'
       />
 
-      <link rel='icon' href={`${baseUrl}/meta/image1.png`} />
+      <link rel='icon' href={`${baseUrl}/meta/favicon20253.png`} />
       <title>{title}</title>
       <meta name='description' content={description} />
 
