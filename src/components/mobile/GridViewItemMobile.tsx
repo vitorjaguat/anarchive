@@ -6,6 +6,7 @@ import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { GoPlusCircle } from 'react-icons/go';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
+import Markdown from 'react-markdown';
 
 export default function GridViewItemMobile({
   token,
@@ -72,9 +73,9 @@ export default function GridViewItemMobile({
           {/* DETAILS */}
           <div className='w-full flex flex-col gap-1 py-2 px-1'>
             <div className='my-1'>{token.token.name}</div>
-            <div className='text-sm text-gray-400 hyphens-auto whitespace-pre-line'>
+            <Markdown className='text-sm text-gray-400 hyphens-auto whitespace-pre-line'>
               {token.token.description}
-            </div>
+            </Markdown>
           </div>
         </div>
         {/* COLLECT (LIKES) */}

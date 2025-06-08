@@ -7,6 +7,7 @@ import { GoPlusCircle } from 'react-icons/go';
 import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import LargeMedia from '../LargeMedia';
+import Markdown from 'react-markdown';
 
 export default function GridOpenToken({
   token,
@@ -116,9 +117,9 @@ export default function GridOpenToken({
 
           {/* DETAILS */}
           <div className='w-full flex flex-col gap-1 px-1'>
-            <div className='text-sm text-gray-200 hyphens-auto whitespace-pre-line'>
+            <Markdown className='text-sm text-gray-200 hyphens-auto whitespace-pre-line'>
               {token.token.description}
-            </div>
+            </Markdown>
           </div>
         </div>
       </div>
