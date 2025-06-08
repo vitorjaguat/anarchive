@@ -226,7 +226,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                   <CopyURLButton />
 
                   <div className=' pb-[96px] mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
-                    <Markdown className=''>
+                    <Markdown className=' whitespace-pre-line'>
                       {openToken.token?.description}
                     </Markdown>
                   </div>
