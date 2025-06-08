@@ -72,7 +72,7 @@ export default function GridViewItemMobile({
           {/* DETAILS */}
           <div className='w-full flex flex-col gap-1 py-2 px-1'>
             <div className='my-1'>{token.token.name}</div>
-            <div className='text-sm text-gray-400 hyphens-auto'>
+            <div className='text-sm text-gray-400 hyphens-auto whitespace-pre-line'>
               {token.token.description}
             </div>
           </div>
