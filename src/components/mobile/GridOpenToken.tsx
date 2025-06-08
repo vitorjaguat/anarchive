@@ -116,7 +116,7 @@ export default function GridOpenToken({
 
           {/* DETAILS */}
           <div className='w-full flex flex-col gap-1 px-1'>
-            <div className='text-sm text-gray-200 hyphens-auto'>
+            <div className='text-sm text-gray-200 hyphens-auto whitespace-pre-line'>
               {token.token.description}
             </div>
           </div>
