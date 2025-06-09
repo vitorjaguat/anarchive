@@ -91,12 +91,12 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
           clickedTokenData.token.tokenId !== openToken?.token?.tokenId)
       ) {
         changeOpenToken(clickedTokenData);
-        setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
+        // setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
       }
     }
     // Optionally, handle the case where fragment is removed
     if (!router.query.fragment && openToken) {
-      setHeadTitle('The Anarchiving Game');
+      // setHeadTitle('The Anarchiving Game');
       changeOpenToken(null);
     }
     // eslint-disable-next-line
