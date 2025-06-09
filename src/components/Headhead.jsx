@@ -6,8 +6,8 @@ export default function Headhead({
   description,
   canonicalUrl,
 }) {
-  // const baseUrl = 'https://anarchiving.thesphere.as';
-  const baseUrl = 'http://localhost:3003'; // Use localhost for local development
+  const baseUrl = 'https://anarchiving.thesphere.as';
+  // const baseUrl = 'http://localhost:3003'; // Use localhost for local development
   const fullCanonicalUrl = canonicalUrl ? `${baseUrl}${canonicalUrl}` : baseUrl;
 
   return (

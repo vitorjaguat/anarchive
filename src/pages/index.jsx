@@ -111,6 +111,9 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
         }
         title={headTitle}
         description={description}
+        canonicalUrl={
+          router.query.fragment ? `/?fragment=${router.query.fragment}` : '/'
+        }
       />
       <Layout
         setShowMineIsChecked={setShowMineIsChecked}
