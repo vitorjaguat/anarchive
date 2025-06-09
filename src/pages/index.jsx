@@ -23,13 +23,17 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
+  console.log('Token Data for OG:', tokenDataForOG);
 
   // dynamic head metadata:
-  const [headTitle, setHeadTitle] = useState(
-    tokenDataForOG?.token
-      ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-      : 'The Anarchiving Game'
-  );
+  // const [headTitle, setHeadTitle] = useState(
+  //   tokenDataForOG?.token
+  //     ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
+  //     : 'The Anarchiving Game'
+  // );
+  const headTitle = tokenDataForOG?.token
+    ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
+    : 'The Anarchiving Game';
   const description =
     tokenDataForOG?.token && tokenDataForOG?.token?.description
       ? tokenDataForOG?.token?.description?.slice(0, 126) + '...'
