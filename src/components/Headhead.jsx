@@ -9,6 +9,11 @@ export default function Headhead({
   const baseUrl = 'https://anarchiving.thesphere.as';
   // const baseUrl = 'http://localhost:3003'; // Use localhost for local development
   const fullCanonicalUrl = canonicalUrl ? `${baseUrl}${canonicalUrl}` : baseUrl;
+  console.log('fullCanonicalUrl', fullCanonicalUrl);
+  console.log('ogImage', ogImage);
+  console.log('title', title);
+  console.log('description', description);
+  console.log('canonicalUrl', canonicalUrl);
 
   return (
     <Head>
