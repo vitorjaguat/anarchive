@@ -26,14 +26,15 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   console.log('Token Data for OG:', tokenDataForOG);
 
   // dynamic head metadata:
-  // const [headTitle, setHeadTitle] = useState(
-  //   tokenDataForOG?.token
-  //     ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-  //     : 'The Anarchiving Game'
-  // );
-  const headTitle = tokenDataForOG?.token
-    ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-    : 'The Anarchiving Game';
+  const [headTitle, setHeadTitle] = useState(
+    tokenDataForOG?.token
+      ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
+      : 'The Anarchiving Game'
+  );
+  // const headTitle = tokenDataForOG?.token
+  //   ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
+  //   : 'The Anarchiving Game';
+
   const description =
     tokenDataForOG?.token && tokenDataForOG?.token?.description
       ? tokenDataForOG?.token?.description?.slice(0, 126) + '...'
@@ -74,10 +75,6 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    console.log('openToken', openToken);
-  }, [openToken]);
-
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
     if (router.query.fragment) {
@@ -91,13 +88,17 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
           clickedTokenData.token.tokenId !== openToken?.token?.tokenId)
       ) {
         changeOpenToken(clickedTokenData);
-        // setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
+        setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
       }
     }
     // Optionally, handle the case where fragment is removed
     if (!router.query.fragment && openToken) {
-      // setHeadTitle('The Anarchiving Game');
+      setHeadTitle('The Anarchiving Game');
       changeOpenToken(null);
+    }
+
+    if (!router.query.fragment && !openToken) {
+      setHeadTitle('The Anarchiving Game');
     }
     // eslint-disable-next-line
   }, [router.query.fragment, allTokens]);
