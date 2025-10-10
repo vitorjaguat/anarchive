@@ -18,9 +18,10 @@ if (typeof window !== 'undefined') {
   });
 } else {
   // Provide a fallback implementation for server-side rendering
-  walletClientInstance = {
-    getAddresses: () => Promise.resolve([]),
-  };
+  walletClientInstance = createWalletClient({
+    chain,
+    transport: http(), // Use HTTP transport for server-side
+  });
 }
 
 export const walletClient = walletClientInstance;
