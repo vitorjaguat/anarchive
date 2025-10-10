@@ -12,7 +12,7 @@
     "@0xsplits/splits-sdk": "^4.0.3",
     "@loadable/component": "^5.16.3",
     "@next/font": "^14.1.3",
-    "@rainbow-me/rainbowkit": "2.1.2",
+    "@rainbow-me/rainbowkit": "^2.1.6",
     "@reservoir0x/reservoir-kit-ui": "^2.7.7",
     "@tanstack/react-query": "^5.45.1",
     "@thirdweb-dev/react": "^4.9.4",
@@ -21,7 +21,9 @@
     "@types/node": "20.11.17",
     "@types/react": "18.2.55",
     "@types/react-dom": "18.2.19",
-    "@zoralabs/protocol-sdk": "^0.7.0",
+    "@vanilla-extract/css": "^1.17.4",
+    "@vanilla-extract/sprinkles": "^1.6.5",
+    "@zoralabs/protocol-sdk": "^0.13.13",
     "autoprefixer": "10.4.17",
     "eslint": "8.56.0",
     "eslint-config-next": "14.1.0",
@@ -38,8 +40,8 @@
     "tailwindcss": "3.4.1",
     "three": "^0.165.0",
     "typescript": "5.3.3",
-    "viem": "^2.17.11",
-    "wagmi": "~2.10.3",
+    "viem": "^2.38.0",
+    "wagmi": "^2.18.0",
     "ws": "^8.17.1"
   }
 }
