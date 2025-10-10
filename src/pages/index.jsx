@@ -23,7 +23,6 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
-  console.log('Token Data for OG:', tokenDataForOG);
 
   // dynamic head metadata:
   const [headTitle, setHeadTitle] = useState(
@@ -87,8 +86,8 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
         (!openToken ||
           clickedTokenData.token.tokenId !== openToken?.token?.tokenId)
       ) {
-        changeOpenToken(clickedTokenData);
         setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
+        changeOpenToken(clickedTokenData);
       }
     }
     // Optionally, handle the case where fragment is removed
@@ -247,6 +246,8 @@ export async function getServerSideProps(context) {
         (token) => String(token.token.tokenId) === String(fragment)
       );
     }
+
+    console.dir(allTokens);
 
     return {
       props: {
