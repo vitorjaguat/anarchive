@@ -3,7 +3,12 @@
 const webpack = require('webpack');
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ['@reservoir0x/reservoir-kit-ui'],
+  // Transpile ESM/CJS packages so Webpack can handle interop on the server
+  transpilePackages: ['@rainbow-me/rainbowkit', '@vanilla-extract/sprinkles'],
+  // Allow Next to load CommonJS as ESM in server runtime (Vercel/preview)
+  experimental: {
+    esmExternals: 'loose',
+  },
   images: {
     remotePatterns: [
       {
