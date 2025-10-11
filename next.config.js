@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+
+const webpack = require('webpack');
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['@reservoir0x/reservoir-kit-ui'],
