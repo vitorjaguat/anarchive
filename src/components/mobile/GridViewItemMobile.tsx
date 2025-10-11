@@ -2,7 +2,7 @@ import Image from 'next/image';
 import type { ReservoirToken } from '../../../types/tokens';
 import { useState, useEffect, useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
-import { MintModal } from '@reservoir0x/reservoir-kit-ui';
+// import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { GoPlusCircle } from 'react-icons/go';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
@@ -84,13 +84,12 @@ export default function GridViewItemMobile({
             <GoPlusCircle size={14} color='' />
             <div className=''>{token.token.supply || '1'}</div>
           </div>
-          <MintModal
+          {/* <MintModal
             chainId={7777777}
             copyOverrides={{
               mintTitle: 'Collect your own',
               mintCtaBuy: 'Collect',
             }}
-            // normalizeRoyalties={true}
             trigger={
               <button
                 className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-black duration-300'
@@ -99,21 +98,12 @@ export default function GridViewItemMobile({
                 <div className='translate-y-[1px]'>Collect</div>
               </button>
             }
-            // onConnectWallet={() => {
-            //   openConnectModal?.();
-            // }}
-            // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-            // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-
-            // openState={mintOpenState}
-            // collectionId={openTokenData.token.contract}
-            // tokenId={openTokenData.token.tokenId}
             onMintComplete={(data) => console.log(data)}
             onMintError={(error) => console.log(error)}
             onConnectWallet={openConnectModal}
             token={token.token.contract + ':' + token.token.tokenId}
-          />
-          {/* <div className=''>Collect</div> */}
+          /> */}
+          <div className=''>Collect</div>
         </div>
       </div>
     </>

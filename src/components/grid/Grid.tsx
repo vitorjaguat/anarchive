@@ -4,9 +4,7 @@ import GridViewItemMobile from '../mobile/GridViewItemMobile';
 import dynamic from 'next/dynamic';
 import useIsMounted from '@/utils/useIsMounted';
 import { useEffect, useState } from 'react';
-import { TbArrowsSort } from 'react-icons/tb';
 import { BiSort } from 'react-icons/bi';
-import { MintClient } from '@zoralabs/protocol-sdk';
 
 const Masonry = dynamic(
   () => import('react-plock').then((mod) => mod.Masonry),

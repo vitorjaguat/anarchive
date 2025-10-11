@@ -62,7 +62,7 @@ export default function PayoutSplits({
           percentage: percentage2Ref.current.value,
         },
       ];
-      console.log('splitArr', splitArr);
+      // console.log('splitArr', splitArr);
       setPayoutRecipients(splitArr);
     }
   };
