@@ -37,7 +37,7 @@ export default async function createToken(
   } else {
     parsedTokenMintingDuration = BigInt('18446744073709551615');
   }
-  console.log('parsedTokenMintingDuration: ', parsedTokenMintingDuration);
+  // console.log('parsedTokenMintingDuration: ', parsedTokenMintingDuration);
 
   // managing payoutRecipient:
   let parsedPayoutRecipient;
@@ -93,7 +93,7 @@ export default async function createToken(
     parsedPayoutRecipient = creatorAccount; // default to creator account
   }
 
-  console.log('parsedPayoutRecipient: ', parsedPayoutRecipient);
+  // console.log('parsedPayoutRecipient: ', parsedPayoutRecipient);
 
   try {
     // const creatorClient = createCreatorClient({ chainId, publicClient });

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { IoCloseOutline } from 'react-icons/io5';
 import { GoPlusCircle } from 'react-icons/go';
-import { MintModal } from '@reservoir0x/reservoir-kit-ui';
+// import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import LargeMedia from '../LargeMedia';
 import Markdown from 'react-markdown';
@@ -60,33 +60,23 @@ export default function GridOpenToken({
             <GoPlusCircle size={21} color='white' />
             <div className=''>{token?.token?.supply}</div>
           </div>
-          <MintModal
+          {/* <MintModal
             chainId={7777777}
             copyOverrides={{
               mintTitle: 'Collect your own',
               mintCtaBuy: 'Collect',
             }}
-            // normalizeRoyalties={true}
             trigger={
               <button className='px-4 py-1 rounded-md bg-[#01ff00] text-[#000000] hover:scale-[1.02] transition-all duration-300'>
                 Collect
               </button>
             }
-            // onConnectWallet={() => {
-            //   openConnectModal?.();
-            // }}
-            // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-            // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-
-            // openState={mintOpenState}
-            // collectionId={openTokenData.token.contract}
-            // tokenId={openTokenData.token.tokenId}
             onMintComplete={(data) => console.log(data)}
             onMintError={(error) => console.log(error)}
             onConnectWallet={openConnectModal}
             token={token.token.contract + ':' + token.token.tokenId}
-          />
-          {/* <div className=''>Collect</div> */}
+          /> */}
+          <div className=''>Collect</div>
         </div>
 
         {/* DETAILS */}
@@ -129,7 +119,7 @@ export default function GridOpenToken({
         <div
           className='absolute inset-0 z-60 flex items-center justify-center bg-black/70 backdrop-blur-[2px]'
           onClick={() => {
-            console.log('token:', token);
+            // console.log('token:', token);
             setOpenLargeMedia(null);
           }}
         >

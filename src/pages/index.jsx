@@ -16,6 +16,8 @@ import { useAccount } from 'wagmi';
 import { MainContext } from '@/context/mainContext';
 import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
+import { publicClient } from '@/utils/zoraprotocolConfig';
+import { getTokensOfContract } from '@zoralabs/protocol-sdk';
 
 export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const isMobile = useIsMobile();
@@ -204,6 +206,24 @@ export async function getServerSideProps(context) {
         `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
         options
       );
+
+      // Get tokenMetadata and cache images from Alchemy SDK
+
+      // Get totalMinted and maxSupply from Zora Protocol SDK:
+      const totalMintedDataRaw = await getTokensOfContract({
+        tokenContract: contract,
+        publicClient,
+      });
+      // console.log(totalMintedDataRaw.tokens.slice(58, 62));
+
+      const totalMintedData = totalMintedDataRaw.tokens.map((token) => {
+        return {
+          tokenId: Number(token.token.tokenId),
+          totalMinted: Number(token.token.totalMinted),
+          maxSupply: BigInt(token.token.maxSupply),
+        };
+      });
+
       clearTimeout(timeoutId);
 
       if (!response.ok) {
@@ -247,7 +267,7 @@ export async function getServerSideProps(context) {
       );
     }
 
-    console.dir(allTokens);
+    // console.dir(allTokens);
 
     return {
       props: {

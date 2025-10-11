@@ -1,5 +1,5 @@
 import Markdown from 'react-markdown';
-import { MintModal } from '@reservoir0x/reservoir-kit-ui';
+// import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { useState, useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
@@ -146,27 +146,18 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                       </div>
                     </div>
                     <div className=''>
-                      <MintModal
+                      {/* <MintModal
                         chainId={7777777}
                         copyOverrides={{
                           mintTitle: 'Collect your own',
                           mintCtaBuy: 'Collect',
                         }}
-                        // normalizeRoyalties={true}
                         trigger={
                           <button className='w-full bg-sph-purple-light text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'>
                             Collect
                           </button>
                         }
-                        // onConnectWallet={() => {
-                        //   openConnectModal?.();
-                        // }}
-                        // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-                        // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-
-                        // openState={mintOpenState}
-                        // collectionId={openTokenData.token.contract}
-                        // tokenId={openTokenData.token.tokenId}
+                   
                         onMintComplete={(data) => console.log(data)}
                         onMintError={(error) => console.log(error)}
                         token={
@@ -175,7 +166,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                           openToken.token.tokenId
                         }
                         onConnectWallet={openConnectModal}
-                      />
+                      /> */}
                     </div>
                   </div>
 

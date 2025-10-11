@@ -2,10 +2,9 @@ import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
 import localFont from '@next/font/local';
-// import Headhead from '@/components/Headhead';
 
-import { reservoirChains } from '@reservoir0x/reservoir-sdk';
-import { ReservoirKitProvider, darkTheme } from '@reservoir0x/reservoir-kit-ui';
+// import { reservoirChains } from '@reservoir0x/reservoir-sdk';
+// import { ReservoirKitProvider, darkTheme } from '@reservoir0x/reservoir-kit-ui';
 import { WagmiProvider } from 'wagmi';
 import { config } from '../../wagmiConfig';
 import {
@@ -41,16 +40,13 @@ const inter = localFont({
   ],
   variable: '--inter-font',
   display: 'swap',
-  // src: '../public/assets/space_grotesk_medium.otf',
 });
 
-const theme = darkTheme({
-  // headlineFont: 'Sans Serif',
-  // font: 'Serif',
-  font: inter.style.fontFamily,
-  primaryColor: '#323aa8',
-  primaryHoverColor: '#252ea5',
-});
+// const theme = darkTheme({
+//   font: inter.style.fontFamily,
+//   primaryColor: '#323aa8',
+//   primaryHoverColor: '#252ea5',
+// });
 
 const wagmiConfig = config;
 
@@ -63,7 +59,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <main className={`${inter.variable} font-inter`}>
         <WagmiProvider config={wagmiConfig}>
           <QueryClientProvider client={queryClient}>
-            <ReservoirKitProvider
+            {/* <ReservoirKitProvider
               options={{
                 // Reservoir API key which you can generate at https://reservoir.tools/
                 // This is a protected key and displays as 'undefined' on the browser
@@ -83,18 +79,18 @@ export default function App({ Component, pageProps }: AppProps) {
                 bountyReferrer: '0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea',
               }}
               theme={theme}
-            >
-              <RainbowKitProvider modalSize='compact'>
-                <ThirdwebProvider
-                  clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
-                  // secretKey={process.env.THIRDWEB_CLIENT_SECRET}
-                >
-                  <MainContextProvider>
-                    <Component {...pageProps} />
-                  </MainContextProvider>
-                </ThirdwebProvider>
-              </RainbowKitProvider>
-            </ReservoirKitProvider>
+            > */}
+            <RainbowKitProvider modalSize='compact'>
+              <ThirdwebProvider
+                clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+                // secretKey={process.env.THIRDWEB_CLIENT_SECRET}
+              >
+                <MainContextProvider>
+                  <Component {...pageProps} />
+                </MainContextProvider>
+              </ThirdwebProvider>
+            </RainbowKitProvider>
+            {/* </ReservoirKitProvider> */}
           </QueryClientProvider>
         </WagmiProvider>
       </main>

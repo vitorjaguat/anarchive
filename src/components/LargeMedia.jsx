@@ -1,4 +1,4 @@
-import { TokenMedia } from '@reservoir0x/reservoir-kit-ui';
+// import { TokenMedia } from '@reservoir0x/reservoir-kit-ui';
 import { useIsMobile } from '@/utils/useIsMobile';
 
 // import PDFViewer from '@/components/PDFViewer';
@@ -154,24 +154,21 @@ export default function LargeMedia({ token }) {
   const borderRadius = isMobile ? 4 : 8;
 
   return (
-    <TokenMedia
-      token={token}
-      imageResolution='large'
-      videoOptions={{ autoPlay: true }}
-      // modelViewerOptions={}
-      style={{
-        width: 'fit-content',
-        maxWidth,
-        maxHeight,
-        height: 'auto',
-        // minHeight: 445,
-        borderRadius,
-        // overflow: 'hidden',
-        // objectFit: 'contain',
-        display: 'flex',
-        justifyContent: 'center',
-        zIndex: 50,
-      }}
-    />
+    // <TokenMedia
+    //   token={token}
+    //   imageResolution='large'
+    //   videoOptions={{ autoPlay: true }}
+    //   style={{
+    //     width: 'fit-content',
+    //     maxWidth,
+    //     maxHeight,
+    //     height: 'auto',
+    //     borderRadius,
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     zIndex: 50,
+    //   }}
+    // />
+    <div className=''></div>
   );
 }
