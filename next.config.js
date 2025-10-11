@@ -13,6 +13,14 @@ const nextConfig = {
     ],
     dangerouslyAllowSVG: true,
   },
+  webpack: (config) => {
+    config.plugins.push(
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^@react-native-async-storage\/async-storage$/,
+      })
+    );
+    return config;
+  },
 };
 
 module.exports = nextConfig;
