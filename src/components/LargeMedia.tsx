@@ -1,9 +1,15 @@
 // import { TokenMedia } from '@reservoir0x/reservoir-kit-ui';
 import { useIsMobile } from '@/utils/useIsMobile';
+import { Token } from '../../types/tokens';
+import Image from 'next/image';
 
 // import PDFViewer from '@/components/PDFViewer';
 
-export default function LargeMedia({ token }) {
+interface LargeMediaProps {
+  token: Token['token'];
+}
+
+export default function LargeMedia({ token }: LargeMediaProps) {
   const isMobile = useIsMobile();
   //   const [file, setFile] = useState(null);
 
@@ -47,7 +53,7 @@ export default function LargeMedia({ token }) {
 
   if (
     token.media?.includes('.mpeg') ||
-    token?.metadata?.mediaOriginal?.includes('.mpeg')
+    token?.mediaMimeType?.includes('mpeg')
   ) {
     return (
       <audio className='z-50' controls autoPlay>
@@ -56,10 +62,7 @@ export default function LargeMedia({ token }) {
     );
   }
 
-  if (
-    token.media?.includes('.pdf') ||
-    token?.metadata?.mediaOriginal?.includes('.pdf')
-  ) {
+  if (token.media?.includes('.pdf') || token?.mediaMimeType?.includes('pdf')) {
     const width = isMobile ? 'auto' : '800';
     const height = isMobile ? 'auto' : window.innerHeight - 100;
 
@@ -108,14 +111,13 @@ export default function LargeMedia({ token }) {
     );
   }
 
-  if (
-    token.media?.includes('.svg') ||
-    token?.metadata?.mediaOriginal?.includes('.svg')
-  ) {
+  if (token.media?.includes('.svg') || token?.mediaMimeType?.includes('svg')) {
     return (
-      <img
+      <Image
         src={token.media}
         alt={token.name}
+        width={500}
+        height={500}
         style={{
           width: '100%',
           height: '100%',
@@ -128,7 +130,7 @@ export default function LargeMedia({ token }) {
 
   if (
     token.media?.includes('.html') ||
-    token?.metadata?.mediaOriginal?.includes('.html')
+    token?.mediaMimeType?.includes('html')
   ) {
     const tokenMedia = token.media.split(';')[0];
     // console.log('tokenMedia', tokenMedia);
@@ -153,22 +155,54 @@ export default function LargeMedia({ token }) {
   const maxHeight = isMobile ? '100%' : '80vh';
   const borderRadius = isMobile ? 4 : 8;
 
+  console.log('Mimetype', token?.mediaMimeType);
+
+  if (token?.mediaMimeType?.includes('video')) {
+    return (
+      <div className='w-full sm:max-w-[80vw] h-fit sm:max-h-[80vh] flex items-center justify-center'>
+        <video
+          // width={80}
+          // height={80}
+          className='h-full w-full object-contain'
+          controls
+          autoPlay
+          preload='none'
+        >
+          <source src={token.media} />
+        </video>
+      </div>
+    );
+  }
+
   return (
-    // <TokenMedia
-    //   token={token}
-    //   imageResolution='large'
-    //   videoOptions={{ autoPlay: true }}
-    //   style={{
-    //     width: 'fit-content',
-    //     maxWidth,
-    //     maxHeight,
-    //     height: 'auto',
-    //     borderRadius,
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     zIndex: 50,
-    //   }}
-    // />
-    <div className=''></div>
+    <Image
+      src={token.media}
+      alt={token.name}
+      width={500}
+      height={500}
+      style={{ objectFit: 'contain' }}
+    />
   );
+
+  // return (
+  //   <Image
+  //     src={token.media}
+  //     alt={token.name}
+  //     width={500}
+  //     height={500}
+  //     style={{ objectFit: 'contain' }}
+  //     onError={() => (
+  //       <ReactPlayer
+  //         src={token.media}
+  //         controls
+  //         width={maxWidth}
+  //         height={maxHeight}
+  //         style={{
+  //           borderRadius,
+  //           zIndex: 50,
+  //         }}
+  //       />
+  //     )}
+  //   />
+  // );
 }
