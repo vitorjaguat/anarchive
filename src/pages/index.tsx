@@ -1,5 +1,3 @@
-// import Image from 'next/image';
-// import { Inter } from 'next/font/google';
 import GraphWrapper from '../components/GraphWrapper';
 import { useCallback, useState, useEffect, useContext } from 'react';
 import TokenInfo from '../components/TokenInfo';
@@ -7,9 +5,9 @@ import Filters from '../components/Filters';
 import Head from '../components/Headhead';
 import CreateTokenButton from '../components/CreateTokenButton';
 import { useRouter } from 'next/router';
-import collectionAddress from '../utils/contract';
 import Layout from '@/components/Layout';
 import contract from '../utils/contract';
+// import contract from '../utils/dummyCollectionAddress';
 import { useIsMobile } from '@/utils/useIsMobile';
 import GridViewMobile from '@/components/mobile/GridViewMobile';
 import { useAccount } from 'wagmi';
@@ -18,6 +16,13 @@ import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
 import { publicClient } from '@/utils/zoraprotocolConfig';
 import { getTokensOfContract } from '@zoralabs/protocol-sdk';
+import {
+  Alchemy,
+  Network,
+  type Nft,
+  type NftContractNftsResponse,
+} from 'alchemy-sdk';
+import type { Token, TokenAttribute } from '../../types/tokens';
 
 export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const isMobile = useIsMobile();
@@ -25,6 +30,7 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
+  console.dir[allTokens];
 
   // dynamic head metadata:
   const [headTitle, setHeadTitle] = useState(
@@ -176,7 +182,6 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
                 sort={sort}
                 filter={filter}
                 showMineIsChecked={showMineIsChecked}
-                setImageLoaded={setImageLoaded}
                 usersFrags={usersFrags}
               />
             )}
@@ -207,31 +212,111 @@ export async function getServerSideProps(context) {
         options
       );
 
-      // Get tokenMetadata and cache images from Alchemy SDK
+      // Get tokenMetadata and cache images from Alchemy SDK (handle pagination)
+      const getAllTokensFromAlchemy = async (): Promise<Nft[]> => {
+        const alchemy = new Alchemy({
+          apiKey: process.env.ALCHEMY_API_KEY,
+          network: Network.ZORA_MAINNET,
+        });
+
+        const results: Nft[] = [];
+        let pageKey: string | undefined = undefined;
+
+        do {
+          const resp: NftContractNftsResponse =
+            await alchemy.nft.getNftsForContract(contract, {
+              pageKey,
+              pageSize: 100, // max per page
+            });
+          results.push(...resp.nfts);
+          pageKey = (resp as any).pageKey; // SDK returns pageKey when more pages exist
+        } while (pageKey);
+
+        return results;
+      };
+
+      const allTokensFromAlchemy: Nft[] = await getAllTokensFromAlchemy();
+      // console.log('Fetched NFTs from Alchemy:', allTokensFromAlchemy.length);
+      // console.log('Token ID 0: ', allTokensFromAlchemy[0].tokenId);
+      // console.log('URI 0: ', allTokensFromAlchemy[0].tokenUri);
 
       // Get totalMinted and maxSupply from Zora Protocol SDK:
       const totalMintedDataRaw = await getTokensOfContract({
         tokenContract: contract,
         publicClient,
       });
-      // console.log(totalMintedDataRaw.tokens.slice(58, 62));
+      // console.log('Fetched NFTs from Zora:', totalMintedDataRaw.tokens.length);
+      // console.log('URI 0: ', totalMintedDataRaw.tokens[0].token.tokenURI);
 
-      const totalMintedData = totalMintedDataRaw.tokens.map((token) => {
+      // const allTokens: TokenComplete[] = allTokensFromAlchemy.map((token) => ({
+      //   ...token,
+      //   totalMinted: totalMintedDataRaw.tokens.find(
+      //     (t) => t.token.tokenURI == token.tokenUri
+      //   ).token.totalMinted,
+      //   maxSupply: totalMintedDataRaw.tokens.find(
+      //     (t) => t.token.tokenURI == token.tokenUri
+      //   ).token.maxSupply,
+      // }));
+
+      // console.dir(allTokens[8]);
+
+      // Create lookup map for O(1) access instead of O(n) find operations
+      const tokenLookup = new Map(
+        totalMintedDataRaw.tokens.map((t) => [
+          t.token.tokenURI,
+          {
+            totalMinted: BigInt(t.token.totalMinted),
+            maxSupply: BigInt(t.token.maxSupply),
+          },
+        ])
+      );
+
+      console.dir(allTokensFromAlchemy, { depth: null });
+
+      const allTokensTyped: Token[] = allTokensFromAlchemy.map((token) => {
+        const zoraData = tokenLookup.get(token.raw.tokenUri);
         return {
-          tokenId: Number(token.token.tokenId),
-          totalMinted: Number(token.token.totalMinted),
-          maxSupply: BigInt(token.token.maxSupply),
+          token: {
+            totalMinted: (zoraData?.totalMinted || BigInt(0)).toString(),
+            maxSupply: (zoraData?.maxSupply || BigInt(0)).toString(),
+            contract: token.contract.address,
+            tokenId: token.tokenId,
+            name: token.name,
+            description:
+              token.description ?? token.raw.metadata.description ?? null,
+            image: token.image.cachedUrl,
+            imageSmall: token.image.thumbnailUrl ?? null,
+            imageLarge: token.image.pngUrl ?? token.image.originalUrl ?? null,
+            imageOriginal: token.image.originalUrl,
+            kind: token.contract.tokenType as string,
+            attributes: token.raw.metadata.attributes.map((attribute) => ({
+              key: attribute.trait_type as string,
+              value: attribute.value as string,
+            })) as TokenAttribute[],
+            owners: [],
+            media:
+              token.animation.cachedUrl ??
+              token.animation.originalUrl ??
+              token.raw.metadata.animation_url ??
+              null,
+            mediaMimeType: token.animation.contentType ?? null,
+          },
         };
       });
 
+      // console.dir(allTokens[8]);
+
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      // if (!response.ok) {
+      //   throw new Error(`HTTP error! status: ${response.status}`);
+      // }
 
-      const data = await response.json();
-      return data.tokens || [];
+      // const data = await response.json();
+
+      // console.dir(data.tokens, { depth: null });
+      // return data.tokens || [];
+      return allTokensTyped;
     } catch (err) {
       clearTimeout(timeoutId);
       console.error('Error fetching tokens:', err);
@@ -241,6 +326,7 @@ export async function getServerSideProps(context) {
 
   try {
     const allTokens = await fetchAllTokens();
+    // console.dir(allTokens, { depth: null });
 
     // Process tags
     const allTagsSet = new Set();
@@ -266,8 +352,6 @@ export async function getServerSideProps(context) {
         (token) => String(token.token.tokenId) === String(fragment)
       );
     }
-
-    // console.dir(allTokens);
 
     return {
       props: {

@@ -25,3 +25,18 @@ https://explorer.zora.energy/token/0xE5A192aAF911c35FB47DE1342e768EF01c84fa09?ta
 
 Zora SDK docs:
 https://nft-docs.zora.co/contracts/Minting1155
+
+PASSOS:
+
+1. atualizar zoraprotocol para latest OK
+2. pegar totalMints & maxSupply de zoraprotocol no index getStaticProps OK
+3. limpar todos os imports de reservoir OK
+
+4. desinstalar reservoir package OK
+5. atualizar viem, wagmi, rainbowkit agora que nao tem mais a porcaria do reservoir package OK
+6. instalar alchemy sdk e pegar os metadata via alchemy SDK (em index getStaticProps)
+
+--> token.media, em LargeMedia.jsx pode não ter o final (.mp4, .mp3) -> ajustar para checar o token.mediaMimeType em vez disso.
+--> ajustar as ocorrencias de token?.token?.supply para token.totalMinted (GridOpenToken por ex.)
+
+8. refazer mints e tokenMedia com os dados e packages novas

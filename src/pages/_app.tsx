@@ -1,7 +1,7 @@
 import '@/styles/globals.css';
 import type { AppProps } from 'next/app';
 import Layout from '@/components/Layout';
-import localFont from '@next/font/local';
+import localFont from 'next/font/local';
 
 // import { reservoirChains } from '@reservoir0x/reservoir-sdk';
 // import { ReservoirKitProvider, darkTheme } from '@reservoir0x/reservoir-kit-ui';

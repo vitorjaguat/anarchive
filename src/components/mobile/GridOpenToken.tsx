@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import type { ReservoirToken } from '../../../types/tokens';
+import type { Token } from '../../../types/tokens';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { IoCloseOutline } from 'react-icons/io5';
@@ -13,7 +13,7 @@ export default function GridOpenToken({
   token,
   onClose,
 }: {
-  token: ReservoirToken;
+  token: Token;
   onClose: () => void;
 }) {
   const { openConnectModal } = useConnectModal();
@@ -58,7 +58,7 @@ export default function GridOpenToken({
         <div className='mt-1 flex gap-2 items-center justify-between px-1'>
           <div className='flex gap-2'>
             <GoPlusCircle size={21} color='white' />
-            <div className=''>{token?.token?.supply}</div>
+            <div className=''>{token?.token?.totalMinted}</div>
           </div>
           {/* <MintModal
             chainId={7777777}

@@ -1,29 +1,13 @@
 import Image from 'next/image';
-import type { ReservoirToken } from '../../../types/tokens';
-import { useState, useEffect, useContext } from 'react';
+import type { Token } from '../../../types/tokens';
+import { useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
-// import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { GoPlusCircle } from 'react-icons/go';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import Markdown from 'react-markdown';
 
-export default function GridViewItemMobile({
-  token,
-}: {
-  token: ReservoirToken;
-}) {
-  //   const [openToken, setOpenToken] = useState<ReservoirToken | null>(null);
-  const { openConnectModal } = useConnectModal();
+export default function GridViewItemMobile({ token }: { token: Token }) {
   const { changeOpenToken } = useContext(MainContext);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    return () => {
-      setIsMounted(false);
-    };
-  }, []);
 
   const router = useRouter();
 
@@ -82,7 +66,7 @@ export default function GridViewItemMobile({
         <div className='w-full bg-slate-600 mt-1 flex gap-2 items-center justify-between px-0 text-xs'>
           <div className='flex gap-2 pl-1'>
             <GoPlusCircle size={14} color='' />
-            <div className=''>{token.token.supply || '1'}</div>
+            <div className=''>{token.token.totalMinted || '1'}</div>
           </div>
           {/* <MintModal
             chainId={7777777}
