@@ -1,5 +1,5 @@
 import GraphWrapper from '../components/GraphWrapper';
-import { useCallback, useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import Filters from '../components/Filters';
 import Head from '../components/Headhead';
@@ -38,9 +38,6 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
       ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
       : 'The Anarchiving Game'
   );
-  // const headTitle = tokenDataForOG?.token
-  //   ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-  //   : 'The Anarchiving Game';
 
   const description =
     tokenDataForOG?.token && tokenDataForOG?.token?.description
@@ -51,26 +48,31 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   useEffect(() => {
     if (account?.address && showMineIsChecked) {
       const fetchData = async () => {
-        const options = {
-          method: 'GET',
-          headers: {
-            accept: '*/*',
-            'x-api-key': process.env.RESERVOIR_API_KEY,
-          },
-        };
-
         try {
           const response = await fetch(
-            `https://api-zora.reservoir.tools/users/${account.address}/tokens/v10?collection=${contract}&limit=200&includeAttributes=true`,
-            options
+            `/api/user-tokens?address=${account.address}`
           );
-          const data = await response.json();
-          setUsersFrags(data.tokens);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const tokenIds = await response.json();
+
+          const userTokens = allTokens.filter((token) =>
+            tokenIds.includes(token.token.tokenId)
+          );
+
+          setUsersFrags(userTokens);
         } catch (err) {
-          console.error(err);
+          console.error('Error fetching user tokens: ', err);
+          setUsersFrags([]);
         }
       };
+
       fetchData();
+    } else {
+      setUsersFrags([]);
     }
   }, [account.address, showMineIsChecked]);
 
@@ -197,131 +199,79 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
 
 export async function getServerSideProps(context) {
   const fetchAllTokens = async () => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    // Get tokenMetadata and cache images from Alchemy SDK (handle pagination)
+    const getAllTokensFromAlchemy = async (): Promise<Nft[]> => {
+      const alchemy = new Alchemy({
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: Network.ZORA_MAINNET,
+      });
 
-    const options = {
-      method: 'GET',
-      headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
-      signal: controller.signal,
+      const results: Nft[] = [];
+      let pageKey: string | undefined = undefined;
+
+      do {
+        const resp: NftContractNftsResponse =
+          await alchemy.nft.getNftsForContract(contract, {
+            pageKey,
+            pageSize: 100, // max per page
+          });
+        results.push(...resp.nfts);
+        pageKey = (resp as any).pageKey; // SDK returns pageKey when more pages exist
+      } while (pageKey);
+
+      return results;
     };
 
-    try {
-      const response = await fetch(
-        `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
-        options
-      );
+    const allTokensFromAlchemy: Nft[] = await getAllTokensFromAlchemy();
 
-      // Get tokenMetadata and cache images from Alchemy SDK (handle pagination)
-      const getAllTokensFromAlchemy = async (): Promise<Nft[]> => {
-        const alchemy = new Alchemy({
-          apiKey: process.env.ALCHEMY_API_KEY,
-          network: Network.ZORA_MAINNET,
-        });
+    // Get totalMinted and maxSupply from Zora Protocol SDK:
+    const totalMintedDataRaw = await getTokensOfContract({
+      tokenContract: contract,
+      publicClient,
+    });
 
-        const results: Nft[] = [];
-        let pageKey: string | undefined = undefined;
+    const tokenLookup = new Map(
+      totalMintedDataRaw.tokens.map((t) => [
+        t.token.tokenURI,
+        {
+          totalMinted: BigInt(t.token.totalMinted),
+          maxSupply: BigInt(t.token.maxSupply),
+        },
+      ])
+    );
 
-        do {
-          const resp: NftContractNftsResponse =
-            await alchemy.nft.getNftsForContract(contract, {
-              pageKey,
-              pageSize: 100, // max per page
-            });
-          results.push(...resp.nfts);
-          pageKey = (resp as any).pageKey; // SDK returns pageKey when more pages exist
-        } while (pageKey);
-
-        return results;
+    const allTokensTyped: Token[] = allTokensFromAlchemy.map((token) => {
+      const zoraData = tokenLookup.get(token.raw.tokenUri);
+      return {
+        token: {
+          totalMinted: (zoraData?.totalMinted || BigInt(0)).toString(),
+          maxSupply: (zoraData?.maxSupply || BigInt(0)).toString(),
+          contract: token.contract.address,
+          tokenId: token.tokenId,
+          name: token.name,
+          description:
+            token.description ?? token.raw.metadata.description ?? null,
+          image: token.image.cachedUrl,
+          imageSmall: token.image.thumbnailUrl ?? null,
+          imageLarge: token.image.pngUrl ?? token.image.originalUrl ?? null,
+          imageOriginal: token.image.originalUrl,
+          kind: token.contract.tokenType as string,
+          attributes: token.raw.metadata.attributes.map((attribute) => ({
+            key: attribute.trait_type as string,
+            value: attribute.value as string,
+          })) as TokenAttribute[],
+          owners: [],
+          media:
+            token.animation.cachedUrl ??
+            token.animation.originalUrl ??
+            token.raw.metadata.animation_url ??
+            null,
+          mediaMimeType: token.animation.contentType ?? null,
+        },
       };
+    });
 
-      const allTokensFromAlchemy: Nft[] = await getAllTokensFromAlchemy();
-      // console.log('Fetched NFTs from Alchemy:', allTokensFromAlchemy.length);
-      // console.log('Token ID 0: ', allTokensFromAlchemy[0].tokenId);
-      // console.log('URI 0: ', allTokensFromAlchemy[0].tokenUri);
-
-      // Get totalMinted and maxSupply from Zora Protocol SDK:
-      const totalMintedDataRaw = await getTokensOfContract({
-        tokenContract: contract,
-        publicClient,
-      });
-      // console.log('Fetched NFTs from Zora:', totalMintedDataRaw.tokens.length);
-      // console.log('URI 0: ', totalMintedDataRaw.tokens[0].token.tokenURI);
-
-      // const allTokens: TokenComplete[] = allTokensFromAlchemy.map((token) => ({
-      //   ...token,
-      //   totalMinted: totalMintedDataRaw.tokens.find(
-      //     (t) => t.token.tokenURI == token.tokenUri
-      //   ).token.totalMinted,
-      //   maxSupply: totalMintedDataRaw.tokens.find(
-      //     (t) => t.token.tokenURI == token.tokenUri
-      //   ).token.maxSupply,
-      // }));
-
-      // console.dir(allTokens[8]);
-
-      // Create lookup map for O(1) access instead of O(n) find operations
-      const tokenLookup = new Map(
-        totalMintedDataRaw.tokens.map((t) => [
-          t.token.tokenURI,
-          {
-            totalMinted: BigInt(t.token.totalMinted),
-            maxSupply: BigInt(t.token.maxSupply),
-          },
-        ])
-      );
-
-      console.dir(allTokensFromAlchemy, { depth: null });
-
-      const allTokensTyped: Token[] = allTokensFromAlchemy.map((token) => {
-        const zoraData = tokenLookup.get(token.raw.tokenUri);
-        return {
-          token: {
-            totalMinted: (zoraData?.totalMinted || BigInt(0)).toString(),
-            maxSupply: (zoraData?.maxSupply || BigInt(0)).toString(),
-            contract: token.contract.address,
-            tokenId: token.tokenId,
-            name: token.name,
-            description:
-              token.description ?? token.raw.metadata.description ?? null,
-            image: token.image.cachedUrl,
-            imageSmall: token.image.thumbnailUrl ?? null,
-            imageLarge: token.image.pngUrl ?? token.image.originalUrl ?? null,
-            imageOriginal: token.image.originalUrl,
-            kind: token.contract.tokenType as string,
-            attributes: token.raw.metadata.attributes.map((attribute) => ({
-              key: attribute.trait_type as string,
-              value: attribute.value as string,
-            })) as TokenAttribute[],
-            owners: [],
-            media:
-              token.animation.cachedUrl ??
-              token.animation.originalUrl ??
-              token.raw.metadata.animation_url ??
-              null,
-            mediaMimeType: token.animation.contentType ?? null,
-          },
-        };
-      });
-
-      // console.dir(allTokens[8]);
-
-      clearTimeout(timeoutId);
-
-      // if (!response.ok) {
-      //   throw new Error(`HTTP error! status: ${response.status}`);
-      // }
-
-      // const data = await response.json();
-
-      // console.dir(data.tokens, { depth: null });
-      // return data.tokens || [];
-      return allTokensTyped;
-    } catch (err) {
-      clearTimeout(timeoutId);
-      console.error('Error fetching tokens:', err);
-      return [];
-    }
+    return allTokensTyped;
   };
 
   try {

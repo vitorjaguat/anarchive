@@ -34,9 +34,11 @@ PASSOS:
 
 4. desinstalar reservoir package OK
 5. atualizar viem, wagmi, rainbowkit agora que nao tem mais a porcaria do reservoir package OK
-6. instalar alchemy sdk e pegar os metadata via alchemy SDK (em index getStaticProps)
+6. instalar alchemy sdk e pegar os metadata via alchemy SDK (em index getStaticProps) OK
 
---> token.media, em LargeMedia.jsx pode não ter o final (.mp4, .mp3) -> ajustar para checar o token.mediaMimeType em vez disso.
+--> token.media, em LargeMedia.jsx pode não ter o final (.mp4, .mp3) -> ajustar para checar o token.mediaMimeType em vez disso. OK
+
+--> continuar ajustando LargeMedia: http://localhost:3001/?fragment=45 é um VIDEO!
 --> ajustar as ocorrencias de token?.token?.supply para token.totalMinted (GridOpenToken por ex.)
 
 8. refazer mints e tokenMedia com os dados e packages novas
