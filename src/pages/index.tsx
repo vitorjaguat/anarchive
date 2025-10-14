@@ -219,6 +219,8 @@ export async function getServerSideProps(context) {
         pageKey = (resp as any).pageKey; // SDK returns pageKey when more pages exist
       } while (pageKey);
 
+      console.dir(results.find((token) => token.tokenId == '32'));
+
       return results;
     };
 

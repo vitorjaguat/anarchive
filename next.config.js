@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 
+const { hostname } = require('os');
 const webpack = require('webpack');
 const nextConfig = {
   reactStrictMode: true,
@@ -24,6 +25,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ipfs.io',
       },
     ],
     dangerouslyAllowSVG: true,

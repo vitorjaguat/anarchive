@@ -5,9 +5,15 @@ import { MainContext } from '@/context/mainContext';
 import { GoPlusCircle } from 'react-icons/go';
 import { useRouter } from 'next/router';
 import Markdown from 'react-markdown';
+import Mint from '../Mint';
+import { useAccount } from 'wagmi';
+import { useState } from 'react';
+import CollectModal from '../CollectModal';
 
 export default function GridViewItemMobile({ token }: { token: Token }) {
   const { changeOpenToken } = useContext(MainContext);
+  const { address } = useAccount();
+  const [openCollect, setOpenCollect] = useState(false);
 
   const router = useRouter();
 
@@ -29,6 +35,8 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
   };
 
   if (!token?.token?.tokenId) return null;
+
+  if (token.token.tokenId == '32') console.dir(token);
   return (
     <>
       <div
@@ -87,9 +95,26 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
             onConnectWallet={openConnectModal}
             token={token.token.contract + ':' + token.token.tokenId}
           /> */}
-          <div className=''>Collect</div>
+          {/* "MINT" button (will open the CollectModal, where truly lives the Mint button) */}
+          <div className=' pointer-events-none'>
+            <button
+              className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-black duration-300 pointer-events-auto'
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenCollect(true);
+              }}
+            >
+              <div className='translate-y-[1px]'>Collect</div>
+            </button>
+          </div>
         </div>
       </div>
+      <CollectModal
+        open={openCollect}
+        onClose={() => setOpenCollect(false)}
+        token={token.token}
+        defaultQuantity={1}
+      />
     </>
   );
 }
