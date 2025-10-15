@@ -419,8 +419,8 @@ export default function CreateIndex() {
 
     //Validations:
     const errorsInValidation = checkValidation('all');
-    console.log('errorsInValidation', errorsInValidation);
-    console.log('media from submit', media);
+    // console.log('errorsInValidation', errorsInValidation);
+    // console.log('media from submit', media);
     if (errorsInValidation && Object.keys(errorsInValidation).length > 0) {
       setValidationError({
         ...errorsInValidation,
@@ -467,8 +467,8 @@ export default function CreateIndex() {
         const imageUriData = await upload({ data: [image] });
         imageUri = imageUriData[0];
       }
-      console.log('mediaUri', mediaUri);
-      console.log('imageUri', imageUri);
+      // console.log('mediaUri', mediaUri);
+      // console.log('imageUri', imageUri);
       setSubmitPhaseOneMedia(true);
 
       //construct metadata object:
@@ -524,7 +524,7 @@ export default function CreateIndex() {
       const metadata = JSON.stringify(metadataObj);
       const metadataUriData = await upload({ data: [metadata] });
       metadataUri = metadataUriData[0];
-      console.log('metadataUri', metadataUri);
+      // console.log('metadataUri', metadataUri);
       setSubmitPhaseTwoMetadata(true);
 
       // Get sales config options:
@@ -550,7 +550,7 @@ export default function CreateIndex() {
         payoutRecipient,
         editionSize
       );
-      console.log('finalResponse:', finalResponse);
+      // console.log('finalResponse:', finalResponse);
       if (finalResponse && finalResponse?.hash) {
         setProcessingSubmit('success');
         setSubmitMessage(

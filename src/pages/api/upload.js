@@ -16,14 +16,14 @@ const storage = new ThirdwebStorage({
 export default async function handler(req, res) {
   console.log('running');
   // console.log(process.env.THIRDWEB_CLIENT_SECRET);
-  console.log(req.body);
+  // console.log(req.body);
 
   if (req.method === 'POST') {
     try {
       const form = new IncomingForm();
       const [fields, files] = await form.parse(req);
-      console.log('fields:', fields);
-      console.log('files:', files);
+      // console.log('fields:', fields);
+      // console.log('files:', files);
       // console.log('filepath:', files.image[0].filepath);
 
       // const imgPath = path.join(process.cwd(), files.image[0].filepath);
@@ -91,8 +91,8 @@ export default async function handler(req, res) {
       // }
       const metadata = JSON.stringify(metadataObj);
       const uriMetadata = await storage.upload(metadata);
-      console.log('metadata:', metadata);
-      console.log('uriMetadata:', uriMetadata);
+      // console.log('metadata:', metadata);
+      // console.log('uriMetadata:', uriMetadata);
 
       // form.parse(req, async (err, fields, files) => {
       //   console.log('fields:', fields);

@@ -1,21 +1,28 @@
-// import Image from 'next/image';
-// import { Inter } from 'next/font/google';
 import GraphWrapper from '../components/GraphWrapper';
-import { useCallback, useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import Filters from '../components/Filters';
 import Head from '../components/Headhead';
 import CreateTokenButton from '../components/CreateTokenButton';
 import { useRouter } from 'next/router';
-import collectionAddress from '../utils/contract';
 import Layout from '@/components/Layout';
 import contract from '../utils/contract';
+// import contract from '../utils/dummyCollectionAddress';
 import { useIsMobile } from '@/utils/useIsMobile';
 import GridViewMobile from '@/components/mobile/GridViewMobile';
 import { useAccount } from 'wagmi';
 import { MainContext } from '@/context/mainContext';
 import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
+import { publicClient } from '@/utils/zoraprotocolConfig';
+import { getTokensOfContract } from '@zoralabs/protocol-sdk';
+import {
+  Alchemy,
+  Network,
+  type Nft,
+  type NftContractNftsResponse,
+} from 'alchemy-sdk';
+import type { Token, TokenAttribute } from '../../types/tokens';
 
 export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const isMobile = useIsMobile();
@@ -23,7 +30,7 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
-  console.log('Token Data for OG:', tokenDataForOG);
+  // console.dir[allTokens];
 
   // dynamic head metadata:
   const [headTitle, setHeadTitle] = useState(
@@ -31,9 +38,6 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
       ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
       : 'The Anarchiving Game'
   );
-  // const headTitle = tokenDataForOG?.token
-  //   ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-  //   : 'The Anarchiving Game';
 
   const description =
     tokenDataForOG?.token && tokenDataForOG?.token?.description
@@ -44,26 +48,31 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   useEffect(() => {
     if (account?.address && showMineIsChecked) {
       const fetchData = async () => {
-        const options = {
-          method: 'GET',
-          headers: {
-            accept: '*/*',
-            'x-api-key': process.env.RESERVOIR_API_KEY,
-          },
-        };
-
         try {
           const response = await fetch(
-            `https://api-zora.reservoir.tools/users/${account.address}/tokens/v10?collection=${contract}&limit=200&includeAttributes=true`,
-            options
+            `/api/user-tokens?address=${account.address}`
           );
-          const data = await response.json();
-          setUsersFrags(data.tokens);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const tokenIds = await response.json();
+
+          const userTokens = allTokens.filter((token) =>
+            tokenIds.includes(token.token.tokenId)
+          );
+
+          setUsersFrags(userTokens);
         } catch (err) {
-          console.error(err);
+          console.error('Error fetching user tokens: ', err);
+          setUsersFrags([]);
         }
       };
+
       fetchData();
+    } else {
+      setUsersFrags([]);
     }
   }, [account.address, showMineIsChecked]);
 
@@ -87,8 +96,8 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
         (!openToken ||
           clickedTokenData.token.tokenId !== openToken?.token?.tokenId)
       ) {
-        changeOpenToken(clickedTokenData);
         setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
+        changeOpenToken(clickedTokenData);
       }
     }
     // Optionally, handle the case where fragment is removed
@@ -175,7 +184,6 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
                 sort={sort}
                 filter={filter}
                 showMineIsChecked={showMineIsChecked}
-                setImageLoaded={setImageLoaded}
                 usersFrags={usersFrags}
               />
             )}
@@ -191,37 +199,95 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
 
 export async function getServerSideProps(context) {
   const fetchAllTokens = async () => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    // Get tokenMetadata and cache images from Alchemy SDK (handle pagination)
+    const getAllTokensFromAlchemy = async (): Promise<Nft[]> => {
+      const alchemy = new Alchemy({
+        apiKey: process.env.ALCHEMY_API_KEY,
+        network: Network.ZORA_MAINNET,
+      });
 
-    const options = {
-      method: 'GET',
-      headers: { accept: '*/*', 'x-api-key': process.env.RESERVOIR_API_KEY },
-      signal: controller.signal,
+      const results: Nft[] = [];
+      let pageKey: string | undefined = undefined;
+
+      do {
+        const resp: NftContractNftsResponse =
+          await alchemy.nft.getNftsForContract(contract, {
+            pageKey,
+            pageSize: 100, // max per page
+          });
+        results.push(...resp.nfts);
+        pageKey = (resp as any).pageKey; // SDK returns pageKey when more pages exist
+      } while (pageKey);
+
+      console.dir(results.find((token) => token.tokenId == '62'));
+
+      return results;
     };
 
-    try {
-      const response = await fetch(
-        `https://api-zora.reservoir.tools/tokens/v7?collection=${contract}&sortBy=updatedAt&limit=1000&includeAttributes=true`,
-        options
-      );
-      clearTimeout(timeoutId);
+    const allTokensFromAlchemy: Nft[] = await getAllTokensFromAlchemy();
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+    // Get totalMinted and maxSupply from Zora Protocol SDK:
+    const totalMintedDataRaw = await getTokensOfContract({
+      tokenContract: contract,
+      publicClient,
+    });
 
-      const data = await response.json();
-      return data.tokens || [];
-    } catch (err) {
-      clearTimeout(timeoutId);
-      console.error('Error fetching tokens:', err);
-      return [];
-    }
+    // console.dir(totalMintedDataRaw, { depth: null });
+
+    const tokenLookup = new Map(
+      totalMintedDataRaw.tokens.map((t) => [
+        t.token.tokenURI,
+        {
+          totalMinted: BigInt(t.token.totalMinted),
+          maxSupply: BigInt(t.token.maxSupply),
+        },
+      ])
+    );
+
+    // console.dir(tokenLookup, { depth: null });
+
+    const allTokensTyped: Token[] = allTokensFromAlchemy.map((token) => {
+      const zoraData = tokenLookup.get(token.raw.tokenUri);
+      // if (token.tokenId === '62') {
+      //   console.dir(tokenLookup.get(token.tokenUri));
+      //   console.log(token.tokenUri);
+      // }
+      // console.log(token.raw.tokenUri, tokenLookup.get(token.raw.tokenUri).);
+      return {
+        token: {
+          totalMinted: (zoraData?.totalMinted || BigInt(0)).toString(),
+          maxSupply: (zoraData?.maxSupply || BigInt(0)).toString(),
+          contract: token.contract.address,
+          tokenId: token.tokenId,
+          name: token.name,
+          description:
+            token.description ?? token.raw.metadata.description ?? null,
+          image: token.image.cachedUrl,
+          imageSmall: token.image.thumbnailUrl ?? null,
+          imageLarge: token.image.pngUrl ?? token.image.originalUrl ?? null,
+          imageOriginal: token.image.originalUrl,
+          kind: token.contract.tokenType as string,
+          attributes: token.raw.metadata.attributes.map((attribute) => ({
+            key: attribute.trait_type as string,
+            value: attribute.value as string,
+          })) as TokenAttribute[],
+          owners: [],
+          media:
+            token.animation.cachedUrl ??
+            token.animation.originalUrl ??
+            token.raw.metadata.animation_url ??
+            null,
+          mediaMimeType: token.animation.contentType ?? null,
+        },
+      };
+    });
+
+    return allTokensTyped;
   };
 
   try {
     const allTokens = await fetchAllTokens();
+    // console.dir(allTokens, { depth: null });
 
     // Process tags
     const allTagsSet = new Set();

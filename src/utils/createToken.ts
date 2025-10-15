@@ -1,9 +1,10 @@
-import { createCreatorClient } from '@zoralabs/protocol-sdk';
+import { createNew1155Token } from '@zoralabs/protocol-sdk';
 import {
   publicClient,
   walletClient,
   chainId,
   creatorAccountPromise,
+  chain,
 } from './zoraprotocolConfig';
 // import collectionAddress from './dummyCollectionAddress';
 import collectionAddress from './contract';
@@ -18,7 +19,6 @@ export default async function createToken(
   tokenEditionSize
 ) {
   // parsing tokenMintingDuration:
-  // TODO: ask Zora team how this configuration works
   let parsedTokenMintingDuration;
   if (tokenMintingDuration === 'open') {
     parsedTokenMintingDuration = BigInt('18446744073709551615');
@@ -37,7 +37,7 @@ export default async function createToken(
   } else {
     parsedTokenMintingDuration = BigInt('18446744073709551615');
   }
-  console.log('parsedTokenMintingDuration: ', parsedTokenMintingDuration);
+  // console.log('parsedTokenMintingDuration: ', parsedTokenMintingDuration);
 
   // managing payoutRecipient:
   let parsedPayoutRecipient;
@@ -53,7 +53,7 @@ export default async function createToken(
     // setup a splits client
     const splitsClient = new SplitV1Client({
       chainId,
-      publicClient,
+      publicClient: publicClient as any, // Type assertion for compatibility
       apiConfig: {
         // This is a dummy 0xSplits api key, replace with your own
         apiKey: process.env.SPLIT_API_KEY,
@@ -81,7 +81,7 @@ export default async function createToken(
         splitsConfig
       );
 
-      await walletClient.sendTransaction({
+      await (walletClient as any).sendTransaction({
         to: address,
         account: creatorAccount,
         data,
@@ -93,19 +93,16 @@ export default async function createToken(
     parsedPayoutRecipient = creatorAccount; // default to creator account
   }
 
-  console.log('parsedPayoutRecipient: ', parsedPayoutRecipient);
+  // console.log('parsedPayoutRecipient: ', parsedPayoutRecipient);
 
   try {
-    // //dinamically importing the zoraprotocolConfig file, so it only runs on client:
-    // const { publicClient, walletClient, chainId, creatorAccountPromise } =
-    //   typeof window !== 'undefined' ? await import('./zoraprotocolConfig') : {};
+    // const creatorClient = createCreatorClient({ chainId, publicClient });
 
-    const creatorClient = createCreatorClient({ chainId, publicClient });
-
-    const { parameters } = await creatorClient.create1155({
+    const { parameters } = await createNew1155Token({
       // by providing a contract address, the token will be created on an existing contract
       // at that address
-      contract: collectionAddress,
+      contractAddress: collectionAddress,
+      chainId: chain.id,
       token: {
         // token metadata uri
         tokenMetadataURI: tokenUri,

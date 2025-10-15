@@ -24,9 +24,9 @@
     "**/*.tsx",
     "src/components/GraphWrapper.jsx",
     "src/components/Graph.jsx",
-    "src/pages/index.jsx",
-    "src/utils/createToken.js",
-    "src/utils/createToken.js",
+    "src/pages/index.tsx",
+    "src/utils/createToken.ts",
+    "src/utils/createToken.ts",
     "src/utils/zoraprotocolConfig.js",
     "src/components/ConnectButton.jsx"
   ],

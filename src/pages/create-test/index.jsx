@@ -391,7 +391,7 @@ export default function CreateIndex() {
 
       // Handle the response from the API
       const data = await response.json();
-      console.log('Response:', data);
+      // console.log('Response:', data);
       // Get sales config options:
       // price:
       let price;
