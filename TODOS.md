@@ -40,7 +40,8 @@ PASSOS:
 
 --> ajustar as ocorrencias de token?.token?.supply para token.totalMinted (GridOpenToken por ex.) OK
 --> continuar ajustando LargeMedia: http://localhost:3001/?fragment=45 é um VIDEO! OK
+--> http://localhost:3000/?fragment=32 is a GIF, should play the GIF in grid mode; also should play the gif in LargeMedia too - currently just showing animated GIF in TokenInfo OK
 
-8. refazer mints e tokenMedia com os dados e packages novas
+8. refazer mints e tokenMedia com os dados e packages novas OK
    in process...
-   --> colocar o preço a pagar no CollectModal
+   --> colocar o preço a pagar no CollectModal OK
