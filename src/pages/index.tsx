@@ -30,7 +30,7 @@ export default function Home({ allTokens, tokenDataForOG, allTags }) {
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState([]);
-  console.dir[allTokens];
+  // console.dir[allTokens];
 
   // dynamic head metadata:
   const [headTitle, setHeadTitle] = useState(
@@ -219,7 +219,7 @@ export async function getServerSideProps(context) {
         pageKey = (resp as any).pageKey; // SDK returns pageKey when more pages exist
       } while (pageKey);
 
-      console.dir(results.find((token) => token.tokenId == '32'));
+      console.dir(results.find((token) => token.tokenId == '62'));
 
       return results;
     };
@@ -232,6 +232,8 @@ export async function getServerSideProps(context) {
       publicClient,
     });
 
+    // console.dir(totalMintedDataRaw, { depth: null });
+
     const tokenLookup = new Map(
       totalMintedDataRaw.tokens.map((t) => [
         t.token.tokenURI,
@@ -242,8 +244,15 @@ export async function getServerSideProps(context) {
       ])
     );
 
+    // console.dir(tokenLookup, { depth: null });
+
     const allTokensTyped: Token[] = allTokensFromAlchemy.map((token) => {
       const zoraData = tokenLookup.get(token.raw.tokenUri);
+      // if (token.tokenId === '62') {
+      //   console.dir(tokenLookup.get(token.tokenUri));
+      //   console.log(token.tokenUri);
+      // }
+      // console.log(token.raw.tokenUri, tokenLookup.get(token.raw.tokenUri).);
       return {
         token: {
           totalMinted: (zoraData?.totalMinted || BigInt(0)).toString(),
