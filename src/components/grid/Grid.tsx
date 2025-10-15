@@ -1,10 +1,9 @@
-import { ReservoirToken } from '../../../types/tokens';
+import { type Token } from '../../../types/tokens';
 import GridViewItemMobile from '../mobile/GridViewItemMobile';
 // import { Masonry } from 'react-plock';
 import dynamic from 'next/dynamic';
 import useIsMounted from '@/utils/useIsMounted';
 import { useEffect, useState } from 'react';
-import { TbArrowsSort } from 'react-icons/tb';
 import { BiSort } from 'react-icons/bi';
 
 const Masonry = dynamic(
@@ -13,9 +12,9 @@ const Masonry = dynamic(
 );
 
 interface GridProps {
-  allTokens: ReservoirToken[];
+  allTokens: Token[];
   showMineIsChecked: boolean;
-  usersFrags: ReservoirToken[];
+  usersFrags: Token[];
   sort: string;
   filter: string[];
 }
@@ -119,7 +118,7 @@ export default function Grid({
               }}
               className=' scroll-smooth'
               as='div'
-              render={(token: ReservoirToken, i: number) => (
+              render={(token: Token, i: number) => (
                 <GridViewItemMobile key={i} token={token} />
               )}
             />
@@ -138,7 +137,7 @@ export default function Grid({
               }}
               className=' scroll-smooth'
               as='div'
-              render={(token: ReservoirToken, i: number) => (
+              render={(token: Token, i: number) => (
                 <GridViewItemMobile key={i} token={token} />
               )}
             />

@@ -1,5 +1,5 @@
 import Markdown from 'react-markdown';
-import { MintModal } from '@reservoir0x/reservoir-kit-ui';
+// import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { useState, useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
@@ -10,12 +10,14 @@ import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
+import CollectModal from './CollectModal';
 
 export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   const tokenInfoControls = useAnimationControls();
   const largeMediaControls = useAnimationControls();
-  const { openConnectModal } = useConnectModal();
+  // const { openConnectModal } = useConnectModal();
+  const [openCollect, setOpenCollect] = useState(false);
   const router = useRouter();
   const { openToken, changeOpenToken } = useContext(MainContext);
 
@@ -146,36 +148,15 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                       </div>
                     </div>
                     <div className=''>
-                      <MintModal
-                        chainId={7777777}
-                        copyOverrides={{
-                          mintTitle: 'Collect your own',
-                          mintCtaBuy: 'Collect',
+                      <button
+                        className='w-full bg-sph-purple-light text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenCollect(true);
                         }}
-                        // normalizeRoyalties={true}
-                        trigger={
-                          <button className='w-full bg-sph-purple-light text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'>
-                            Collect
-                          </button>
-                        }
-                        // onConnectWallet={() => {
-                        //   openConnectModal?.();
-                        // }}
-                        // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-                        // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-
-                        // openState={mintOpenState}
-                        // collectionId={openTokenData.token.contract}
-                        // tokenId={openTokenData.token.tokenId}
-                        onMintComplete={(data) => console.log(data)}
-                        onMintError={(error) => console.log(error)}
-                        token={
-                          openToken.token.contract +
-                          ':' +
-                          openToken.token.tokenId
-                        }
-                        onConnectWallet={openConnectModal}
-                      />
+                      >
+                        Collect
+                      </button>
                     </div>
                   </div>
 
@@ -194,8 +175,8 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                             ? att?.value
                             : att?.value
                                 .split(',')
-                                .map((tag) => (
-                                  <div key={tag}>{tag.trim()}</div>
+                                .map((tag, i) => (
+                                  <div key={i}>{tag.trim()}</div>
                                 ))}
                         </div>
                       </div>
@@ -310,6 +291,14 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
             </motion.div>
           </motion.div>
         </>
+      )}
+      {openToken?.token && (
+        <CollectModal
+          open={openCollect}
+          onClose={() => setOpenCollect(false)}
+          token={openToken.token}
+          defaultQuantity={1}
+        />
       )}
     </AnimatePresence>
   );

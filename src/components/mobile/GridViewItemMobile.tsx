@@ -1,29 +1,19 @@
 import Image from 'next/image';
-import type { ReservoirToken } from '../../../types/tokens';
-import { useState, useEffect, useContext } from 'react';
+import type { Token } from '../../../types/tokens';
+import { useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
-import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { GoPlusCircle } from 'react-icons/go';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import Markdown from 'react-markdown';
+import Mint from '../Mint';
+import { useAccount } from 'wagmi';
+import { useState } from 'react';
+import CollectModal from '../CollectModal';
 
-export default function GridViewItemMobile({
-  token,
-}: {
-  token: ReservoirToken;
-}) {
-  //   const [openToken, setOpenToken] = useState<ReservoirToken | null>(null);
-  const { openConnectModal } = useConnectModal();
+export default function GridViewItemMobile({ token }: { token: Token }) {
   const { changeOpenToken } = useContext(MainContext);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    return () => {
-      setIsMounted(false);
-    };
-  }, []);
+  const { address } = useAccount();
+  const [openCollect, setOpenCollect] = useState(false);
 
   const router = useRouter();
 
@@ -45,6 +35,8 @@ export default function GridViewItemMobile({
   };
 
   if (!token?.token?.tokenId) return null;
+
+  if (token.token.tokenId == '40') console.dir(token);
   return (
     <>
       <div
@@ -82,15 +74,14 @@ export default function GridViewItemMobile({
         <div className='w-full bg-slate-600 mt-1 flex gap-2 items-center justify-between px-0 text-xs'>
           <div className='flex gap-2 pl-1'>
             <GoPlusCircle size={14} color='' />
-            <div className=''>{token.token.supply || '1'}</div>
+            <div className=''>{token.token.totalMinted || '1'}</div>
           </div>
-          <MintModal
+          {/* <MintModal
             chainId={7777777}
             copyOverrides={{
               mintTitle: 'Collect your own',
               mintCtaBuy: 'Collect',
             }}
-            // normalizeRoyalties={true}
             trigger={
               <button
                 className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-black duration-300'
@@ -99,23 +90,31 @@ export default function GridViewItemMobile({
                 <div className='translate-y-[1px]'>Collect</div>
               </button>
             }
-            // onConnectWallet={() => {
-            //   openConnectModal?.();
-            // }}
-            // referrerAddress='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-            // referrer='0xBFd118f0ff5d6f4D3Eb999eAF197Dbfcc421C5Ea'
-
-            // openState={mintOpenState}
-            // collectionId={openTokenData.token.contract}
-            // tokenId={openTokenData.token.tokenId}
             onMintComplete={(data) => console.log(data)}
             onMintError={(error) => console.log(error)}
             onConnectWallet={openConnectModal}
             token={token.token.contract + ':' + token.token.tokenId}
-          />
-          {/* <div className=''>Collect</div> */}
+          /> */}
+          {/* "MINT" button (will open the CollectModal, where truly lives the Mint button) */}
+          <div className=' pointer-events-none'>
+            <button
+              className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-black duration-300 pointer-events-auto'
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenCollect(true);
+              }}
+            >
+              <div className='translate-y-[1px]'>Collect</div>
+            </button>
+          </div>
         </div>
       </div>
+      <CollectModal
+        open={openCollect}
+        onClose={() => setOpenCollect(false)}
+        token={token.token}
+        defaultQuantity={1}
+      />
     </>
   );
 }
