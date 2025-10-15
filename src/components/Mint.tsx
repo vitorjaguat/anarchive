@@ -26,6 +26,7 @@ export default function Mint({
   const { address: connectedAddress } = useAccount();
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
 
   const minterAccount = useMemo<`0x${string}` | undefined>(() => {
     return (address || connectedAddress) as `0x${string}` | undefined;
@@ -43,6 +44,7 @@ export default function Mint({
 
     setIsMinting(true);
     setError(null);
+    setTxHash(null);
     try {
       // Build mint transaction parameters via Zora Protocol SDK
       const { parameters, erc20Approval } = await mint({
@@ -75,6 +77,7 @@ export default function Mint({
       const hash = await (walletClient as any).writeContract(request);
       await (publicClient as any).waitForTransactionReceipt({ hash });
 
+      setTxHash(hash as `0x${string}`);
       onSuccess?.(hash);
     } catch (e: any) {
       console.error('Mint error:', e);
@@ -86,14 +89,29 @@ export default function Mint({
   };
 
   return (
-    <button
-      onClick={handleClickMint}
-      className={className}
-      disabled={isMinting || !minterAccount}
-      title={!minterAccount ? 'Connect wallet to mint' : 'Mint'}
-    >
-      {isMinting ? 'Minting…' : 'Collect'}
-      {error && <span className='ml-2 text-red-400 text-xs'>{error}</span>}
-    </button>
+    <div className='flex flex-col gap-2'>
+      <button
+        onClick={handleClickMint}
+        className={className}
+        disabled={isMinting || !minterAccount}
+        title={!minterAccount ? 'Connect wallet to mint' : 'Mint'}
+      >
+        {isMinting ? 'Minting…' : 'Collect'}
+      </button>
+      {error && <div className='text-xs text-red-400 break-words'>{error}</div>}
+      {txHash && !error && (
+        <div className='text-xs text-emerald-400 break-all'>
+          Minted: {txHash.slice(0, 10)}…{' '}
+          <a
+            href={`https://etherscan.io/tx/${txHash}`}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='underline'
+          >
+            view
+          </a>
+        </div>
+      )}
+    </div>
   );
 }
