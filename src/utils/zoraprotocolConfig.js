@@ -11,24 +11,36 @@ export const publicClient = createPublicClient({
 
 let walletClientInstance;
 
-if (typeof window !== 'undefined') {
+if (typeof window !== 'undefined' && window.ethereum) {
   walletClientInstance = createWalletClient({
     chain,
     transport: custom(window.ethereum),
   });
 } else {
-  // Provide a fallback implementation for server-side rendering
+  // Provide a fallback implementation for server-side rendering or when no wallet is available
   walletClientInstance = createWalletClient({
     chain,
-    transport: http(), // Use HTTP transport for server-side
+    transport: http(), // Use HTTP transport for server-side or fallback
   });
 }
 
 export const walletClient = walletClientInstance;
 
 export const creatorAccountPromise = (async function getAddresses() {
-  const creatorAccountArr = await walletClient.getAddresses();
-  return creatorAccountArr[0];
+  try {
+    if (
+      typeof window !== 'undefined' &&
+      window.ethereum &&
+      walletClientInstance.transport?.request
+    ) {
+      const creatorAccountArr = await walletClient.getAddresses();
+      return creatorAccountArr[0];
+    }
+    return null;
+  } catch (error) {
+    console.warn('Failed to get wallet addresses:', error);
+    return null;
+  }
 })();
 
 // import { zora } from 'viem/chains';
