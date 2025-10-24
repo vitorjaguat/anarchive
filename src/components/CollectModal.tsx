@@ -76,6 +76,11 @@ export default function CollectModal({
     setCostLoading(true);
     const handle = setTimeout(async () => {
       try {
+        // Check if we have a proper public client before making the call
+        if (!publicClient) {
+          throw new Error('Public client not available');
+        }
+
         const { costs } = await mint({
           publicClient: publicClient as any,
           // treat as ERC-1155

@@ -70,6 +70,10 @@ export default function Mint({
       }
 
       // Simulate and send transaction with viem
+      if (!walletClient.transport?.request) {
+        throw new Error('Wallet not connected or not available');
+      }
+
       const { request } = await (publicClient as any).simulateContract(
         parameters as any
       );
