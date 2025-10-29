@@ -5,6 +5,7 @@ import type { Address } from 'viem';
 import contract from '@/utils/contract';
 import { publicClient, walletClient } from '@/utils/zoraprotocolConfig';
 import { useAccount } from 'wagmi';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 interface MintProps {
   token: Token['token'];
@@ -23,7 +24,7 @@ export default function Mint({
   onSuccess,
   onError,
 }: MintProps) {
-  const { address: connectedAddress } = useAccount();
+  const { address: connectedAddress, isConnected } = useAccount();
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
@@ -33,10 +34,6 @@ export default function Mint({
   }, [address, connectedAddress]);
 
   const handleClickMint = async () => {
-    if (!minterAccount) {
-      setError('Connect a wallet to mint.');
-      return;
-    }
     if (!token?.tokenId) {
       setError('Missing tokenId.');
       return;
@@ -93,15 +90,30 @@ export default function Mint({
   };
 
   return (
-    <div className='flex flex-col gap-2'>
-      <button
-        onClick={handleClickMint}
-        className={className}
-        disabled={isMinting || !minterAccount}
-        title={!minterAccount ? 'Connect wallet to mint' : 'Mint'}
-      >
-        {isMinting ? 'Minting…' : 'Collect'}
-      </button>
+    <div className='flex flex-col gap-2 cursor-pointer'>
+      <ConnectButton.Custom>
+        {({ account, chain, openConnectModal, mounted, openChainModal }) => {
+          return (
+            <button
+              onPointerEnter={() => console.log(isConnected)}
+              onClick={
+                !mounted
+                  ? undefined
+                  : account && chain?.unsupported
+                  ? openChainModal
+                  : !isConnected
+                  ? openConnectModal
+                  : handleClickMint
+              }
+              className={className}
+              disabled={isMinting}
+              title={!isConnected ? 'Connect wallet to mint' : 'Mint'}
+            >
+              {isMinting ? 'Minting…' : 'Collect'}
+            </button>
+          );
+        }}
+      </ConnectButton.Custom>
       {error && <div className='text-xs text-red-400 break-words'>{error}</div>}
       {txHash && !error && (
         <div className='text-xs text-emerald-400 break-all'>

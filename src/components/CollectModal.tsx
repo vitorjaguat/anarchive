@@ -255,7 +255,7 @@ export default function CollectModal({
           <Mint
             token={token}
             quantity={qtyValid ? quantity : undefined}
-            className={`w-full py-2 rounded-md ${
+            className={`w-full py-2 cursor-pointer rounded-md ${
               qtyValid
                 ? 'bg-[#01ff00] text-black hover:opacity-90'
                 : 'bg-slate-700 text-slate-400 cursor-not-allowed'
