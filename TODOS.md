@@ -45,3 +45,5 @@ PASSOS:
 8. refazer mints e tokenMedia com os dados e packages novas OK
    in process...
    --> colocar o preço a pagar no CollectModal OK
+
+9. when the user clicks on the Collect (Mint component) in mobile, should have a behaviour similar to what happens when they click Connect (give the option to open the app in Metamask app mobile) OK
