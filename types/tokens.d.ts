@@ -4,13 +4,13 @@ export interface Token {
     totalMinted: string; // Changed from BigInt to string for JSON serialization
     contract: string;
     tokenId: string;
-    name?: string;
-    description?: string;
-    image?: string;
-    imageSmall?: string;
-    imageLarge?: string;
-    imageOriginal?: string;
-    kind?: string;
+    name?: string | null;
+    description?: string | null;
+    image?: string | null;
+    imageSmall?: string | null;
+    imageLarge?: string | null;
+    imageOriginal?: string | null;
+    kind?: string | null;
     // isFlagged?: boolean;
     // lastFlagUpdate?: string;
     // metadataDisabled?: boolean;
@@ -22,8 +22,8 @@ export interface Token {
     // remainingSupply?: string | number;
     // rarity?: string | number;
     // rarityRank?: number | string;
-    media?: string;
-    mediaMimeType?: string;
+    media?: string | null;
+    mediaMimeType?: string | null;
   };
 }
 
