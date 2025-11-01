@@ -1,6 +1,6 @@
 import Markdown from 'react-markdown';
 // import { MintModal } from '@reservoir0x/reservoir-kit-ui';
-import { useState, useContext } from 'react';
+import { Fragment, useState, useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import { RxChevronRight } from 'react-icons/rx';
@@ -40,7 +40,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   return (
     <AnimatePresence>
       {openToken?.token?.tokenId && (
-        <>
+        <Fragment key={`token-panel-${openToken.token.tokenId || 'unknown'}`}>
           <motion.div
             className='absolute min-w-[600px] right-0  h-[calc(100%-100px)] z-20 flex backdrop-blur-[6px] bg-slate-800/20'
             key={openToken.token.tokenId}
@@ -163,25 +163,34 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
 
                   {/* attributes */}
                   <div className='grid grid-cols-2 gap-1'>
-                    {openToken?.token?.attributes?.map((att, i) => (
-                      <div
-                        key={i}
-                        className='flex flex-col gap-2 text-xs bg-white/10 rounded-md pb-2 h-full'
-                      >
-                        <div className='text-center text-[10px] bg-white/10'>
-                          {att?.key}
+                    {openToken?.token?.attributes?.map((att, i) => {
+                      const rawKey = String(att?.key ?? '').trim();
+                      const rawValue = String(att?.value ?? '').trim();
+                      const attributeKey = `${rawKey || 'attribute'}-${
+                        rawValue || i
+                      }`;
+                      return (
+                        <div
+                          key={attributeKey}
+                          className='flex flex-col gap-2 text-xs bg-white/10 rounded-md pb-2 h-full'
+                        >
+                          <div className='text-center text-[10px] bg-white/10'>
+                            {att?.key}
+                          </div>
+                          <div className='text-center px-2 flex flex-col justify-center h-full gap-1 font-thin'>
+                            {att?.key !== 'Content Tags'
+                              ? att?.value
+                              : att?.value.split(',').map((tag, tagIndex) => {
+                                  const trimmedTag = tag.trim();
+                                  const tagKey = `${attributeKey}-tag-${
+                                    trimmedTag || tagIndex
+                                  }`;
+                                  return <div key={tagKey}>{trimmedTag}</div>;
+                                })}
+                          </div>
                         </div>
-                        <div className='text-center px-2 flex flex-col justify-center h-full gap-1 font-thin'>
-                          {att?.key !== 'Content Tags'
-                            ? att?.value
-                            : att?.value
-                                .split(',')
-                                .map((tag, i) => (
-                                  <div key={i}>{tag.trim()}</div>
-                                ))}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -292,10 +301,11 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
               )}
             </motion.div>
           </motion.div>
-        </>
+        </Fragment>
       )}
       {openToken?.token && (
         <CollectModal
+          key={`collect-modal-${openToken.token.tokenId || 'unknown'}`}
           open={openCollect}
           onClose={() => setOpenCollect(false)}
           token={openToken.token}

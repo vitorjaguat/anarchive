@@ -17,10 +17,12 @@ class GraphDataClass {
     }
     // console.log('this.filteredTokens', this.filteredTokens);
     this.nodes = this.filteredTokens?.map((token) => {
+      const resolvedImage =
+        token.token.imageSmall || token.token.image || token.token.imageLarge;
       return {
         id: token.token.tokenId,
         name: token.token.name,
-        image: token.token.imageSmall,
+        image: resolvedImage,
         group:
           attribute !== 'none'
             ? token.token.attributes.find((att) => att.key === attribute)?.value
