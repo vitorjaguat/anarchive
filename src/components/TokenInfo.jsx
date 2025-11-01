@@ -43,6 +43,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
         <>
           <motion.div
             className='absolute min-w-[600px] right-0  h-[calc(100%-100px)] z-20 flex backdrop-blur-[6px] bg-slate-800/20'
+            key={openToken.token.tokenId}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -220,6 +221,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
 
           <motion.div
             className='absolute top-0 right-0 w-screen h-[calc(100vh-100px)] items-center justify-center bg-black/80 z-50'
+            key={'modal_' + openToken.token.tokenId}
             variants={{
               hidden: {
                 opacity: 0,
