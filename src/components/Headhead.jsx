@@ -10,6 +10,13 @@ export default function Headhead({
   // const baseUrl = 'http://localhost:3003'; // Use localhost for local development
   const fullCanonicalUrl = canonicalUrl ? `${baseUrl}${canonicalUrl}` : baseUrl;
 
+  // Ensure OG image is an absolute URL
+  const fullOgImage = ogImage?.startsWith('http')
+    ? ogImage
+    : ogImage
+    ? `${baseUrl}${ogImage}`
+    : `${baseUrl}/meta/ogImage2025.jpg`;
+
   return (
     <Head>
       <meta charSet='utf-8' />
@@ -33,7 +40,7 @@ export default function Headhead({
       <meta name='twitter:site' content='@thesphere_as' />
       <meta name='twitter:title' content={title} />
       <meta name='twitter:description' content={description} />
-      <meta name='twitter:image' content={ogImage} />
+      <meta name='twitter:image' content={fullOgImage} />
 
       <meta property='og:type' content='website' />
       <meta property='og:url' content={fullCanonicalUrl} />
@@ -41,7 +48,7 @@ export default function Headhead({
       <meta property='og:locale' content='en' />
       <meta property='og:title' content={title} />
       <meta property='og:description' content={description} />
-      <meta property='og:image' content={ogImage} />
+      <meta property='og:image' content={fullOgImage} />
       <meta property='og:image:type' content='image/png' />
       <meta property='og:image:width' content='1200' />
       <meta property='og:image:height' content='630' />

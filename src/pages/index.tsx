@@ -224,6 +224,11 @@ export default function Home({
   return (
     <>
       <Head
+        key={
+          typeof router.query.fragment === 'string'
+            ? router.query.fragment
+            : 'home'
+        }
         ogImage={
           tokenDataForOG?.token?.image ||
           'https://the-anarchive.vercel.app/meta/ogImage2025.jpg'

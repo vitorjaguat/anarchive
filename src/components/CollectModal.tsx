@@ -137,6 +137,7 @@ export default function CollectModal({
       className='fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4'
       role='dialog'
       aria-modal='true'
+      key={'collect_' + token.tokenId}
     >
       <div className='w-full max-w-md rounded-lg bg-slate-900 border border-slate-700 shadow-xl overflow-hidden'>
         <div className='flex items-center justify-between px-4 py-3 border-b border-slate-700'>
