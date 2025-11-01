@@ -5,7 +5,7 @@ import Filters from '../components/Filters';
 import Head from '../components/Headhead';
 import CreateTokenButton from '../components/CreateTokenButton';
 import { useRouter } from 'next/router';
-import type { GetStaticProps } from 'next';
+import type { GetServerSideProps } from 'next';
 import Layout from '@/components/Layout';
 import contract from '../utils/contract';
 // import contract from '../utils/dummyCollectionAddress';
@@ -49,7 +49,9 @@ const ZORA_CREATOR_1155_ABI = [
 ] as const;
 
 const MULTICALL_CHUNK_SIZE = 200;
-const REVALIDATE_SECONDS = 60;
+const DEFAULT_TITLE = 'The Anarchiving Game';
+const DEFAULT_DESCRIPTION =
+  "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
 
 type HomeProps = {
   allTokens: Token[];
@@ -129,16 +131,17 @@ export default function Home({
   // console.dir[allTokens];
 
   // dynamic head metadata:
-  const [headTitle, setHeadTitle] = useState(
-    tokenDataForOG?.token
-      ? tokenDataForOG?.token?.name + ' | The Anarchiving Game'
-      : 'The Anarchiving Game'
-  );
+  const initialHeadTitle = tokenDataForOG?.token?.name
+    ? `${tokenDataForOG.token.name} | ${DEFAULT_TITLE}`
+    : DEFAULT_TITLE;
+  const initialMetaDescription = tokenDataForOG?.token?.description
+    ? `${tokenDataForOG.token.description.slice(0, 126)}...`
+    : DEFAULT_DESCRIPTION;
 
-  const description =
-    tokenDataForOG?.token && tokenDataForOG?.token?.description
-      ? tokenDataForOG?.token?.description?.slice(0, 126) + '...'
-      : "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
+  const [headTitle, setHeadTitle] = useState(initialHeadTitle);
+  const [metaDescription, setMetaDescription] = useState(initialMetaDescription);
+
+  const description = metaDescription;
 
   // user account logic:
   useEffect(() => {
@@ -192,18 +195,25 @@ export default function Home({
         (!openToken ||
           clickedTokenData.token.tokenId !== openToken?.token?.tokenId)
       ) {
-        setHeadTitle(clickedTokenData?.token?.name + ' | The Anarchiving Game');
+        setHeadTitle(`${clickedTokenData?.token?.name} | ${DEFAULT_TITLE}`);
+        setMetaDescription(
+          clickedTokenData?.token?.description
+            ? `${clickedTokenData.token.description.slice(0, 126)}...`
+            : DEFAULT_DESCRIPTION
+        );
         changeOpenToken(clickedTokenData);
       }
     }
     // Optionally, handle the case where fragment is removed
     if (!router.query.fragment && openToken) {
-      setHeadTitle('The Anarchiving Game');
+      setHeadTitle(DEFAULT_TITLE);
+      setMetaDescription(DEFAULT_DESCRIPTION);
       changeOpenToken(null);
     }
 
     if (!router.query.fragment && !openToken) {
-      setHeadTitle('The Anarchiving Game');
+      setHeadTitle(DEFAULT_TITLE);
+      setMetaDescription(DEFAULT_DESCRIPTION);
     }
     // eslint-disable-next-line
   }, [router.query.fragment, allTokens]);
@@ -293,7 +303,10 @@ export default function Home({
   );
 }
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
+export const getServerSideProps: GetServerSideProps<HomeProps> = async (context) => {
+  const { query } = context;
+  const fragmentId = Array.isArray(query.fragment) ? query.fragment[0] : query.fragment;
+
   const fetchAllTokens = async () => {
     const getAllTokensFromAlchemy = async (): Promise<Nft[]> => {
       const alchemy = new Alchemy({
@@ -393,23 +406,29 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
     });
     const allTags = Array.from(allTagsSet).sort();
 
+    // Find the specific token for OG metadata if fragmentId is provided
+    let tokenDataForOG = null;
+    if (fragmentId) {
+      tokenDataForOG = allTokens.find(
+        (token) => token.token.tokenId === fragmentId
+      ) || null;
+    }
+
     return {
       props: {
-        tokenDataForOG: null,
+        tokenDataForOG,
         allTokens,
         allTags,
       },
-      revalidate: REVALIDATE_SECONDS,
     };
   } catch (error) {
-    console.error('Error in getStaticProps:', error);
+    console.error('Error in getServerSideProps:', error);
     return {
       props: {
         tokenDataForOG: null,
         allTokens: [],
         allTags: [],
       },
-      revalidate: REVALIDATE_SECONDS,
     };
   }
 };
