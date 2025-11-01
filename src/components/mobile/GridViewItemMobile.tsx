@@ -76,26 +76,7 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
             <GoPlusCircle size={14} color='' />
             <div className=''>{token.token.totalMinted || '1'}</div>
           </div>
-          {/* <MintModal
-            chainId={7777777}
-            copyOverrides={{
-              mintTitle: 'Collect your own',
-              mintCtaBuy: 'Collect',
-            }}
-            trigger={
-              <button
-                className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-black duration-300'
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className='translate-y-[1px]'>Collect</div>
-              </button>
-            }
-            onMintComplete={(data) => console.log(data)}
-            onMintError={(error) => console.log(error)}
-            onConnectWallet={openConnectModal}
-            token={token.token.contract + ':' + token.token.tokenId}
-          /> */}
-          {/* "MINT" button (will open the CollectModal, where truly lives the Mint button) */}
+          {/* "MINT" button (will open the CollectModal) */}
           <div className=' pointer-events-none'>
             <button
               className='px-4 py-1 rounded-b-md rounded-l-none bg-[#01ff00] text-black duration-300 pointer-events-auto'
