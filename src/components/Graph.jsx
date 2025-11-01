@@ -1,7 +1,6 @@
 // import { ForceGraph3D } from 'react-force-graph';
 import { useRef, useState, useEffect, useContext } from 'react';
 import * as THREE from 'three';
-import { useAccount } from 'wagmi';
 import { GraphDataClass } from '../model/glassDataClass';
 import contract from '../utils/contract';
 import ForceGraph3D from 'react-force-graph-3d';
@@ -93,60 +92,6 @@ const Graph = ({
       setGraphData({ nodes: [], links: [] });
     }
   }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
-
-  // function createCircularTexture(imageUrl, size = 128) {
-  //   return new Promise((resolve, reject) => {
-  //     const img = new window.Image();
-  //     img.crossOrigin = 'anonymous';
-  //     img.onload = () => {
-  //       const canvas = document.createElement('canvas');
-  //       canvas.width = size;
-  //       canvas.height = size;
-  //       const ctx = canvas.getContext('2d');
-  //       ctx.clearRect(0, 0, size, size);
-
-  //       // Draw circular clipping path
-  //       ctx.save();
-  //       ctx.beginPath();
-  //       ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
-  //       ctx.closePath();
-  //       ctx.clip();
-
-  //       // Draw the image inside the circle
-  //       ctx.drawImage(img, 0, 0, size, size);
-  //       ctx.restore();
-
-  //       // Create texture
-  //       const texture = new THREE.Texture(canvas);
-  //       texture.needsUpdate = true;
-  //       resolve(texture);
-  //     };
-  //     img.onerror = reject;
-  //     img.src = imageUrl;
-  //   });
-  // }
-
-  // function createGlowTexture(size = 256, color = 'rgba(0,255,0,1)') {
-  //   const canvas = document.createElement('canvas');
-  //   canvas.width = size;
-  //   canvas.height = size;
-  //   const ctx = canvas.getContext('2d');
-  //   const gradient = ctx.createRadialGradient(
-  //     size / 2,
-  //     size / 2,
-  //     size / 8,
-  //     size / 2,
-  //     size / 2,
-  //     size / 2
-  //   );
-  //   gradient.addColorStop(0, color);
-  //   gradient.addColorStop(1, 'rgba(0,255,0,0)');
-  //   ctx.fillStyle = gradient;
-  //   ctx.fillRect(0, 0, size, size);
-  //   const texture = new THREE.Texture(canvas);
-  //   texture.needsUpdate = true;
-  //   return texture;
-  // }
 
   //prepare nodes (as spheres):
   useEffect(() => {
@@ -413,21 +358,24 @@ const Graph = ({
         //events:
         // onBackgroundClick={handleBackgroundClick}
         onEngineStop={() => {
+          if (openToken && openToken !== 'initial') {
+            return;
+          }
+
           if (filter?.length === 0) {
             graphRef.current.zoomToFit(1000, -2000);
           } else {
             graphRef.current.zoomToFit(1000);
           }
         }}
-        cooldownTime={openToken === 'initial' ? 2000 : Infinity}
-        // cooldownTime={2000}
-        cooldownTicks={Infinity}
+        cooldownTime={openToken === 'initial' ? 12000 : 6000}
+        cooldownTicks={300}
         warmupTicks={0}
         // linkVisibility={false}
         //links:
         linkColor={(link) =>
           link?.isDestination && sort === 'From'
-            ? 'rgba (160, 160, 255, 0.025)'
+            ? 'rgba(160, 160, 255, 0.025)'
             : 'rgba(0,0,0,0)'
         }
         linkWidth={sort === 'From' ? 20 : 0}
@@ -437,7 +385,7 @@ const Graph = ({
         }
         linkDirectionalParticleWidth={1}
         linkDirectionalParticleSpeed={0.001}
-        linkDirectionalParticleResolution={4}
+        linkDirectionalParticleResolution={8}
         enablePointerInteraction={true}
         enableNavigationControls={true}
         //nodes:
