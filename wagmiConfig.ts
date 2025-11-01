@@ -64,6 +64,7 @@ export const config = createConfig({
     [zora.id]: http(),
   },
   connectors,
+  ssr: true,
 });
 
 // import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
