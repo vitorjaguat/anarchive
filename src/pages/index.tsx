@@ -11,11 +11,11 @@ import contract from '../utils/contract';
 // import contract from '../utils/dummyCollectionAddress';
 import { useIsMobile } from '@/utils/useIsMobile';
 import GridViewMobile from '@/components/mobile/GridViewMobile';
-import { useAccount } from 'wagmi';
 import { MainContext } from '@/context/mainContext';
 import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
 import { publicClient } from '@/utils/zoraprotocolConfig';
+import dynamic from 'next/dynamic';
 import {
   Alchemy,
   Network,
@@ -24,6 +24,11 @@ import {
 } from 'alchemy-sdk';
 import type { Address } from 'viem';
 import type { Token, TokenAttribute } from '../../types/tokens';
+
+const AccountTokenSync = dynamic(
+  () => import('@/components/AccountTokenSync'),
+  { ssr: false }
+);
 
 const CONTRACT_ADDRESS = contract as Address;
 
@@ -52,11 +57,21 @@ const MULTICALL_CHUNK_SIZE = 200;
 const DEFAULT_TITLE = 'The Anarchiving Game';
 const DEFAULT_DESCRIPTION =
   "A dynamic, participatory open canvas where community's memories and creativity are continuously interpreted and reimagined.";
+const DEFAULT_OG_IMAGE =
+  'https://anarchiving.thesphere.as/meta/ogImage2025.jpg';
+
+type OgMeta = {
+  title: string;
+  description: string;
+  ogImage: string;
+  canonicalUrl: string;
+};
 
 type HomeProps = {
   allTokens: Token[];
   tokenDataForOG: Token | null;
   allTags: string[];
+  ogMeta: OgMeta;
 };
 
 type TokenInfoOnChain = {
@@ -122,62 +137,24 @@ export default function Home({
   allTokens,
   tokenDataForOG,
   allTags,
+  ogMeta,
 }: HomeProps) {
   const isMobile = useIsMobile();
   // user account states:
   const [showMineIsChecked, setShowMineIsChecked] = useState(false);
-  const account = useAccount();
   const [usersFrags, setUsersFrags] = useState<Token[]>([]);
-  // console.dir[allTokens];
-  console.dir(tokenDataForOG);
-
   // dynamic head metadata:
-  const initialHeadTitle = tokenDataForOG?.token?.name
-    ? `${tokenDataForOG.token.name} | ${DEFAULT_TITLE}`
-    : DEFAULT_TITLE;
-  const initialMetaDescription = tokenDataForOG?.token?.description
-    ? `${tokenDataForOG.token.description.slice(0, 126)}...`
-    : DEFAULT_DESCRIPTION;
+  const [headTitle, setHeadTitle] = useState(ogMeta.title);
+  const [metaDescription, setMetaDescription] = useState(ogMeta.description);
+  const [headOgImage, setHeadOgImage] = useState(ogMeta.ogImage);
+  const [headCanonical, setHeadCanonical] = useState(ogMeta.canonicalUrl);
+  const [isClient, setIsClient] = useState(false);
 
-  const [headTitle, setHeadTitle] = useState(initialHeadTitle);
-  const [metaDescription, setMetaDescription] = useState(
-    initialMetaDescription
-  );
-
-  const description = metaDescription;
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // user account logic:
-  useEffect(() => {
-    if (account?.address && showMineIsChecked) {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `/api/user-tokens?address=${account.address}`
-          );
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const tokenIds = await response.json();
-
-          const userTokens = allTokens.filter((token) =>
-            tokenIds.includes(token.token.tokenId)
-          );
-
-          setUsersFrags(userTokens);
-        } catch (err) {
-          console.error('Error fetching user tokens: ', err);
-          setUsersFrags([]);
-        }
-      };
-
-      fetchData();
-    } else {
-      setUsersFrags([]);
-    }
-  }, [account.address, showMineIsChecked, allTokens]);
-
   //filter tokens by content tag (searchbar):
   const [filter, setFilter] = useState([]);
 
@@ -188,65 +165,64 @@ export default function Home({
 
   // syncronize the router query with the openTokenData state:
   useEffect(() => {
-    if (router.query.fragment) {
+    const fragmentParam = router.query.fragment;
+    const fragmentId = Array.isArray(fragmentParam)
+      ? fragmentParam[0]
+      : fragmentParam;
+
+    if (fragmentId) {
       const clickedTokenData = allTokens.find(
-        (token) => +token.token.tokenId === +router.query.fragment
+        (token) => token.token.tokenId === fragmentId
       );
-      // Only update if different
       if (
         clickedTokenData &&
         (!openToken ||
           clickedTokenData.token.tokenId !== openToken?.token?.tokenId)
       ) {
-        setHeadTitle(`${clickedTokenData?.token?.name} | ${DEFAULT_TITLE}`);
-        setMetaDescription(
-          clickedTokenData?.token?.description
-            ? `${clickedTokenData.token.description.slice(0, 126)}...`
-            : DEFAULT_DESCRIPTION
-        );
+        const nextTitle = clickedTokenData.token.name
+          ? `${clickedTokenData.token.name} | ${DEFAULT_TITLE}`
+          : DEFAULT_TITLE;
+        const nextDescription = clickedTokenData.token.description
+          ? `${clickedTokenData.token.description.slice(0, 126)}...`
+          : DEFAULT_DESCRIPTION;
+        setHeadTitle(nextTitle);
+        setMetaDescription(nextDescription);
+        setHeadOgImage(clickedTokenData.token.image || DEFAULT_OG_IMAGE);
+        setHeadCanonical(`/?fragment=${fragmentId}`);
         changeOpenToken(clickedTokenData);
       }
-    }
-    // Optionally, handle the case where fragment is removed
-    if (!router.query.fragment && openToken) {
+    } else {
+      if (openToken) {
+        changeOpenToken(null);
+      }
       setHeadTitle(DEFAULT_TITLE);
       setMetaDescription(DEFAULT_DESCRIPTION);
-      changeOpenToken(null);
-    }
-
-    if (!router.query.fragment && !openToken) {
-      setHeadTitle(DEFAULT_TITLE);
-      setMetaDescription(DEFAULT_DESCRIPTION);
+      setHeadOgImage(DEFAULT_OG_IMAGE);
+      setHeadCanonical('/');
     }
     // eslint-disable-next-line
   }, [router.query.fragment, allTokens]);
 
   return (
     <>
-      <Head
-        key={
-          typeof router.query.fragment === 'string'
-            ? router.query.fragment
-            : 'home'
-        }
-        ogImage={
-          tokenDataForOG?.token?.image ||
-          'https://the-anarchive.vercel.app/meta/ogImage2025.jpg'
-        }
-        title={
-          tokenDataForOG?.token?.name
-            ? `${tokenDataForOG.token.name} | ${DEFAULT_TITLE}`
-            : DEFAULT_TITLE
-        }
-        description={
-          tokenDataForOG?.token?.description
-            ? `${tokenDataForOG.token.description.slice(0, 126)}...`
-            : DEFAULT_DESCRIPTION
-        }
-        canonicalUrl={
-          router.query.fragment ? `/?fragment=${router.query.fragment}` : '/'
-        }
+      <AccountTokenSync
+        showMineIsChecked={showMineIsChecked}
+        allTokens={allTokens}
+        setUsersFrags={setUsersFrags}
       />
+      {isClient && (
+        <Head
+          key={
+            typeof router.query.fragment === 'string'
+              ? router.query.fragment
+              : 'home'
+          }
+          ogImage={headOgImage}
+          title={headTitle}
+          description={metaDescription}
+          canonicalUrl={headCanonical}
+        />
+      )}
       <Layout
         setShowMineIsChecked={setShowMineIsChecked}
         showMineIsChecked={showMineIsChecked}
@@ -433,11 +409,26 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
         allTokens.find((token) => token.token.tokenId === fragmentId) || null;
     }
 
+    const ogTitle = tokenDataForOG?.token?.name
+      ? `${tokenDataForOG.token.name} | ${DEFAULT_TITLE}`
+      : DEFAULT_TITLE;
+    const ogDescription = tokenDataForOG?.token?.description
+      ? `${tokenDataForOG.token.description.slice(0, 126)}...`
+      : DEFAULT_DESCRIPTION;
+    const ogImage = tokenDataForOG?.token?.image || DEFAULT_OG_IMAGE;
+    const canonicalUrl = fragmentId ? `/?fragment=${fragmentId}` : '/';
+
     return {
       props: {
         tokenDataForOG,
         allTokens,
         allTags,
+        ogMeta: {
+          title: ogTitle,
+          description: ogDescription,
+          ogImage,
+          canonicalUrl,
+        },
       },
     };
   } catch (error) {
@@ -447,6 +438,12 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
         tokenDataForOG: null,
         allTokens: [],
         allTags: [],
+        ogMeta: {
+          title: DEFAULT_TITLE,
+          description: DEFAULT_DESCRIPTION,
+          ogImage: DEFAULT_OG_IMAGE,
+          canonicalUrl: '/',
+        },
       },
     };
   }
