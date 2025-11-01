@@ -139,7 +139,9 @@ export default function Home({
     : DEFAULT_DESCRIPTION;
 
   const [headTitle, setHeadTitle] = useState(initialHeadTitle);
-  const [metaDescription, setMetaDescription] = useState(initialMetaDescription);
+  const [metaDescription, setMetaDescription] = useState(
+    initialMetaDescription
+  );
 
   const description = metaDescription;
 
@@ -303,9 +305,13 @@ export default function Home({
   );
 }
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async (context) => {
+export const getServerSideProps: GetServerSideProps<HomeProps> = async (
+  context
+) => {
   const { query } = context;
-  const fragmentId = Array.isArray(query.fragment) ? query.fragment[0] : query.fragment;
+  const fragmentId = Array.isArray(query.fragment)
+    ? query.fragment[0]
+    : query.fragment;
 
   const fetchAllTokens = async () => {
     const getAllTokensFromAlchemy = async (): Promise<Nft[]> => {
@@ -409,9 +415,8 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (context)
     // Find the specific token for OG metadata if fragmentId is provided
     let tokenDataForOG = null;
     if (fragmentId) {
-      tokenDataForOG = allTokens.find(
-        (token) => token.token.tokenId === fragmentId
-      ) || null;
+      tokenDataForOG =
+        allTokens.find((token) => token.token.tokenId === fragmentId) || null;
     }
 
     return {
