@@ -129,6 +129,7 @@ export default function Home({
   const account = useAccount();
   const [usersFrags, setUsersFrags] = useState<Token[]>([]);
   // console.dir[allTokens];
+  console.dir(tokenDataForOG);
 
   // dynamic head metadata:
   const initialHeadTitle = tokenDataForOG?.token?.name
@@ -227,8 +228,16 @@ export default function Home({
           tokenDataForOG?.token?.image ||
           'https://the-anarchive.vercel.app/meta/ogImage2025.jpg'
         }
-        title={headTitle}
-        description={description}
+        title={
+          tokenDataForOG?.token?.name
+            ? `${tokenDataForOG.token.name} | ${DEFAULT_TITLE}`
+            : DEFAULT_TITLE
+        }
+        description={
+          tokenDataForOG?.token?.description
+            ? `${tokenDataForOG.token.description.slice(0, 126)}...`
+            : DEFAULT_DESCRIPTION
+        }
         canonicalUrl={
           router.query.fragment ? `/?fragment=${router.query.fragment}` : '/'
         }
