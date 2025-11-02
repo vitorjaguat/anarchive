@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import { useAccount } from 'wagmi';
 import type { Token } from '../../types/tokens';
 
 type AccountTokenSyncProps = {
   showMineIsChecked: boolean;
   allTokens: Token[];
-  setUsersFrags: (tokens: Token[]) => void;
+  setUsersFrags: Dispatch<SetStateAction<Token[]>>;
 };
 
 export default function AccountTokenSync({
@@ -22,7 +22,12 @@ export default function AccountTokenSync({
 
     const syncUserFragments = async () => {
       if (!showMineIsChecked || !account.address) {
-        setUsersFrags([]);
+        setUsersFrags((prevTokens) => {
+          if (prevTokens.length === 0) {
+            return prevTokens;
+          }
+          return [];
+        });
         return;
       }
 
@@ -42,12 +47,32 @@ export default function AccountTokenSync({
             tokenIds.includes(token.token.tokenId)
           );
 
-          setUsersFrags(userTokens);
+          setUsersFrags((prevTokens) => {
+            if (prevTokens.length === userTokens.length) {
+              const same = prevTokens.every((prevToken, index) => {
+                return (
+                  prevToken.token.tokenId ===
+                  userTokens[index]?.token.tokenId
+                );
+              });
+
+              if (same) {
+                return prevTokens;
+              }
+            }
+
+            return userTokens;
+          });
         }
       } catch (error) {
         console.error('Error fetching user tokens: ', error);
         if (!isCancelled) {
-          setUsersFrags([]);
+          setUsersFrags((prevTokens) => {
+            if (prevTokens.length === 0) {
+              return prevTokens;
+            }
+            return [];
+          });
         }
       }
     };

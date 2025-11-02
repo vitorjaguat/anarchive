@@ -94,18 +94,12 @@ const Graph = ({
   }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
 
   //prepare nodes (as spheres):
-  useEffect(() => {
-    setIsLoadingGraph(true);
-    setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
-  }, [graphData, openToken]);
-
-  // Add memoization for spheres
-  const spheresDeps = [graphData.nodes.length, openToken?.token?.tokenId];
+  const selectedTokenId = openToken?.token?.tokenId;
 
   useEffect(() => {
     setIsLoadingGraph(true);
     setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
-  }, spheresDeps);
+  }, [graphData.nodes, selectedTokenId]);
 
   // link isDestination logic:
   useEffect(() => {
