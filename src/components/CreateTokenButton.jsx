@@ -24,7 +24,7 @@ export default function CreateTokenButton() {
 
   return (
     <div
-      className='absolute top-3 left-3 flex items-center justify-center z-10'
+      className='absolute top-12 left-3 flex items-center justify-center z-10'
       onClick={handleAddClick}
     >
       <div className='p-2 relative flex items-center justify-start bg-white/10 rounded-md cursor-pointer hover:bg-white/20 w-[34px] h-[34px] overflow-hidden hover:w-fit group'>

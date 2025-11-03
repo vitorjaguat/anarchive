@@ -87,8 +87,8 @@ export default function Grid({
 
   return (
     <div className='flex flex-col items-center w-full pt-3 h-full overflow-y-auto scroll-smooth'>
-      {/* SORT TOGLE */}
-      <div className='flex w-full justify-center z-10 mb-2'>
+      <div className='flex w-full justify-center z-10 mb-2 bg-amber-200'>
+        {/* SORT TOGLE */}
         <div
           className={
             'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md  ' +

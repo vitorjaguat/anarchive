@@ -6,6 +6,8 @@ import { useIsMobile } from '@/utils/useIsMobile';
 import { useRouter } from 'next/router';
 import useIsMounted from '@/utils/useIsMounted';
 import { BiSort } from 'react-icons/bi';
+import InfoButtonMobile from './InfoButtonMobile';
+import InfoModalMobile from './InfoModalMobile';
 
 export default function GridViewMobile({
   allTokens,
@@ -16,6 +18,7 @@ export default function GridViewMobile({
   const isMobile = useIsMobile();
   const router = useRouter();
   const mounted = useIsMounted();
+  const [infoMobile, setInfoMobile] = useState(false);
 
   const handleClose = () => {
     // Remove the fragment query parameter
@@ -62,9 +65,14 @@ export default function GridViewMobile({
   if (!allTokens || allTokens.length === 0 || !mounted) return null;
 
   return (
-    <div className='flex flex-col items-center w-full p-2 max-h-[calc(100dvh-72px)] overflow-y-hidden'>
-      {/* SORT TOGLE */}
-      <div className='flex w-full justify-center z-10 mb-2'>
+    <div className='relative flex flex-col items-center w-full p-2 max-h-[calc(100dvh-72px)] overflow-y-hidden'>
+      <div className='flex w-full justify-between z-10 mb-2'>
+        {/* APP INFO MOBILE */}
+        <InfoButtonMobile
+          infoVisible={infoMobile}
+          setInfoVisible={setInfoMobile}
+        />
+        {/* SORT TOGLE */}
         <div
           className={
             'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md  ' +
@@ -111,6 +119,11 @@ export default function GridViewMobile({
       {/* OPEN TOKEN MODAL */}
       {openToken && isMobile && (
         <GridOpenToken onClose={handleClose} token={openToken} />
+      )}
+
+      {/* APP INFO MODAL */}
+      {!openToken && isMobile && infoMobile && (
+        <InfoModalMobile onClose={() => setInfoMobile(false)} />
       )}
     </div>
   );
