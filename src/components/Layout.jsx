@@ -4,6 +4,7 @@ import AppInfoBox from './AppInfoBox';
 import { usePathname } from 'next/navigation';
 import { useIsMobile } from '@/utils/useIsMobile';
 import NavbarMobile from './mobile/NavbarMobile';
+import InfoButton from './InfoButton';
 
 export default function Layout({
   children,
@@ -27,12 +28,6 @@ export default function Layout({
 
   if (isMounted && isMobile)
     return (
-      // <div className='flex flex-col items-center justify-center h-screen px-10 text-center'>
-      //   <h1 className='text-xl'>
-      //     The Anarchiving Game is currently unavailable on mobile devices.
-      //     Please open on a desktop computer to enjoy the full experience.
-      //   </h1>
-      // </div>
       <div className='relative w-screen h-screen overflow-scroll'>
         <div className=''>{children}</div>
         <NavbarMobile
@@ -48,6 +43,10 @@ export default function Layout({
         <div className='relative w-screen h-screen'>
           <div>{children}</div>
 
+          <InfoButton
+            setInfoVisible={setInfoVisible}
+            infoVisible={infoVisible}
+          />
           <AppInfoBox
             setInfoVisible={setInfoVisible}
             infoVisible={infoVisible}

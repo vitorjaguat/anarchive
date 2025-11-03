@@ -1,13 +1,10 @@
-import Search from './Search';
 import SelectSort from './SelectSort';
-import { GoQuestion } from 'react-icons/go';
 import { useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import ConnectBtn from './ConnectButton';
 import SelectTag from './SelectTag';
 
 export default function Navbar({
-  allTokens,
   allTags,
   sort,
   changeSort,
@@ -15,8 +12,6 @@ export default function Navbar({
   setFilter,
   showMineIsChecked,
   setShowMineIsChecked,
-  setInfoVisible,
-  infoVisible,
 }) {
   const { view } = useContext(MainContext);
 
@@ -24,20 +19,13 @@ export default function Navbar({
     <div className='w-full flex justify-between items-center p-4 select-none h-[100px] z-[1000] backdrop-blur-[6px] bg-slate-800/20'>
       <div
         className='tracking-widest flex leading-4 z-[1000] hover:text-slate-400 duration-300 cursor-help items-center pr-20'
-        onMouseEnter={() => setInfoVisible(true)}
+        // onMouseEnter={() => setInfoVisible(true)}
         // onMouseLeave={() => setInfoVisible(false)}
       >
         <div className='flex flex-col text-white'>
           <div>The</div>
           <div>Anarchiving</div>
           <div>Game</div>
-        </div>
-
-        <div
-          className='h-full flex items-center px-4 cursor-help'
-          onClick={() => setInfoVisible(!infoVisible)}
-        >
-          <GoQuestion size={16} />
         </div>
       </div>
 
