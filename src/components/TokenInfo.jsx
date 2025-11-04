@@ -8,7 +8,7 @@ import { BsArrowsFullscreen } from 'react-icons/bs';
 import LargeMedia from './LargeMedia';
 import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
+// import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import CollectModal from './CollectModal';
 
