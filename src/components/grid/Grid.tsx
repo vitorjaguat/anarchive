@@ -87,7 +87,7 @@ export default function Grid({
 
   return (
     <div className='flex flex-col items-center w-full pt-3 h-full overflow-y-auto scroll-smooth'>
-      <div className='flex w-full justify-center z-10 mb-2 bg-amber-200'>
+      <div className='flex w-full justify-center z-10 mb-2'>
         {/* SORT TOGLE */}
         <div
           className={
