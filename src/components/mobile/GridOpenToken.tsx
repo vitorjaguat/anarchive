@@ -8,6 +8,7 @@ import { GoPlusCircle } from 'react-icons/go';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import LargeMedia from '../LargeMedia';
 import Markdown from 'react-markdown';
+import Mint from '../Mint';
 
 export default function GridOpenToken({
   token,
@@ -55,10 +56,10 @@ export default function GridOpenToken({
           )}
         </div>
         {/* COLLECT (LIKES) */}
-        <div className='mt-1 flex gap-2 items-center justify-between px-1'>
-          <div className='flex gap-2'>
-            <GoPlusCircle size={21} color='white' />
-            <div className=''>{token?.token?.totalMinted}</div>
+        <div className='mt-5 flex gap-2 items-center justify-between px-1'>
+          <div className='flex gap-2 items-center text-slate-300'>
+            <GoPlusCircle size={18} color='#cbd5e1' />
+            <div className='text-sm'>{token?.token?.totalMinted}</div>
           </div>
           {/* <MintModal
             chainId={7777777}
@@ -76,11 +77,13 @@ export default function GridOpenToken({
             onConnectWallet={openConnectModal}
             token={token.token.contract + ':' + token.token.tokenId}
           /> */}
-          <div className=''>Collect</div>
+          <button className='px-3.5 text-sm py-1 tracking-wide! rounded-md bg-[#01ff00] text-[#000000] hover:scale-[1.02] transition-all duration-300 translate-y-0.5 -translate-x-0.5'>
+            <Mint token={token.token} />
+          </button>
         </div>
 
         {/* DETAILS */}
-        <div className='flex flex-col gap-3 my-3 px-1'>
+        <div className='flex flex-col gap-5 my-3 px-1'>
           {/* TITLE */}
           <div className=''>{token.token.name}</div>
 
@@ -91,7 +94,7 @@ export default function GridOpenToken({
                 key={i}
                 className='flex flex-col gap-1 text-xs bg-white/10 rounded-md pb-1 h-full'
               >
-                <div className='text-left px-2 text-[10px] bg-white/10'>
+                <div className='text-left py-0.5 px-2 text-xs bg-white/10'>
                   {att?.key}
                 </div>
                 <div className='text-left px-2 flex flex-col justify-center h-full gap-1 font-thin'>
