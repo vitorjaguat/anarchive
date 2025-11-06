@@ -8,7 +8,8 @@ import { GoPlusCircle } from 'react-icons/go';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import LargeMedia from '../LargeMedia';
 import Markdown from 'react-markdown';
-import Mint from '../Mint';
+// import Mint from '../Mint';
+import CollectModal from '../CollectModal';
 
 export default function GridOpenToken({
   token,
@@ -19,6 +20,7 @@ export default function GridOpenToken({
 }) {
   const { openConnectModal } = useConnectModal();
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
+  const [openCollect, setOpenCollect] = useState(false);
   useEffect(() => {
     // Lock scroll
     document.body.style.overflow = 'hidden';
@@ -77,8 +79,12 @@ export default function GridOpenToken({
             onConnectWallet={openConnectModal}
             token={token.token.contract + ':' + token.token.tokenId}
           /> */}
-          <button className='px-3.5 text-sm py-1 tracking-wide! rounded-md bg-[#01ff00] text-[#000000] hover:scale-[1.02] transition-all duration-300 translate-y-0.5 -translate-x-0.5'>
-            <Mint token={token.token} />
+          <button
+            className='px-3.5 text-sm py-1 tracking-wide rounded-md bg-[#01ff00] text-[#000000] hover:scale-[1.02] transition-all duration-300 translate-y-0.5 -translate-x-0.5'
+            onClick={() => setOpenCollect(true)}
+          >
+            {/* <Mint token={token.token} /> */}
+            Collect
           </button>
         </div>
 
@@ -138,6 +144,12 @@ export default function GridOpenToken({
           />
         </div>
       )}
+      <CollectModal
+        open={openCollect}
+        onClose={() => setOpenCollect(false)}
+        token={token.token}
+        defaultQuantity={1}
+      />
     </div>,
     document.body
   );
