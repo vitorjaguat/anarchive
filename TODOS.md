@@ -120,6 +120,6 @@ query {
 
 01.11.2025 -> testar troca do getStaticProps por gerServersideProps, fazer merge se ok OK
 
-11. info em mobile
+11. info em mobile OK
 
 12. Collect em GridOpenToken.tsx
