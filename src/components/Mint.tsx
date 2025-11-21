@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react';
 import type { Token } from '../../types/tokens';
-import { mint } from '@zoralabs/protocol-sdk';
 import type { Address } from 'viem';
 import contract from '@/utils/contract';
 import { publicClient, walletClient } from '@/utils/zoraprotocolConfig';
 import { useAccount } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { prepareMint1155 } from '@/utils/mintHelpers';
 
 interface MintProps {
   token: Token['token'];
@@ -43,9 +43,8 @@ export default function Mint({
     setError(null);
     setTxHash(null);
     try {
-      // Build mint transaction parameters via Zora Protocol SDK
-      const { parameters, erc20Approval } = await mint({
-        publicClient: publicClient as any,
+      // Build mint transaction parameters
+      const { parameters } = await prepareMint1155({
         tokenContract: contract as Address,
         mintType: '1155',
         tokenId: BigInt(token.tokenId),
@@ -53,18 +52,7 @@ export default function Mint({
         quantityToMint:
           typeof quantity === 'bigint' ? quantity : BigInt(quantity),
         mintRecipient: (minterAccount as Address) ?? undefined,
-        // Optional:
-        // preferredSaleType: 'fixedPrice',
-        // mintReferral: '0x0000000000000000000000000000000000000000' as Address,
-        // mintComment: 'Minted via anarchive UI',
       });
-
-      // If this mint requires an ERC20 approval, surface a clear error for now
-      if (erc20Approval) {
-        throw new Error(
-          'This mint requires an ERC20 approval step, which is not yet implemented in this button.'
-        );
-      }
 
       // Simulate and send transaction with viem
       if (!walletClient.transport?.request) {

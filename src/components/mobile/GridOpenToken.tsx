@@ -18,11 +18,9 @@ export default function GridOpenToken({
   token: Token;
   onClose: () => void;
 }) {
-  const { openConnectModal } = useConnectModal();
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   const [openCollect, setOpenCollect] = useState(false);
   useEffect(() => {
-    // Lock scroll
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';

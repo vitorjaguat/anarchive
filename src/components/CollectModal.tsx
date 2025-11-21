@@ -3,9 +3,9 @@ import Image from 'next/image';
 import type { Token } from '../../types/tokens';
 import Mint from './Mint';
 import { useAccount } from 'wagmi';
-import { mint } from '@zoralabs/protocol-sdk';
 import { publicClient } from '@/utils/zoraprotocolConfig';
-import { formatEther } from 'viem';
+import { formatEther, type Address } from 'viem';
+import { estimateMintCosts1155 } from '@/utils/mintHelpers';
 
 type Props = {
   open: boolean;
@@ -81,15 +81,15 @@ export default function CollectModal({
           throw new Error('Public client not available');
         }
 
-        const { costs } = await mint({
-          publicClient: publicClient as any,
-          // treat as ERC-1155
-          tokenContract: token.contract as any,
+        const costs = await estimateMintCosts1155({
+          tokenContract: token.contract as Address,
           mintType: '1155',
           tokenId: BigInt(token.tokenId),
-          minterAccount: minterAddress as any,
+          minterAccount: minterAddress as Address,
           quantityToMint: BigInt(quantity),
+          mintRecipient: minterAddress as Address,
         });
+        console.dir(costs, { depth: null });
         if (cancelled) return;
         // costs.bigints are in wei (ETH) -> format
         const totalEth = formatEther(costs.totalCostEth);

@@ -1,6 +1,5 @@
 class GraphDataClass {
   constructor(tokenArr, attribute, filtersArr) {
-    // console.log('filtersArr', filtersArr);
     if (!filtersArr?.length) {
       this.filteredTokens = tokenArr;
     } else {
@@ -11,11 +10,9 @@ class GraphDataClass {
         if (!attribute) return false;
         let attributeValue = attribute.value.toLowerCase();
 
-        // Changed from .every() to .some() for OR logic instead of AND
         return filtersArr.some((f) => attributeValue.includes(f.toLowerCase()));
       });
     }
-    // console.log('this.filteredTokens', this.filteredTokens);
     this.nodes = this.filteredTokens?.map((token) => {
       const resolvedImage =
         token.token.imageSmall || token.token.image || token.token.imageLarge;

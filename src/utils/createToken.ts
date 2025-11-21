@@ -11,6 +11,72 @@ import collectionAddress from './contract';
 import { isAddress, parseEther } from 'viem';
 import { SplitV1Client } from '@0xsplits/splits-sdk';
 
+const TOKEN_ID_RETRY_LIMIT = 1;
+const TOKEN_ID_RETRY_DELAY_MS = 500;
+
+type CreatorContractInfo = {
+  nextTokenId: bigint;
+  contractVersion: string;
+  mintFee: bigint;
+  contractName: string;
+};
+
+async function fetchCreatorContractInfo(): Promise<CreatorContractInfo> {
+  const response = await fetch('/api/creator-contract-info');
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch creator contract info');
+  }
+
+  const data = (await response.json()) as {
+    nextTokenId: string;
+    contractVersion: string;
+    mintFee: string;
+    contractName: string;
+  };
+
+  return {
+    nextTokenId: BigInt(data.nextTokenId),
+    contractVersion: data.contractVersion,
+    mintFee: BigInt(data.mintFee),
+    contractName: data.contractName,
+  };
+}
+
+function createContractGetter(info: CreatorContractInfo) {
+  return {
+    async getContractInfo(_: { contractAddress: string; retries?: number }) {
+      return {
+        name: info.contractName,
+        contractVersion: info.contractVersion,
+        nextTokenId: info.nextTokenId,
+        mintFee: info.mintFee,
+      };
+    },
+  };
+}
+
+const isTokenIdMismatchError = (error: unknown) => {
+  if (!error) return false;
+  const message =
+    (
+      error as {
+        cause?: { message?: string; shortMessage?: string };
+        message?: string;
+      }
+    ).cause?.message ??
+    (error as { cause?: { shortMessage?: string }; message?: string }).cause
+      ?.shortMessage ??
+    (error as { message?: string }).message ??
+    '';
+  return message.includes('TokenIdMismatch');
+};
+
+const wait = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
 export default async function createToken(
   tokenUri,
   tokenPrice,
@@ -95,48 +161,54 @@ export default async function createToken(
 
   // console.log('parsedPayoutRecipient: ', parsedPayoutRecipient);
 
-  try {
-    // const creatorClient = createCreatorClient({ chainId, publicClient });
+  let attempt = 0;
 
-    const { parameters } = await createNew1155Token({
-      // by providing a contract address, the token will be created on an existing contract
-      // at that address
-      contractAddress: collectionAddress,
-      chainId: chain.id,
-      token: {
-        // token metadata uri
-        tokenMetadataURI: tokenUri,
-        // maxSupply: BigInt('18446744073709551615'),
-        maxSupply: tokenEditionSize,
-        mintToCreatorCount: 1,
-        salesConfig: {
-          //https://github.com/ourzora/zora-protocol/blob/10d3855fd05ef457c12a978d851886903cddc409/packages/protocol-sdk/src/create/types.ts#L13
-          pricePerToken: parseEther(tokenPrice), // defaults to 0, type bigint
-          saleStart: BigInt(0), // defaults to 0 (now), in seconds
-          saleEnd: BigInt('18446744073709551615'),
-          // saleEnd: parsedTokenMintingDuration, // defaults to forever, in seconds
-          maxTokensPerAddress: BigInt('18446744073709551615'), // bigint // max tokens that can be minted per address
-          // currency:   //type Address, if an erc20 mint, the erc20 address.  Leave null for eth mints
+  while (attempt <= TOKEN_ID_RETRY_LIMIT) {
+    try {
+      const contractInfo = await fetchCreatorContractInfo();
+      const contractGetter = createContractGetter(contractInfo);
+
+      const { parameters } = await createNew1155Token({
+        contractAddress: collectionAddress,
+        chainId: chain.id,
+        token: {
+          tokenMetadataURI: tokenUri,
+          maxSupply: tokenEditionSize,
+          mintToCreatorCount: 1,
+          salesConfig: {
+            type: 'fixedPrice',
+            pricePerToken: parseEther(tokenPrice),
+            saleStart: BigInt(0),
+            saleEnd: BigInt('18446744073709551615'),
+            maxTokensPerAddress: BigInt('18446744073709551615'),
+          },
+          payoutRecipient: parsedPayoutRecipient,
         },
-        payoutRecipient: parsedPayoutRecipient,
-      },
-      // account to execute the transaction (the creator)
-      account: creatorAccount,
-    });
+        account: creatorAccount,
+        contractGetter,
+      });
 
-    // simulate the transaction
-    const { request } = await publicClient.simulateContract(parameters);
+      const { request } = await publicClient.simulateContract(parameters);
+      const hash = await walletClient.writeContract(request);
+      const writeResponse = await publicClient.waitForTransactionReceipt({
+        hash,
+      });
 
-    // execute the transaction
-    const hash = await walletClient.writeContract(request);
-    // wait for the response
-    const writeResponse = await publicClient.waitForTransactionReceipt({
-      hash,
-    });
+      return { parameters, request, hash, writeResponse };
+    } catch (error) {
+      if (isTokenIdMismatchError(error) && attempt < TOKEN_ID_RETRY_LIMIT) {
+        console.warn(
+          'TokenId mismatch detected. Retrying with fresh contract info.'
+        );
+        attempt += 1;
+        await wait(TOKEN_ID_RETRY_DELAY_MS);
+        continue;
+      }
 
-    return { parameters, request, hash, writeResponse };
-  } catch (error) {
-    console.error('Error in createToken.js:', error);
-    return { error };
+      console.error('Error in createToken.js:', error);
+      return { error };
+    }
   }
+
+  return { error: new Error('Failed to create token after retries') };
 }
