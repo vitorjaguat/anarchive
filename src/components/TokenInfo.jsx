@@ -88,7 +88,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
             {openToken?.token && (
               <div className='pt-4 grid grid-cols-2 gap-4 max-w-[576px]'>
                 {/* left column */}
-                <div className=' pb-4 flex flex-col justify-between h-full gap-2'>
+                <div className=' pb-4 flex flex-col justify-start h-full gap-2'>
                   {/* image + collect btn */}
                   <div className='flex flex-col gap-2'>
                     <div className='relative  bg-white/10 rounded-md overflow-hidden w-full flex justify-center items-center min-h-[280px]'>
