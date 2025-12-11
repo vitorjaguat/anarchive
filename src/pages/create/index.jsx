@@ -524,7 +524,7 @@ export default function CreateIndex() {
       const metadata = JSON.stringify(metadataObj);
       const metadataUriData = await upload({ data: [metadata] });
       metadataUri = metadataUriData[0];
-      // console.log('metadataUri', metadataUri);
+      console.log('metadataUri: ', metadataUri);
       setSubmitPhaseTwoMetadata(true);
 
       // Get sales config options:
