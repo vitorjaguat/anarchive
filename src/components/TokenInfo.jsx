@@ -213,8 +213,22 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                     </div>
                   </div>
 
-                  {/* copy link */}
-                  <CopyURLButton />
+                  {/* copy link + open FULL */}
+                  <div className='mt-4 flex gap-2'>
+                    <div
+                      className={
+                        'mt-1 w-fit flex items-center gap-2 text-xs rounded-md px-2 py-[2px] bg-[#8989dc]/20 hover:bg-[#8989dc]/40 duration-300 cursor-pointer '
+                      }
+                      onClick={() => {
+                        largeMediaControls.start('visible');
+                        setOpenLargeMedia(openToken);
+                      }}
+                    >
+                      <BsArrowsFullscreen size='10' />
+                      <div className='font-thin'>open FULL</div>
+                    </div>
+                    <CopyURLButton />
+                  </div>
 
                   <div className=' pb-[96px] mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
                     <Markdown className=' whitespace-pre-line'>
