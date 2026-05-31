@@ -24,6 +24,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'nft2-cdn.alchemy.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'res.cloudinary.com',
       },
       {
@@ -37,7 +41,7 @@ const nextConfig = {
     config.plugins.push(
       new webpack.IgnorePlugin({
         resourceRegExp: /^@react-native-async-storage\/async-storage$/,
-      })
+      }),
     );
     return config;
   },
