@@ -9,6 +9,7 @@ import Mint from '../Mint';
 import { useAccount } from 'wagmi';
 import { useState } from 'react';
 import CollectModal from '../CollectModal';
+import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
 
 export default function GridViewItemMobile({ token }: { token: Token }) {
   const { changeOpenToken } = useContext(MainContext);
@@ -29,7 +30,7 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
           query: { ...router.query, fragment: token.token.tokenId },
         },
         undefined,
-        { shallow: true }
+        { shallow: true },
       );
     }
   };
@@ -53,6 +54,7 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
                 //   layout='responsive'
                 width={400}
                 height={400}
+                unoptimized={shouldUseUnoptimizedImage(token.token.image)}
                 className={'w-full cursor-pointer'}
                 //   onLoad={(e) => setImageLoaded(true)}
                 onClick={() => {

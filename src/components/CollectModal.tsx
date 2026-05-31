@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi';
 import { publicClient } from '@/utils/zoraprotocolConfig';
 import { formatEther, type Address } from 'viem';
 import { estimateMintCosts1155 } from '@/utils/mintHelpers';
+import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
 
 type Props = {
   open: boolean;
@@ -158,6 +159,7 @@ export default function CollectModal({
                 alt={name}
                 width={64}
                 height={64}
+                unoptimized={shouldUseUnoptimizedImage(image)}
                 className='object-cover w-full h-full'
               />
             ) : (

@@ -12,6 +12,7 @@ import Markdown from 'react-markdown';
 import CollectModal from '../CollectModal';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import CopyURLButton from '../CopyURLButton';
+import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
 
 export default function GridOpenToken({
   token,
@@ -47,6 +48,7 @@ export default function GridOpenToken({
               alt={token.token.name}
               width={400}
               height={400}
+              unoptimized={shouldUseUnoptimizedImage(token.token.image)}
               className={'w-full cursor-pointer'}
               onClick={() => {
                 setOpenLargeMedia(token);
@@ -148,6 +150,6 @@ export default function GridOpenToken({
         defaultQuantity={1}
       />
     </div>,
-    document.body
+    document.body,
   );
 }

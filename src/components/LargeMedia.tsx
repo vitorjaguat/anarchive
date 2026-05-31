@@ -2,6 +2,7 @@
 import { useIsMobile } from '@/utils/useIsMobile';
 import { Token } from '../../types/tokens';
 import Image from 'next/image';
+import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
 
 // import PDFViewer from '@/components/PDFViewer';
 
@@ -118,6 +119,7 @@ export default function LargeMedia({ token }: LargeMediaProps) {
         alt={token.name}
         width={500}
         height={500}
+        unoptimized={shouldUseUnoptimizedImage(token.media)}
         style={{
           width: '100%',
           height: '100%',
@@ -180,6 +182,7 @@ export default function LargeMedia({ token }: LargeMediaProps) {
       alt={token.name}
       width={500}
       height={500}
+      unoptimized={shouldUseUnoptimizedImage(token.media)}
       style={{ objectFit: 'contain' }}
     />
   );

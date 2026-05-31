@@ -11,6 +11,7 @@ import CopyURLButton from './CopyURLButton';
 // import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import CollectModal from './CollectModal';
+import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
 
 export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
@@ -32,7 +33,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
         query: newQuery,
       },
       undefined,
-      { shallow: true }
+      { shallow: true },
     );
     changeOpenToken(null);
   };
@@ -127,6 +128,9 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                           alt={openToken.token.name}
                           width={300}
                           height={300}
+                          unoptimized={shouldUseUnoptimizedImage(
+                            openToken.token.image,
+                          )}
                           className={
                             'max-w-1/2 max-h-[280px] object-contain cursor-pointer' +
                             (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
@@ -206,7 +210,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                       <span className='font-bold'>
                         {
                           openToken.token?.attributes?.find(
-                            (att) => att?.key === 'Creator'
+                            (att) => att?.key === 'Creator',
                           )?.value
                         }
                       </span>
