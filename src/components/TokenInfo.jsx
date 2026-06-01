@@ -1,6 +1,6 @@
 import Markdown from 'react-markdown';
 // import { MintModal } from '@reservoir0x/reservoir-kit-ui';
-import { Fragment, useState, useContext } from 'react';
+import { Fragment, useState, useContext, useEffect } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import { RxChevronRight } from 'react-icons/rx';
@@ -11,6 +11,12 @@ import CopyURLButton from './CopyURLButton';
 // import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import CollectModal from './CollectModal';
+import UpdateTokenModal from './UpdateTokenModal';
+import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
+import { useAccount } from 'wagmi';
+import { zoraCreator1155ImplABI } from '@zoralabs/protocol-deployments';
+import { publicClient } from '@/utils/zoraprotocolConfig';
+import collectionAddress from '@/utils/contract';
 
 export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
@@ -18,8 +24,40 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const largeMediaControls = useAnimationControls();
   // const { openConnectModal } = useConnectModal();
   const [openCollect, setOpenCollect] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);
   const router = useRouter();
   const { openToken, changeOpenToken } = useContext(MainContext);
+  const { address } = useAccount();
+
+  useEffect(() => {
+    if (!openToken?.token?.tokenId || !address) {
+      setIsCreator(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const creator = await publicClient.readContract({
+          address: collectionAddress,
+          abi: zoraCreator1155ImplABI,
+          functionName: 'getCreatorRewardRecipient',
+          args: [BigInt(openToken.token.tokenId)],
+        });
+        if (!cancelled) {
+          setIsCreator(
+            typeof creator === 'string' &&
+              creator.toLowerCase() === address.toLowerCase(),
+          );
+        }
+      } catch {
+        if (!cancelled) setIsCreator(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [openToken?.token?.tokenId, address]);
 
   const handleClose = () => {
     tokenInfoControls.start('hidden');
@@ -32,7 +70,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
         query: newQuery,
       },
       undefined,
-      { shallow: true }
+      { shallow: true },
     );
     changeOpenToken(null);
   };
@@ -127,6 +165,9 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                           alt={openToken.token.name}
                           width={300}
                           height={300}
+                          unoptimized={shouldUseUnoptimizedImage(
+                            openToken.token.image,
+                          )}
                           className={
                             'max-w-1/2 max-h-[280px] object-contain cursor-pointer' +
                             (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
@@ -206,7 +247,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                       <span className='font-bold'>
                         {
                           openToken.token?.attributes?.find(
-                            (att) => att?.key === 'Creator'
+                            (att) => att?.key === 'Creator',
                           )?.value
                         }
                       </span>
@@ -228,6 +269,16 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                       <div className='font-thin'>open FULL</div>
                     </div>
                     <CopyURLButton />
+                    {isCreator && (
+                      <div
+                        className={
+                          'mt-1 w-fit flex items-center gap-2 text-xs rounded-md px-2 py-[2px] bg-amber-500/20 hover:bg-amber-500/40 duration-300 cursor-pointer'
+                        }
+                        onClick={() => setOpenUpdate(true)}
+                      >
+                        <div className='font-thin'>update</div>
+                      </div>
+                    )}
                   </div>
 
                   <div className=' pb-[96px] mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
@@ -324,6 +375,14 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           onClose={() => setOpenCollect(false)}
           token={openToken.token}
           defaultQuantity={1}
+        />
+      )}
+      {openToken?.token && (
+        <UpdateTokenModal
+          key={`update-modal-${openToken.token.tokenId || 'unknown'}`}
+          open={openUpdate}
+          onClose={() => setOpenUpdate(false)}
+          token={openToken.token}
         />
       )}
     </AnimatePresence>
