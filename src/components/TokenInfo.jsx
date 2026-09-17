@@ -30,6 +30,8 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const { openToken, changeOpenToken } = useContext(MainContext);
   const { address } = useAccount();
 
+  console.log('openToken', openToken);
+
   useEffect(() => {
     if (!openToken?.token?.tokenId || !address) {
       setIsCreator(false);
@@ -44,6 +46,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           functionName: 'getCreatorRewardRecipient',
           args: [BigInt(openToken.token.tokenId)],
         });
+        console.log('getCreatorRewardRecipient', creator);
         if (!cancelled) {
           setIsCreator(
             typeof creator === 'string' &&

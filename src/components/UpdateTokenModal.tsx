@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { IoCloseOutline } from 'react-icons/io5';
 import { useStorageUpload } from '@thirdweb-dev/react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSwitchChain } from 'wagmi';
+import { zora } from 'wagmi/chains';
 import type { Token } from '../../types/tokens';
 import updateToken from '@/utils/updateToken';
 import type { Address } from 'viem';
@@ -14,6 +15,36 @@ type Props = {
   token: Token['token'];
 };
 
+function FileInputButton({
+  id,
+  accept,
+  onChange,
+  hasCurrent,
+}: {
+  id: string;
+  accept: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  hasCurrent: boolean;
+}) {
+  return (
+    <div>
+      <input
+        id={id}
+        type='file'
+        accept={accept}
+        onChange={onChange}
+        className='hidden'
+      />
+      <label
+        htmlFor={id}
+        className='inline-block cursor-pointer px-3 py-1 rounded-md text-xs font-medium bg-slate-700 text-slate-200 hover:bg-slate-600 active:bg-slate-500 transition-colors duration-200'
+      >
+        {hasCurrent ? 'Change file' : 'Choose file'}
+      </label>
+    </div>
+  );
+}
+
 function findAttr(attributes: Token['token']['attributes'], ...keys: string[]) {
   for (const key of keys) {
     const found = attributes?.find((a) => a.key === key);
@@ -22,8 +53,24 @@ function findAttr(attributes: Token['token']['attributes'], ...keys: string[]) {
   return '';
 }
 
+// True when the token's media IS its image (no distinct thumbnail exists).
+function mediaIsImage(token: Token['token']) {
+  return !token.media || token.mediaMimeType?.includes('image');
+}
+
+// Ask Alchemy to re-index the token's metadata. This just queues the crawl
+// on Alchemy's side — it does not wait for or guarantee completion, so we
+// don't poll for a match; the UI tells the user it may take a while.
+async function triggerMetadataRefresh(tokenId: string) {
+  const res = await fetch(
+    `/api/refresh-token-metadata?tokenId=${tokenId}&triggerRefresh=1`,
+  );
+  return res.json();
+}
+
 export default function UpdateTokenModal({ open, onClose, token }: Props) {
-  const { address } = useAccount();
+  const { address, chainId } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
   const { mutateAsync: upload } = useStorageUpload();
 
   const [name, setName] = useState('');
@@ -68,7 +115,7 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
     setImage(null);
     setMediaPreview(null);
     setImagePreview(null);
-    setShowThumbnailInput(false);
+    setShowThumbnailInput(!mediaIsImage(token));
     setProcessing('initial');
     setMessage('');
     setPhaseOneMedia(false);
@@ -123,9 +170,12 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
     setPhaseThreeTx(false);
 
     try {
+      if (chainId !== zora.id) {
+        await switchChainAsync({ chainId: zora.id });
+      }
+
       // Phase 1: upload new media files (if provided), otherwise reuse existing URIs
-      const existingIsImage =
-        !token.media || token.mediaMimeType?.includes('image');
+      const existingIsImage = mediaIsImage(token);
       let mediaUri: string = token.media ?? token.image ?? '';
       let imageUri: string = token.image ?? '';
 
@@ -183,8 +233,18 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
 
       if (result.hash) {
         setPhaseThreeTx(true);
+
+        // Ask Alchemy to re-index the new metadata. This is fire-and-forget:
+        // we don't wait for or verify completion, since that can take much
+        // longer than it makes sense to keep the user waiting here.
+        triggerMetadataRefresh(token.tokenId).catch((refreshErr) => {
+          console.error('Error triggering metadata refresh:', refreshErr);
+        });
+
         setProcessing('success');
-        setMessage(`Fragment updated! Tx: ${result.hash.slice(0, 10)}...`);
+        setMessage(
+          'Fragment updated and refresh requested! It may take a while to reflect on The Anarchiving Game.',
+        );
       } else if (result.error) {
         setProcessing('error');
         setMessage(result.error);
@@ -221,7 +281,7 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
 
   return createPortal(
     <div
-      className='fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-[2px]'
+      className='fixed inset-0 z-[99999999] flex items-center justify-center bg-black/70 backdrop-blur-[2px]'
       onClick={onClose}
     >
       <div
@@ -272,16 +332,13 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
           {/* MEDIA FILE */}
           <div className='flex flex-col gap-1'>
             <label className='text-sm text-slate-400' htmlFor='u-media'>
-              New media file{' '}
-              <span className='text-slate-500 text-xs'>
-                (leave empty to keep current)
-              </span>
+              Media file
             </label>
-            {token?.image && !media && (
+            {token && !media && mediaIsImage(token) && token.image && (
               <div className='mb-1 w-20 h-20 bg-black/20 rounded overflow-hidden flex items-center justify-center'>
                 <Image
                   src={token.imageSmall ?? token.image}
-                  alt='current media'
+                  alt='current media (image)'
                   width={80}
                   height={80}
                   className='object-contain w-full h-full'
@@ -289,11 +346,34 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
                 />
               </div>
             )}
-            <input
+            {token &&
+              !media &&
+              !mediaIsImage(token) &&
+              token.mediaMimeType?.includes('video') &&
+              token.media && (
+                <video
+                  src={token.media}
+                  className='mb-1 max-w-[200px] rounded'
+                  muted
+                  loop
+                  playsInline
+                  controls
+                />
+              )}
+            {token &&
+              !media &&
+              !mediaIsImage(token) &&
+              !token.mediaMimeType?.includes('video') &&
+              token.media && (
+                <div className='mb-1 text-xs text-slate-400'>
+                  Current media: {token.mediaMimeType || 'file'} (no preview)
+                </div>
+              )}
+            <FileInputButton
               id='u-media'
-              type='file'
-              onChange={handleMediaUpload}
               accept='.jpg,.jpeg,.png,.mp4,.pdf,.html,.mpeg,.wav,.mp3,.ogg,.gif'
+              onChange={handleMediaUpload}
+              hasCurrent={!!token?.media || !!token?.image}
             />
             {mediaPreview?.includes('image') && (
               <div className='mt-1 max-w-[200px] bg-slate-600 rounded overflow-hidden'>
@@ -316,20 +396,29 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
             )}
           </div>
 
-          {/* THUMBNAIL (only when new non-image media is selected) */}
+          {/* THUMBNAIL (shown when media is, or will be, non-image) */}
           {showThumbnailInput && (
             <div className='flex flex-col gap-1'>
               <label className='text-sm text-slate-400' htmlFor='u-thumb'>
-                Thumbnail image{' '}
-                <span className='text-slate-500 text-xs'>
-                  (required for non-image media)
-                </span>
+                Thumbnail image
               </label>
-              <input
+              {token?.image && !image && (
+                <div className='mb-1 w-20 h-20 bg-black/20 rounded overflow-hidden flex items-center justify-center'>
+                  <Image
+                    src={token.imageSmall ?? token.image}
+                    alt='current thumbnail'
+                    width={80}
+                    height={80}
+                    className='object-contain w-full h-full'
+                    unoptimized
+                  />
+                </div>
+              )}
+              <FileInputButton
                 id='u-thumb'
-                type='file'
                 accept='image/*'
                 onChange={handleImageUpload}
+                hasCurrent={!!token?.image}
               />
               {imagePreview && (
                 <div className='mt-1 max-w-[200px] bg-slate-600 rounded overflow-hidden'>
@@ -418,7 +507,8 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
 
           {/* SUBMIT */}
           <button
-            type='submit'
+            type={processing === 'success' ? 'button' : 'submit'}
+            onClick={processing === 'success' ? onClose : undefined}
             disabled={processing === 'processing'}
             className={
               'mt-2 w-full py-3 rounded-md text-sm font-medium transition-all duration-300 ' +
@@ -428,7 +518,9 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
               (processing === 'processing'
                 ? 'bg-slate-600 text-slate-300 cursor-wait'
                 : '') +
-              (processing === 'success' ? 'bg-green-600 text-white' : '') +
+              (processing === 'success'
+                ? 'bg-green-600 text-white hover:scale-[1.01]'
+                : '') +
               (processing === 'error' ? 'bg-red-600 text-white' : '')
             }
           >
@@ -462,7 +554,15 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
                 </div>
               </div>
             )}
-            {(processing === 'success' || processing === 'error') && message}
+            {processing === 'success' && (
+              <div className='flex flex-col gap-1'>
+                <div>{message}</div>
+                <div className='text-xs font-normal opacity-90'>
+                  Click to close
+                </div>
+              </div>
+            )}
+            {processing === 'error' && message}
           </button>
         </form>
       </div>

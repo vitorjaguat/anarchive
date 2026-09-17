@@ -30,7 +30,7 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
           query: { ...router.query, fragment: token.token.tokenId },
         },
         undefined,
-        { shallow: true }
+        { shallow: true },
       );
     }
   };

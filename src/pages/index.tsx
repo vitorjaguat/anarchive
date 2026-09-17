@@ -362,7 +362,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
           maxSupply: (onChainData?.maxSupply ?? BigInt(0)).toString(),
           contract: token.contract.address,
           tokenId: tokenIdKey,
-          name: token.name,
+          name: token.name ?? null,
           description: token.description ?? rawMetadata?.description ?? null,
           image: token.image?.cachedUrl ?? null,
           imageSmall: token.image?.thumbnailUrl ?? null,
