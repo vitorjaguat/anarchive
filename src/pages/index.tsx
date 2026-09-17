@@ -379,10 +379,16 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
               token.description ??
               rawMetadata?.description ??
               null,
-            image: token.image?.cachedUrl ?? null,
-            imageSmall: token.image?.thumbnailUrl ?? null,
-            imageLarge: token.image?.pngUrl ?? token.image?.originalUrl ?? null,
-            imageOriginal: token.image?.originalUrl ?? null,
+            image: token.image?.cachedUrl ?? onChainMeta?.image ?? null,
+            imageSmall:
+              token.image?.thumbnailUrl ?? onChainMeta?.image ?? null,
+            imageLarge:
+              token.image?.pngUrl ??
+              token.image?.originalUrl ??
+              onChainMeta?.image ??
+              null,
+            imageOriginal:
+              token.image?.originalUrl ?? onChainMeta?.image ?? null,
             kind: token.contract.tokenType as string,
             attributes:
               onChainMeta && onChainMeta.attributes.length > 0
@@ -393,8 +399,12 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
               token.animation?.cachedUrl ??
               token.animation?.originalUrl ??
               animationUrl ??
+              onChainMeta?.media ??
               null,
-            mediaMimeType: token.animation?.contentType ?? null,
+            mediaMimeType:
+              token.animation?.contentType ??
+              onChainMeta?.mediaMimeType ??
+              null,
           },
         };
       })
