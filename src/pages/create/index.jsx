@@ -5,6 +5,7 @@ import EditionSize from '../../components/create/EditionSize';
 import { useAccount } from 'wagmi';
 import { greenlistedAccounts } from '../../utils/greenlistedAccounts';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useStorageUpload } from '@thirdweb-dev/react';
@@ -13,6 +14,7 @@ import { IoIosRefresh } from 'react-icons/io';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
+  const router = useRouter();
   const [image, setImage] = useState(null);
   const [media, setMedia] = useState(null);
   const [showThumbnailInput, setShowThumbnailInput] = useState(false);
@@ -557,6 +559,13 @@ export default function CreateIndex() {
           'Successfully created token. Hash: ' + finalResponse.hash
         );
         setSubmitPhaseThreeToken(true);
+
+        if (finalResponse.tokenId != null) {
+          // Navigate to the new fragment (non-shallow, so
+          // getServerSideProps re-runs and picks up the new token).
+          router.push(`/?fragment=${finalResponse.tokenId.toString()}`);
+          return;
+        }
       }
       if (finalResponse && finalResponse?.error) {
         setProcessingSubmit('error');
@@ -572,7 +581,7 @@ export default function CreateIndex() {
       if (error) return;
     }
 
-    // Reset form:
+    // Reset form (only reached when not navigating away above):
     titleRef.current.value = '';
     descriptionRef.current.value = '';
     attToRef.current.value = '';
@@ -801,6 +810,14 @@ export default function CreateIndex() {
                       />
                     </div>
                   )}
+                  {media &&
+                    !media.type.includes('image') &&
+                    !media.type.includes('video') && (
+                      <div className='mt-1 text-sm text-black/80'>
+                        Selected: {media.name} (
+                        {Math.ceil(media.size / 1024)} KB)
+                      </div>
+                    )}
                 </div>
                 {showThumbnailInput && (
                   <div className='flex flex-col gap-1'>

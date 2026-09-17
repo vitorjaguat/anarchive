@@ -7,12 +7,15 @@ import { useAccount, useSwitchChain } from 'wagmi';
 import { zora } from 'wagmi/chains';
 import type { Token } from '../../types/tokens';
 import updateToken from '@/utils/updateToken';
+import fetchOnChainTokenMetadata from '@/utils/fetchOnChainTokenMetadata';
+import readTokenUriOnChain from '@/utils/readTokenUriOnChain';
 import type { Address } from 'viem';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   token: Token['token'];
+  onUpdated?: (patchedFields: Partial<Token['token']>) => void;
 };
 
 function FileInputButton({
@@ -68,7 +71,12 @@ async function triggerMetadataRefresh(tokenId: string) {
   return res.json();
 }
 
-export default function UpdateTokenModal({ open, onClose, token }: Props) {
+export default function UpdateTokenModal({
+  open,
+  onClose,
+  token,
+  onUpdated,
+}: Props) {
   const { address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { mutateAsync: upload } = useStorageUpload();
@@ -234,17 +242,34 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
       if (result.hash) {
         setPhaseThreeTx(true);
 
-        // Ask Alchemy to re-index the new metadata. This is fire-and-forget:
-        // we don't wait for or verify completion, since that can take much
-        // longer than it makes sense to keep the user waiting here.
+        // Ask Alchemy to re-index the new metadata (for its own CDN image
+        // variant). Fire-and-forget: we don't wait for or verify
+        // completion, since that can take much longer than it makes sense
+        // to keep the user waiting here — and the panel below is refreshed
+        // from a reliable on-chain source regardless of how this turns out.
         triggerMetadataRefresh(token.tokenId).catch((refreshErr) => {
           console.error('Error triggering metadata refresh:', refreshErr);
         });
 
-        setProcessing('success');
-        setMessage(
-          'Fragment updated and refresh requested! It may take a while to reflect on The Anarchiving Game.',
-        );
+        // Re-read the contract's tokenURI (ground truth for what the write
+        // actually landed as) rather than trusting metadataUri was applied
+        // as intended, then fetch that URI's metadata via thirdweb's
+        // gateway so the panel can be updated with confirmed-fresh data.
+        const liveUri = await readTokenUriOnChain(BigInt(token.tokenId));
+        const freshMeta = liveUri
+          ? await fetchOnChainTokenMetadata(liveUri)
+          : null;
+
+        if (freshMeta) {
+          onUpdated?.(freshMeta);
+          setProcessing('success');
+          setMessage(`Fragment updated! Tx: ${result.hash.slice(0, 10)}...`);
+        } else {
+          setProcessing('success');
+          setMessage(
+            `Fragment updated! Tx: ${result.hash.slice(0, 10)}... (may take a while to reflect on The Anarchiving Game)`,
+          );
+        }
       } else if (result.error) {
         setProcessing('error');
         setMessage(result.error);
@@ -394,6 +419,13 @@ export default function UpdateTokenModal({ open, onClose, token }: Props) {
                 playsInline
               />
             )}
+            {media &&
+              !media.type.includes('image') &&
+              !media.type.includes('video') && (
+                <div className='mt-1 text-xs text-slate-100'>
+                  Selected: {media.name} ({Math.ceil(media.size / 1024)} KB)
+                </div>
+              )}
           </div>
 
           {/* THUMBNAIL (shown when media is, or will be, non-image) */}

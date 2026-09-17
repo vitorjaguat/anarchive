@@ -11,7 +11,12 @@ type OnChainTokenMetadata = {
   mediaMimeType: string | null;
 };
 
+// Resolves an ipfs:// URI to a fetchable https:// URL via thirdweb's
+// gateway. A URI that's already http(s):// (e.g. a value stored from an
+// earlier upload that used a resolved gateway URL) is passed through
+// unchanged rather than being discarded — it's already usable.
 function resolveIpfsUri(uri: string): string | null {
+  if (uri.startsWith('http://') || uri.startsWith('https://')) return uri;
   if (!uri.startsWith('ipfs://')) return null;
   const clientId = process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID;
   if (!clientId) return null;

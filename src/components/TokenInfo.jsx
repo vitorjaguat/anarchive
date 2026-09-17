@@ -386,6 +386,12 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           open={openUpdate}
           onClose={() => setOpenUpdate(false)}
           token={openToken.token}
+          onUpdated={(patchedFields) =>
+            changeOpenToken({
+              ...openToken,
+              token: { ...openToken.token, ...patchedFields },
+            })
+          }
         />
       )}
     </AnimatePresence>
