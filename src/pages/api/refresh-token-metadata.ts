@@ -18,6 +18,11 @@ type RefreshedFields = {
 type RefreshedToken = {
   fields: RefreshedFields;
   tokenUri: string | null;
+  // Diagnostic fields (not used for display) to help tell whether Alchemy
+  // is genuinely re-attempting the fetch on each refreshCache call or just
+  // replaying a cached result/failure.
+  timeLastUpdated: string | null;
+  rawError: string | null;
 };
 
 type Data =
@@ -78,6 +83,8 @@ export default async function handler(
       refreshed: true,
       token: {
         tokenUri: nft.tokenUri ?? null,
+        timeLastUpdated: nft.timeLastUpdated ?? null,
+        rawError: (nft.raw as { error?: string })?.error ?? null,
         fields: {
           name: nft.name,
           description: nft.description ?? rawMetadata?.description ?? null,

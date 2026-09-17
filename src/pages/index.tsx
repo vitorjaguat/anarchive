@@ -15,6 +15,7 @@ import { MainContext } from '@/context/mainContext';
 import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
 import { publicClient } from '@/utils/zoraprotocolConfig';
+import fetchOnChainTokenMetadata from '@/utils/fetchOnChainTokenMetadata';
 import dynamic from 'next/dynamic';
 import {
   Alchemy,
@@ -94,7 +95,10 @@ const normalizeTokenId = (tokenId: string): string => {
 };
 
 const fetchOnChainTokenData = async (tokenIds: string[]) => {
-  const totals = new Map<string, { totalMinted: bigint; maxSupply: bigint }>();
+  const totals = new Map<
+    string,
+    { totalMinted: bigint; maxSupply: bigint; uri: string }
+  >();
   const normalizedIds = Array.from(new Set(tokenIds.map(normalizeTokenId)));
 
   if (!normalizedIds.length) {
@@ -123,6 +127,7 @@ const fetchOnChainTokenData = async (tokenIds: string[]) => {
         totals.set(tokenId, {
           maxSupply: tokenInfo.maxSupply,
           totalMinted: tokenInfo.totalMinted,
+          uri: tokenInfo.uri,
         });
       } else {
         console.warn(`Multicall failed for token ${tokenId}`, entry.error);
@@ -331,55 +336,69 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
       allTokensFromAlchemy.map((token) => token.tokenId)
     );
 
-    const allTokensTyped: Token[] = allTokensFromAlchemy.map((token) => {
-      const tokenIdKey = normalizeTokenId(token.tokenId);
-      const onChainData = onChainTotals.get(tokenIdKey);
-      const rawMetadata = token.raw.metadata as
-        | {
-            description?: string;
-            animation_url?: string;
-            attributes?: Array<{ trait_type?: string; value?: string }>;
-          }
-        | undefined;
-      const attributesSource = Array.isArray(rawMetadata?.attributes)
-        ? rawMetadata?.attributes
-        : [];
-      const attributes: TokenAttribute[] = attributesSource
-        .filter(
-          (attribute): attribute is { trait_type: string; value: string } =>
-            Boolean(attribute?.trait_type) && Boolean(attribute?.value)
-        )
-        .map((attribute) => ({
-          key: attribute.trait_type,
-          value: attribute.value,
-        }));
+    const allTokensTyped: Token[] = await Promise.all(
+      allTokensFromAlchemy.map(async (token) => {
+        const tokenIdKey = normalizeTokenId(token.tokenId);
+        const onChainData = onChainTotals.get(tokenIdKey);
+        const rawMetadata = token.raw.metadata as
+          | {
+              description?: string;
+              animation_url?: string;
+              attributes?: Array<{ trait_type?: string; value?: string }>;
+            }
+          | undefined;
 
-      const animationUrl = rawMetadata?.animation_url;
+        const onChainMeta = onChainData?.uri
+          ? await fetchOnChainTokenMetadata(onChainData.uri)
+          : null;
 
-      return {
-        token: {
-          totalMinted: (onChainData?.totalMinted ?? BigInt(0)).toString(),
-          maxSupply: (onChainData?.maxSupply ?? BigInt(0)).toString(),
-          contract: token.contract.address,
-          tokenId: tokenIdKey,
-          name: token.name ?? null,
-          description: token.description ?? rawMetadata?.description ?? null,
-          image: token.image?.cachedUrl ?? null,
-          imageSmall: token.image?.thumbnailUrl ?? null,
-          imageLarge: token.image?.pngUrl ?? token.image?.originalUrl ?? null,
-          imageOriginal: token.image?.originalUrl ?? null,
-          kind: token.contract.tokenType as string,
-          attributes,
-          owners: [],
-          media:
-            token.animation?.cachedUrl ??
-            token.animation?.originalUrl ??
-            animationUrl ??
-            null,
-          mediaMimeType: token.animation?.contentType ?? null,
-        },
-      };
-    });
+        const attributesSource = Array.isArray(rawMetadata?.attributes)
+          ? rawMetadata?.attributes
+          : [];
+        const alchemyAttributes: TokenAttribute[] = attributesSource
+          .filter(
+            (attribute): attribute is { trait_type: string; value: string } =>
+              Boolean(attribute?.trait_type) && Boolean(attribute?.value)
+          )
+          .map((attribute) => ({
+            key: attribute.trait_type,
+            value: attribute.value,
+          }));
+
+        const animationUrl = rawMetadata?.animation_url;
+
+        return {
+          token: {
+            totalMinted: (onChainData?.totalMinted ?? BigInt(0)).toString(),
+            maxSupply: (onChainData?.maxSupply ?? BigInt(0)).toString(),
+            contract: token.contract.address,
+            tokenId: tokenIdKey,
+            name: onChainMeta?.name ?? token.name ?? null,
+            description:
+              onChainMeta?.description ??
+              token.description ??
+              rawMetadata?.description ??
+              null,
+            image: token.image?.cachedUrl ?? null,
+            imageSmall: token.image?.thumbnailUrl ?? null,
+            imageLarge: token.image?.pngUrl ?? token.image?.originalUrl ?? null,
+            imageOriginal: token.image?.originalUrl ?? null,
+            kind: token.contract.tokenType as string,
+            attributes:
+              onChainMeta && onChainMeta.attributes.length > 0
+                ? onChainMeta.attributes
+                : alchemyAttributes,
+            owners: [],
+            media:
+              token.animation?.cachedUrl ??
+              token.animation?.originalUrl ??
+              animationUrl ??
+              null,
+            mediaMimeType: token.animation?.contentType ?? null,
+          },
+        };
+      })
+    );
 
     return allTokensTyped;
   };
