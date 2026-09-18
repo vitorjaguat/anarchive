@@ -100,21 +100,6 @@ export default function LargeMedia({ token }: LargeMediaProps) {
 
   if (token.media?.includes('.svg') || token?.mediaMimeType?.includes('svg')) {
     return (
-<<<<<<< HEAD
-      <Image
-        src={token.media}
-        alt={token.name}
-        width={500}
-        height={500}
-        unoptimized={shouldUseUnoptimizedImage(token.media)}
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'contain',
-          zIndex: 50,
-        }}
-      />
-=======
       <div className='relative w-[90vw] h-[85vh] max-w-[90vw] max-h-[85vh] z-50'>
         <Image
           src={token.media}
@@ -124,7 +109,6 @@ export default function LargeMedia({ token }: LargeMediaProps) {
           style={{ objectFit: 'contain' }}
         />
       </div>
->>>>>>> june26
     );
   }
 
@@ -175,16 +159,6 @@ export default function LargeMedia({ token }: LargeMediaProps) {
   }
 
   return (
-<<<<<<< HEAD
-    <Image
-      src={token.media}
-      alt={token.name}
-      width={500}
-      height={500}
-      unoptimized={shouldUseUnoptimizedImage(token.media)}
-      style={{ objectFit: 'contain' }}
-    />
-=======
     <div className='relative w-[90vw] h-[85vh] max-w-[90vw] max-h-[85vh]'>
       <Image
         src={token.media}
@@ -194,7 +168,6 @@ export default function LargeMedia({ token }: LargeMediaProps) {
         style={{ objectFit: 'contain' }}
       />
     </div>
->>>>>>> june26
   );
 
   // return (
