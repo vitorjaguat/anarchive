@@ -207,7 +207,7 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
               </div>
             </div>
             <div className='flex flex-col items-start w-full text-xs'>
-              <div className=''>beta v0.4 - November 2025</div>
+              <div className=''>beta v0.5 - September 2026</div>
               <div className=''>
                 Developed by{' '}
                 <a

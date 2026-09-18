@@ -159,7 +159,7 @@ export default function InfoModalMobile({ onClose }: { onClose: () => void }) {
 
           {/* CREDITS */}
           <div className='flex flex-col items-center w-full mb-4 mt-2'>
-            <div className=''>beta v0.4 - November 2025</div>
+            <div className=''>beta v0.5 - September 2026</div>
             <div className=''>
               Developed by{' '}
               <a
@@ -202,6 +202,6 @@ export default function InfoModalMobile({ onClose }: { onClose: () => void }) {
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 }
