@@ -16,6 +16,22 @@ interface MintProps {
   onError?: (error: unknown) => void;
 }
 
+// Some RPC providers (e.g. Zora's) report insufficient balance with wording
+// viem's own InsufficientFundsError matcher doesn't recognize, so it falls
+// through as a raw execution-revert dump instead of a friendly message.
+const INSUFFICIENT_FUNDS_PATTERN =
+  /insufficient funds|out ?of ?funds|exceeds (the )?balance/i;
+
+function getMintErrorMessage(e: any): string {
+  const raw = [e?.shortMessage, e?.details, e?.message]
+    .filter(Boolean)
+    .join(' ');
+  if (INSUFFICIENT_FUNDS_PATTERN.test(raw)) {
+    return 'Your wallet does not have enough funds to cover this transaction.';
+  }
+  return e?.shortMessage || e?.message || 'Failed to mint';
+}
+
 export default function Mint({
   token,
   address,
@@ -70,7 +86,7 @@ export default function Mint({
       onSuccess?.(hash);
     } catch (e: any) {
       console.error('Mint error:', e);
-      setError(e?.shortMessage || e?.message || 'Failed to mint');
+      setError(getMintErrorMessage(e));
       onError?.(e);
     } finally {
       setIsMinting(false);
