@@ -6,12 +6,17 @@ import { MainContext } from '@/context/mainContext';
 export default function Filters({ filter, setFilter }) {
   const { view } = useContext(MainContext);
 
-  if (view !== 'graph') return null; // Only show filters in graph view
+  // if (view !== 'graph') return null; // Only show filters in graph view
   if (!filter || filter.length === 0) return null; // Don't render if no filters are applied
 
   return (
-    <div className='absolute top-3 left-0 z-[4] w-full'>
-      <div className='px-16 flex gap-2 flex-wrap justify-center'>
+    <div className='fixed top-4 left-0 z-50 w-full'>
+      <div
+        className={
+          'px-16 flex gap-2 flex-wrap ' +
+          (view == 'graph' ? 'justify-center' : 'justify-start')
+        }
+      >
         {filter.map((f) => (
           <div
             key={f}
