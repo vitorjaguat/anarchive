@@ -1,17 +1,27 @@
 import Markdown from 'react-markdown';
 // import { MintModal } from '@reservoir0x/reservoir-kit-ui';
-import { Fragment, useState, useContext } from 'react';
+import { Fragment, useState, useContext, useEffect } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import { RxChevronRight } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
+import { IoCloseOutline } from 'react-icons/io5';
 import LargeMedia from './LargeMedia';
 import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
 // import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import CollectModal from './CollectModal';
+<<<<<<< HEAD
 import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
+=======
+import UpdateTokenModal from './UpdateTokenModal';
+import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
+import { useAccount } from 'wagmi';
+import { zoraCreator1155ImplABI } from '@zoralabs/protocol-deployments';
+import { publicClient } from '@/utils/zoraprotocolConfig';
+import collectionAddress from '@/utils/contract';
+>>>>>>> june26
 
 export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
@@ -19,8 +29,55 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const largeMediaControls = useAnimationControls();
   // const { openConnectModal } = useConnectModal();
   const [openCollect, setOpenCollect] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);
   const router = useRouter();
   const { openToken, changeOpenToken } = useContext(MainContext);
+  const { address } = useAccount();
+
+  console.log('openToken', openToken);
+
+  useEffect(() => {
+    if (!openToken?.token?.tokenId || !address) {
+      setIsCreator(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const creator = await publicClient.readContract({
+          address: collectionAddress,
+          abi: zoraCreator1155ImplABI,
+          functionName: 'getCreatorRewardRecipient',
+          args: [BigInt(openToken.token.tokenId)],
+        });
+        console.log('getCreatorRewardRecipient', creator);
+        if (!cancelled) {
+          setIsCreator(
+            typeof creator === 'string' &&
+              creator.toLowerCase() === address.toLowerCase(),
+          );
+        }
+      } catch {
+        if (!cancelled) setIsCreator(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [openToken?.token?.tokenId, address]);
+
+  useEffect(() => {
+    if (!openLargeMedia) return;
+    const handler = (e) => {
+      if (e.key === 'Escape') {
+        largeMediaControls.start('hidden');
+        setOpenLargeMedia(null);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [openLargeMedia, largeMediaControls]);
 
   const handleClose = () => {
     tokenInfoControls.start('hidden');
@@ -37,6 +94,19 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
     );
     changeOpenToken(null);
   };
+
+  useEffect(() => {
+    if (!openToken?.token?.tokenId) return;
+    const handler = (e) => {
+      // Let the openLargeMedia effect above handle Escape first if that
+      // lightbox is open, so a single press closes only the top layer.
+      if (openLargeMedia) return;
+      if (e.key === 'Escape') handleClose();
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openToken?.token?.tokenId, openLargeMedia]);
 
   return (
     <AnimatePresence>
@@ -232,6 +302,16 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                       <div className='font-thin'>open FULL</div>
                     </div>
                     <CopyURLButton />
+                    {isCreator && (
+                      <div
+                        className={
+                          'mt-1 w-fit flex items-center gap-2 text-xs rounded-md px-2 py-[2px] bg-amber-500/20 hover:bg-amber-500/40 duration-300 cursor-pointer'
+                        }
+                        onClick={() => setOpenUpdate(true)}
+                      >
+                        <div className='font-thin'>update</div>
+                      </div>
+                    )}
                   </div>
 
                   <div className=' pb-[96px] mt-6 pr-3 text-sm max-h-[calc(100vh-222px)] overflow-y-auto overflow-x-hidden font-thin'>
@@ -247,7 +327,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           {/* openLargeMedia modal */}
 
           <motion.div
-            className='absolute top-0 right-0 w-screen h-[calc(100vh-100px)] items-center justify-center bg-black/80 z-50'
+            className='fixed inset-0 w-screen h-screen items-center justify-center bg-black/80 z-[99999999]'
             key={'modal_' + openToken.token.tokenId}
             variants={{
               hidden: {
@@ -275,11 +355,17 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
             initial='hidden'
             animate={largeMediaControls}
             // exit='exit'
-            onClick={() => {
-              largeMediaControls.start('hidden');
-              setOpenLargeMedia(null);
-            }}
           >
+            <button
+              className='absolute top-3 right-3 z-10 blur-none'
+              onClick={() => {
+                largeMediaControls.start('hidden');
+                setOpenLargeMedia(null);
+              }}
+              aria-label='Close'
+            >
+              <IoCloseOutline className='text-white' size={28} />
+            </button>
             <motion.div
               variants={{
                 hidden: {
@@ -328,6 +414,20 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           onClose={() => setOpenCollect(false)}
           token={openToken.token}
           defaultQuantity={1}
+        />
+      )}
+      {openToken?.token && (
+        <UpdateTokenModal
+          key={`update-modal-${openToken.token.tokenId || 'unknown'}`}
+          open={openUpdate}
+          onClose={() => setOpenUpdate(false)}
+          token={openToken.token}
+          onUpdated={(patchedFields) =>
+            changeOpenToken({
+              ...openToken,
+              token: { ...openToken.token, ...patchedFields },
+            })
+          }
         />
       )}
     </AnimatePresence>

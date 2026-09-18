@@ -34,6 +34,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'ipfs.io',
       },
+      {
+        protocol: 'https',
+        hostname: '*.ipfscdn.io',
+      },
     ],
     dangerouslyAllowSVG: true,
   },

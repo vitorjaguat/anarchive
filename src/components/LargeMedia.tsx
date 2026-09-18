@@ -81,39 +81,26 @@ export default function LargeMedia({ token }: LargeMediaProps) {
     }
 
     return (
-      //   <embed
-      //     src={token.media}
-      //     type='application/pdf'
-      //     width='500px'
-      //     height='1000px'
-      //   />
-
-      //   <iframe src={token.media} width='100%' height='100%' ></iframe>
-
-      <object
-        // style={{
-        //   width: '100%',
-        //   height: '100%',
-        //   aspectRatio: '4/3',
-        // }}
-        data={token.media + '#toolbar=0'}
+      // <object data={token.media + '#toolbar=0'}> was unreliable for PDF
+      // URLs containing special characters (apostrophes, #, spaces) —
+      // Chrome's native PDF plugin path handles those inconsistently even
+      // though the same URL fetches/downloads fine. An <iframe> uses a
+      // different rendering path that doesn't have this problem, and
+      // doesn't need the '#toolbar=0' fragment (which was part of what
+      // broke on these URLs).
+      <iframe
+        src={token.media}
+        title={token.name}
         style={{ height: isMobile ? '60vh' : `${window.innerHeight - 150}px` }}
         width={width}
         className='z-50'
-        // height={height}
-      >
-        <p>
-          PDF cannot be displayed.{' '}
-          <a target='_blank' rel='noopener noreferrer' href={token.media}>
-            Download PDF
-          </a>
-        </p>
-      </object>
+      />
     );
   }
 
   if (token.media?.includes('.svg') || token?.mediaMimeType?.includes('svg')) {
     return (
+<<<<<<< HEAD
       <Image
         src={token.media}
         alt={token.name}
@@ -127,6 +114,17 @@ export default function LargeMedia({ token }: LargeMediaProps) {
           zIndex: 50,
         }}
       />
+=======
+      <div className='relative w-[90vw] h-[85vh] max-w-[90vw] max-h-[85vh] z-50'>
+        <Image
+          src={token.media}
+          alt={token.name}
+          fill
+          unoptimized={shouldUseUnoptimizedImage(token.media)}
+          style={{ objectFit: 'contain' }}
+        />
+      </div>
+>>>>>>> june26
     );
   }
 
@@ -177,6 +175,7 @@ export default function LargeMedia({ token }: LargeMediaProps) {
   }
 
   return (
+<<<<<<< HEAD
     <Image
       src={token.media}
       alt={token.name}
@@ -185,6 +184,17 @@ export default function LargeMedia({ token }: LargeMediaProps) {
       unoptimized={shouldUseUnoptimizedImage(token.media)}
       style={{ objectFit: 'contain' }}
     />
+=======
+    <div className='relative w-[90vw] h-[85vh] max-w-[90vw] max-h-[85vh]'>
+      <Image
+        src={token.media}
+        alt={token.name}
+        fill
+        unoptimized={shouldUseUnoptimizedImage(token.media)}
+        style={{ objectFit: 'contain' }}
+      />
+    </div>
+>>>>>>> june26
   );
 
   // return (

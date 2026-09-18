@@ -15,6 +15,7 @@ import { MainContext } from '@/context/mainContext';
 import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
 import { publicClient } from '@/utils/zoraprotocolConfig';
+import fetchOnChainTokenMetadata from '@/utils/fetchOnChainTokenMetadata';
 import dynamic from 'next/dynamic';
 import {
   Alchemy,
@@ -84,6 +85,21 @@ type MulticallResult =
   | { status: 'success'; result: TokenInfoOnChain }
   | { status: 'failure'; error: unknown };
 
+// Alchemy's "cached"/CDN fields (cachedUrl, thumbnailUrl, pngUrl,
+// originalUrl) are not always actually hosted on Alchemy's own domains —
+// for some tokens they're direct passthroughs to ipfs.io, a public
+// gateway that's now rate-limiting/sunsetting. Treat those as absent so
+// the fallback chain moves on to a real Alchemy CDN variant or our own
+// on-chain + thirdweb-gateway source instead of serving a broken link.
+const dropIfIpfsIo = (url: string | null | undefined): string | undefined => {
+  if (!url) return undefined;
+  try {
+    return new URL(url).hostname === 'ipfs.io' ? undefined : url;
+  } catch {
+    return url;
+  }
+};
+
 const normalizeTokenId = (tokenId: string): string => {
   try {
     return BigInt(tokenId).toString();
@@ -94,7 +110,10 @@ const normalizeTokenId = (tokenId: string): string => {
 };
 
 const fetchOnChainTokenData = async (tokenIds: string[]) => {
-  const totals = new Map<string, { totalMinted: bigint; maxSupply: bigint }>();
+  const totals = new Map<
+    string,
+    { totalMinted: bigint; maxSupply: bigint; uri: string }
+  >();
   const normalizedIds = Array.from(new Set(tokenIds.map(normalizeTokenId)));
 
   if (!normalizedIds.length) {
@@ -123,6 +142,7 @@ const fetchOnChainTokenData = async (tokenIds: string[]) => {
         totals.set(tokenId, {
           maxSupply: tokenInfo.maxSupply,
           totalMinted: tokenInfo.totalMinted,
+          uri: tokenInfo.uri,
         });
       } else {
         console.warn(`Multicall failed for token ${tokenId}`, entry.error);
@@ -331,55 +351,92 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
       allTokensFromAlchemy.map((token) => token.tokenId)
     );
 
-    const allTokensTyped: Token[] = allTokensFromAlchemy.map((token) => {
-      const tokenIdKey = normalizeTokenId(token.tokenId);
-      const onChainData = onChainTotals.get(tokenIdKey);
-      const rawMetadata = token.raw.metadata as
-        | {
-            description?: string;
-            animation_url?: string;
-            attributes?: Array<{ trait_type?: string; value?: string }>;
-          }
-        | undefined;
-      const attributesSource = Array.isArray(rawMetadata?.attributes)
-        ? rawMetadata?.attributes
-        : [];
-      const attributes: TokenAttribute[] = attributesSource
-        .filter(
-          (attribute): attribute is { trait_type: string; value: string } =>
-            Boolean(attribute?.trait_type) && Boolean(attribute?.value)
-        )
-        .map((attribute) => ({
-          key: attribute.trait_type,
-          value: attribute.value,
-        }));
+    const allTokensTyped: Token[] = await Promise.all(
+      allTokensFromAlchemy.map(async (token) => {
+        const tokenIdKey = normalizeTokenId(token.tokenId);
+        const onChainData = onChainTotals.get(tokenIdKey);
+        const rawMetadata = token.raw.metadata as
+          | {
+              description?: string;
+              animation_url?: string;
+              attributes?: Array<{ trait_type?: string; value?: string }>;
+            }
+          | undefined;
 
-      const animationUrl = rawMetadata?.animation_url;
+        const onChainMeta = onChainData?.uri
+          ? await fetchOnChainTokenMetadata(onChainData.uri)
+          : null;
 
-      return {
-        token: {
-          totalMinted: (onChainData?.totalMinted ?? BigInt(0)).toString(),
-          maxSupply: (onChainData?.maxSupply ?? BigInt(0)).toString(),
-          contract: token.contract.address,
-          tokenId: tokenIdKey,
-          name: token.name,
-          description: token.description ?? rawMetadata?.description ?? null,
-          image: token.image?.cachedUrl ?? null,
-          imageSmall: token.image?.thumbnailUrl ?? null,
-          imageLarge: token.image?.pngUrl ?? token.image?.originalUrl ?? null,
-          imageOriginal: token.image?.originalUrl ?? null,
-          kind: token.contract.tokenType as string,
-          attributes,
-          owners: [],
-          media:
-            token.animation?.cachedUrl ??
-            token.animation?.originalUrl ??
-            animationUrl ??
-            null,
-          mediaMimeType: token.animation?.contentType ?? null,
-        },
-      };
-    });
+        const attributesSource = Array.isArray(rawMetadata?.attributes)
+          ? rawMetadata?.attributes
+          : [];
+        const alchemyAttributes: TokenAttribute[] = attributesSource
+          .filter(
+            (attribute): attribute is { trait_type: string; value: string } =>
+              Boolean(attribute?.trait_type) && Boolean(attribute?.value)
+          )
+          .map((attribute) => ({
+            key: attribute.trait_type,
+            value: attribute.value,
+          }));
+
+        const animationUrl = rawMetadata?.animation_url;
+
+        return {
+          token: {
+            totalMinted: (onChainData?.totalMinted ?? BigInt(0)).toString(),
+            maxSupply: (onChainData?.maxSupply ?? BigInt(0)).toString(),
+            contract: token.contract.address,
+            tokenId: tokenIdKey,
+            name: onChainMeta?.name ?? token.name ?? null,
+            description:
+              onChainMeta?.description ??
+              token.description ??
+              rawMetadata?.description ??
+              null,
+            // Alchemy's "cached"/CDN fields aren't always actually hosted
+            // on Alchemy's own domains — for some tokens they're direct
+            // ipfs.io passthroughs (a public gateway now rate-limiting/
+            // sunsetting), so each is filtered via dropIfIpfsIo before
+            // being trusted. Falls through to the next real Alchemy
+            // variant, then our own on-chain + thirdweb-gateway source.
+            image:
+              dropIfIpfsIo(token.image?.cachedUrl) ??
+              onChainMeta?.image ??
+              null,
+            imageSmall:
+              dropIfIpfsIo(token.image?.thumbnailUrl) ??
+              onChainMeta?.image ??
+              null,
+            imageLarge:
+              dropIfIpfsIo(token.image?.pngUrl) ??
+              onChainMeta?.image ??
+              dropIfIpfsIo(token.image?.originalUrl) ??
+              null,
+            imageOriginal:
+              onChainMeta?.image ??
+              dropIfIpfsIo(token.image?.originalUrl) ??
+              null,
+            kind: token.contract.tokenType as string,
+            attributes:
+              onChainMeta && onChainMeta.attributes.length > 0
+                ? onChainMeta.attributes
+                : alchemyAttributes,
+            owners: [],
+            media:
+              dropIfIpfsIo(token.animation?.cachedUrl) ??
+              onChainMeta?.media ??
+              dropIfIpfsIo(token.animation?.originalUrl) ??
+              dropIfIpfsIo(animationUrl) ??
+              null,
+            mediaMimeType:
+              token.animation?.contentType ??
+              onChainMeta?.mediaMimeType ??
+              null,
+          },
+        };
+      })
+    );
 
     return allTokensTyped;
   };

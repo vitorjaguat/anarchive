@@ -10,9 +10,14 @@ import LargeMedia from '../LargeMedia';
 import Markdown from 'react-markdown';
 // import Mint from '../Mint';
 import CollectModal from '../CollectModal';
+import UpdateTokenModal from '../UpdateTokenModal';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import CopyURLButton from '../CopyURLButton';
 import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
+import { useAccount } from 'wagmi';
+import { zoraCreator1155ImplABI } from '@zoralabs/protocol-deployments';
+import { publicClient } from '@/utils/zoraprotocolConfig';
+import collectionAddress from '@/utils/contract';
 
 export default function GridOpenToken({
   token,
@@ -23,12 +28,60 @@ export default function GridOpenToken({
 }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   const [openCollect, setOpenCollect] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [isCreator, setIsCreator] = useState(false);
+  const { address } = useAccount();
+
+  useEffect(() => {
+    if (!token?.token?.tokenId || !address) {
+      setIsCreator(false);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const creator = await (publicClient as any).readContract({
+          address: collectionAddress as `0x${string}`,
+          abi: zoraCreator1155ImplABI,
+          functionName: 'getCreatorRewardRecipient',
+          args: [BigInt(token.token.tokenId)],
+        });
+        if (!cancelled) {
+          setIsCreator(
+            typeof creator === 'string' &&
+              creator.toLowerCase() === address.toLowerCase(),
+          );
+        }
+      } catch {
+        if (!cancelled) setIsCreator(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token?.token?.tokenId, address]);
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
     };
   }, []);
+
+  // Escape closes the innermost open layer first: the large-media
+  // lightbox if it's open, otherwise this panel.
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (openLargeMedia) {
+        setOpenLargeMedia(null);
+      } else {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [openLargeMedia, onClose]);
 
   if (!token?.token?.tokenId) return null;
   return createPortal(
@@ -90,6 +143,16 @@ export default function GridOpenToken({
               <div className='md:font-thin'>open FULL</div>
             </div>
             <CopyURLButton />
+            {isCreator && (
+              <div
+                className={
+                  'mt-1 w-fit flex items-center gap-2 text-xs rounded-md px-2 py-1 bg-amber-500/20 hover:bg-amber-500/40 duration-300 cursor-pointer'
+                }
+                onClick={() => setOpenUpdate(true)}
+              >
+                <div className='md:font-thin'>update</div>
+              </div>
+            )}
           </div>
 
           {/* ATTRIBUTES */}
@@ -148,6 +211,11 @@ export default function GridOpenToken({
         onClose={() => setOpenCollect(false)}
         token={token.token}
         defaultQuantity={1}
+      />
+      <UpdateTokenModal
+        open={openUpdate}
+        onClose={() => setOpenUpdate(false)}
+        token={token.token}
       />
     </div>,
     document.body,

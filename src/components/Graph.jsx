@@ -66,7 +66,7 @@ const Graph = ({
     }
 
     const clickedTokenData = allTokens.find(
-      (token) => +token.token.tokenId === +node.id
+      (token) => +token.token.tokenId === +node.id,
     );
     router.push(
       {
@@ -74,7 +74,7 @@ const Graph = ({
         query: { ...router.query, fragment: clickedTokenData.token.tokenId },
       },
       undefined,
-      { shallow: true }
+      { shallow: true },
     );
     setImageLoaded(false);
     changeOpenToken(clickedTokenData);
@@ -101,15 +101,93 @@ const Graph = ({
     setSpheres(graphData.nodes.map((node) => getOrCreateSprite(node)));
   }, [graphData.nodes, selectedTokenId]);
 
-  // link isDestination logic:
+  // clustering forces: normalize link strength by group size + Fibonacci sphere centroid anchors
   useEffect(() => {
-    if (sort === 'From') {
-      const graph = graphRef.current;
-      graph
-        .d3Force('link')
-        .strength((link) => (link.isDestination ? 0.0001 : 0.003));
+    const graph = graphRef.current;
+    if (!graph) return;
+
+    // Clear custom cluster force from any previous sort
+    graph.d3Force('cluster', null);
+
+    if (sort === 'none') {
+      const linkForce = graph.d3Force('link');
+      if (linkForce) linkForce.strength(0.003);
+      // Defer reheat: kapsule has a 1ms debounce before setting state.layout.
+      // Calling d3ReheatSimulation() before that sets engineRunning=true while
+      // state.layout is still undefined, crashing the animation loop.
+      const timer = setTimeout(
+        () => graphRef.current?.d3ReheatSimulation(),
+        10,
+      );
+      return () => clearTimeout(timer);
     }
-  }, [sort]);
+
+    // --- Phase 1: Normalize link strength by group size ---
+    // Nodes in a large group create N*(N-1) links vs a small group's few links.
+    // Dividing by (groupSize - 1) equalises total pull across all groups.
+    const groupSizeMap = {};
+    graphData.nodes.forEach((node) => {
+      if (node.group) {
+        groupSizeMap[node.group] = (groupSizeMap[node.group] || 0) + 1;
+      }
+    });
+
+    const linkForce = graph.d3Force('link');
+    if (linkForce) {
+      linkForce.strength((link) => {
+        if (link.isDestination) return 0.0001;
+        const grp = link.source?.group;
+        const size = grp && groupSizeMap[grp] ? groupSizeMap[grp] : 1;
+        return size > 1 ? 0.003 / (size - 1) : 0.003;
+      });
+    }
+
+    // --- Phase 2: Fibonacci sphere centroid anchors ---
+    // Each unique group gets a home region on an invisible sphere via soft springs.
+    // Low strength keeps the layout dynamic; nodes still move freely within their galaxy.
+    const groups = Object.keys(groupSizeMap);
+    const N = groups.length;
+    if (N < 2) {
+      const timer = setTimeout(
+        () => graphRef.current?.d3ReheatSimulation(),
+        10,
+      );
+      return () => clearTimeout(timer);
+    }
+
+    const SPHERE_RADIUS = 300;
+    const SPRING_STRENGTH = 0.08;
+
+    const centroidMap = {};
+    groups.forEach((group, i) => {
+      const phi = Math.acos(1 - (2 * i) / (N - 1));
+      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+      centroidMap[group] = {
+        x: SPHERE_RADIUS * Math.sin(phi) * Math.cos(theta),
+        y: SPHERE_RADIUS * Math.sin(phi) * Math.sin(theta),
+        z: SPHERE_RADIUS * Math.cos(phi),
+      };
+    });
+
+    // Custom force function — D3 custom forces are plain functions (alpha) => void
+    // that directly nudge node velocities. No external import needed.
+    const clusterForce = (alpha) => {
+      graphData.nodes.forEach((node) => {
+        const target = centroidMap[node.group];
+        if (!target) return;
+        node.vx =
+          (node.vx || 0) + (target.x - (node.x || 0)) * SPRING_STRENGTH * alpha;
+        node.vy =
+          (node.vy || 0) + (target.y - (node.y || 0)) * SPRING_STRENGTH * alpha;
+        node.vz =
+          (node.vz || 0) + (target.z - (node.z || 0)) * SPRING_STRENGTH * alpha;
+      });
+    };
+
+    graph.d3Force('cluster', clusterForce);
+    const timer = setTimeout(() => graphRef.current?.d3ReheatSimulation(), 10);
+    return () => clearTimeout(timer);
+  }, [sort, graphData]);
 
   const spriteCache = useRef(new Map());
 
@@ -180,7 +258,7 @@ const Graph = ({
         if (sprite.material) {
           sprite.material.color.set(0x999999);
         }
-      }
+      },
     );
 
     const material = new THREE.SpriteMaterial({ map: texture });
@@ -202,7 +280,7 @@ const Graph = ({
         50, // Inner circle (start of gradient)
         128,
         128,
-        128 // Outer circle (end of gradient)
+        128, // Outer circle (end of gradient)
       );
 
       // Add color stops for the gradient

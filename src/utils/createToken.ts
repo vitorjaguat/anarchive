@@ -8,7 +8,8 @@ import {
 } from './zoraprotocolConfig';
 // import collectionAddress from './dummyCollectionAddress';
 import collectionAddress from './contract';
-import { isAddress, parseEther } from 'viem';
+import { isAddress, parseEther, parseEventLogs } from 'viem';
+import { zoraCreator1155ImplABI } from '@zoralabs/protocol-deployments';
 import { SplitV1Client } from '@0xsplits/splits-sdk';
 
 const TOKEN_ID_RETRY_LIMIT = 1;
@@ -194,7 +195,25 @@ export default async function createToken(
         hash,
       });
 
-      return { parameters, request, hash, writeResponse };
+      // Read the actually-assigned token ID from the transaction receipt
+      // rather than trusting the pre-call nextTokenId read (which can go
+      // stale — see isTokenIdMismatchError above).
+      let tokenId: bigint | null = null;
+      try {
+        const [setupEvent] = parseEventLogs({
+          abi: zoraCreator1155ImplABI,
+          eventName: 'SetupNewToken',
+          logs: writeResponse.logs,
+        });
+        tokenId = (setupEvent?.args as { tokenId?: bigint })?.tokenId ?? null;
+      } catch (parseError) {
+        console.warn(
+          'Could not parse SetupNewToken event from receipt:',
+          parseError
+        );
+      }
+
+      return { parameters, request, hash, writeResponse, tokenId };
     } catch (error) {
       if (isTokenIdMismatchError(error) && attempt < TOKEN_ID_RETRY_LIMIT) {
         console.warn(
