@@ -11,6 +11,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useStorageUpload } from '@thirdweb-dev/react';
 import Head from 'next/head';
 import { IoIosRefresh } from 'react-icons/io';
+import normalizeFileName from '../../utils/normalizeFileName';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
@@ -84,7 +85,7 @@ export default function CreateIndex() {
       reader.readAsDataURL(file);
     }
 
-    setMedia(file);
+    setMedia(file ? normalizeFileName(file) : file);
   };
 
   const handleImageUpload = (event) => {
@@ -111,7 +112,7 @@ export default function CreateIndex() {
       reader.readAsDataURL(file);
     }
 
-    setImage(file);
+    setImage(file ? normalizeFileName(file) : file);
   };
 
   const checkValidation = (field) => {

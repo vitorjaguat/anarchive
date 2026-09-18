@@ -9,6 +9,7 @@ import type { Token } from '../../types/tokens';
 import updateToken from '@/utils/updateToken';
 import fetchOnChainTokenMetadata from '@/utils/fetchOnChainTokenMetadata';
 import readTokenUriOnChain from '@/utils/readTokenUriOnChain';
+import normalizeFileName from '@/utils/normalizeFileName';
 import type { Address } from 'viem';
 
 type Props = {
@@ -153,7 +154,7 @@ export default function UpdateTokenModal({
       reader.onloadend = () => setMediaPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
-    setMedia(file);
+    setMedia(normalizeFileName(file));
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,7 +166,7 @@ export default function UpdateTokenModal({
       reader.onloadend = () => setImagePreview(reader.result as string);
       reader.readAsDataURL(file);
     }
-    setImage(file);
+    setImage(normalizeFileName(file));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

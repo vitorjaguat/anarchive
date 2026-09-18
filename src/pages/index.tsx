@@ -85,6 +85,21 @@ type MulticallResult =
   | { status: 'success'; result: TokenInfoOnChain }
   | { status: 'failure'; error: unknown };
 
+// Alchemy's "cached"/CDN fields (cachedUrl, thumbnailUrl, pngUrl,
+// originalUrl) are not always actually hosted on Alchemy's own domains —
+// for some tokens they're direct passthroughs to ipfs.io, a public
+// gateway that's now rate-limiting/sunsetting. Treat those as absent so
+// the fallback chain moves on to a real Alchemy CDN variant or our own
+// on-chain + thirdweb-gateway source instead of serving a broken link.
+const dropIfIpfsIo = (url: string | null | undefined): string | undefined => {
+  if (!url) return undefined;
+  try {
+    return new URL(url).hostname === 'ipfs.io' ? undefined : url;
+  } catch {
+    return url;
+  }
+};
+
 const normalizeTokenId = (tokenId: string): string => {
   try {
     return BigInt(tokenId).toString();
@@ -379,16 +394,29 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
               token.description ??
               rawMetadata?.description ??
               null,
-            image: token.image?.cachedUrl ?? onChainMeta?.image ?? null,
-            imageSmall:
-              token.image?.thumbnailUrl ?? onChainMeta?.image ?? null,
-            imageLarge:
-              token.image?.pngUrl ??
-              token.image?.originalUrl ??
+            // Alchemy's "cached"/CDN fields aren't always actually hosted
+            // on Alchemy's own domains — for some tokens they're direct
+            // ipfs.io passthroughs (a public gateway now rate-limiting/
+            // sunsetting), so each is filtered via dropIfIpfsIo before
+            // being trusted. Falls through to the next real Alchemy
+            // variant, then our own on-chain + thirdweb-gateway source.
+            image:
+              dropIfIpfsIo(token.image?.cachedUrl) ??
               onChainMeta?.image ??
               null,
+            imageSmall:
+              dropIfIpfsIo(token.image?.thumbnailUrl) ??
+              onChainMeta?.image ??
+              null,
+            imageLarge:
+              dropIfIpfsIo(token.image?.pngUrl) ??
+              onChainMeta?.image ??
+              dropIfIpfsIo(token.image?.originalUrl) ??
+              null,
             imageOriginal:
-              token.image?.originalUrl ?? onChainMeta?.image ?? null,
+              onChainMeta?.image ??
+              dropIfIpfsIo(token.image?.originalUrl) ??
+              null,
             kind: token.contract.tokenType as string,
             attributes:
               onChainMeta && onChainMeta.attributes.length > 0
@@ -396,10 +424,10 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
                 : alchemyAttributes,
             owners: [],
             media:
-              token.animation?.cachedUrl ??
-              token.animation?.originalUrl ??
-              animationUrl ??
+              dropIfIpfsIo(token.animation?.cachedUrl) ??
               onChainMeta?.media ??
+              dropIfIpfsIo(token.animation?.originalUrl) ??
+              dropIfIpfsIo(animationUrl) ??
               null,
             mediaMimeType:
               token.animation?.contentType ??

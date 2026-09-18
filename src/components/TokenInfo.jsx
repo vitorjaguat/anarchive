@@ -5,6 +5,7 @@ import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import { RxChevronRight } from 'react-icons/rx';
 import { BsArrowsFullscreen } from 'react-icons/bs';
+import { IoCloseOutline } from 'react-icons/io5';
 import LargeMedia from './LargeMedia';
 import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
@@ -62,6 +63,18 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
     };
   }, [openToken?.token?.tokenId, address]);
 
+  useEffect(() => {
+    if (!openLargeMedia) return;
+    const handler = (e) => {
+      if (e.key === 'Escape') {
+        largeMediaControls.start('hidden');
+        setOpenLargeMedia(null);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [openLargeMedia, largeMediaControls]);
+
   const handleClose = () => {
     tokenInfoControls.start('hidden');
     // Remove the fragment query parameter
@@ -77,6 +90,19 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
     );
     changeOpenToken(null);
   };
+
+  useEffect(() => {
+    if (!openToken?.token?.tokenId) return;
+    const handler = (e) => {
+      // Let the openLargeMedia effect above handle Escape first if that
+      // lightbox is open, so a single press closes only the top layer.
+      if (openLargeMedia) return;
+      if (e.key === 'Escape') handleClose();
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openToken?.token?.tokenId, openLargeMedia]);
 
   return (
     <AnimatePresence>
@@ -297,7 +323,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           {/* openLargeMedia modal */}
 
           <motion.div
-            className='absolute top-0 right-0 w-screen h-[calc(100vh-100px)] items-center justify-center bg-black/80 z-50'
+            className='fixed inset-0 w-screen h-screen items-center justify-center bg-black/80 z-[99999999]'
             key={'modal_' + openToken.token.tokenId}
             variants={{
               hidden: {
@@ -325,11 +351,17 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
             initial='hidden'
             animate={largeMediaControls}
             // exit='exit'
-            onClick={() => {
-              largeMediaControls.start('hidden');
-              setOpenLargeMedia(null);
-            }}
           >
+            <button
+              className='absolute top-3 right-3 z-10 blur-none'
+              onClick={() => {
+                largeMediaControls.start('hidden');
+                setOpenLargeMedia(null);
+              }}
+              aria-label='Close'
+            >
+              <IoCloseOutline className='text-white' size={28} />
+            </button>
             <motion.div
               variants={{
                 hidden: {

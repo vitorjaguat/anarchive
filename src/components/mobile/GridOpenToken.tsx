@@ -68,6 +68,21 @@ export default function GridOpenToken({
     };
   }, []);
 
+  // Escape closes the innermost open layer first: the large-media
+  // lightbox if it's open, otherwise this panel.
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      if (openLargeMedia) {
+        setOpenLargeMedia(null);
+      } else {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [openLargeMedia, onClose]);
+
   if (!token?.token?.tokenId) return null;
   return createPortal(
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[2px]'>
