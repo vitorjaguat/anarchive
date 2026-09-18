@@ -12,16 +12,12 @@ import CopyURLButton from './CopyURLButton';
 // import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import CollectModal from './CollectModal';
-<<<<<<< HEAD
-import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
-=======
 import UpdateTokenModal from './UpdateTokenModal';
 import { shouldUseUnoptimizedImage } from '@/utils/imageOptimization';
 import { useAccount } from 'wagmi';
 import { zoraCreator1155ImplABI } from '@zoralabs/protocol-deployments';
 import { publicClient } from '@/utils/zoraprotocolConfig';
 import collectionAddress from '@/utils/contract';
->>>>>>> june26
 
 export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
