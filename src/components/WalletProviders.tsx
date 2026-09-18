@@ -6,7 +6,6 @@ import { config as wagmiConfig } from '../../wagmiConfig';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ThirdwebProvider } from '@thirdweb-dev/react';
 import { MainContextProvider } from '@/context/mainContext';
 
 export default function WalletProviders({
@@ -21,11 +20,7 @@ export default function WalletProviders({
     setIsClient(true);
   }, []);
 
-  const appTree = (
-    <ThirdwebProvider clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}>
-      <MainContextProvider>{children}</MainContextProvider>
-    </ThirdwebProvider>
-  );
+  const appTree = <MainContextProvider>{children}</MainContextProvider>;
 
   return (
     <WagmiProvider config={wagmiConfig}>

@@ -1,4 +1,5 @@
-import { ThirdwebStorage } from '@thirdweb-dev/storage';
+import { createThirdwebClient } from 'thirdweb';
+import { upload } from 'thirdweb/storage';
 import fs from 'fs';
 import { IncomingForm } from 'formidable';
 
@@ -8,7 +9,7 @@ export const config = {
   },
 };
 
-const storage = new ThirdwebStorage({
+const thirdwebClient = createThirdwebClient({
   clientId: process.env.THIRDWEB_CLIENT_ID,
   secretKey: process.env.THIRDWEB_CLIENT_SECRET,
 });
@@ -30,13 +31,16 @@ export default async function handler(req, res) {
       // console.log('imgPath:', imgPath);
       // TODO: check if there is image and media or only media:
       const media = fs.readFileSync(files.media[0].filepath);
-      const uriMedia = await storage.upload(media);
+      const uriMedia = await upload({
+        client: thirdwebClient,
+        files: [media],
+      });
       const isTypeImage = files.media[0].mimetype.includes('image');
       let img;
       let uriImg;
       if (!isTypeImage) {
         img = fs.readFileSync(files.image[0].filepath);
-        uriImg = await storage.upload(img);
+        uriImg = await upload({ client: thirdwebClient, files: [img] });
       }
 
       const metadataObj = {
@@ -90,7 +94,10 @@ export default async function handler(req, res) {
       //   metadataObj.animation_url = uriMedia;
       // }
       const metadata = JSON.stringify(metadataObj);
-      const uriMetadata = await storage.upload(metadata);
+      const uriMetadata = await upload({
+        client: thirdwebClient,
+        files: [metadata],
+      });
       // console.log('metadata:', metadata);
       // console.log('uriMetadata:', uriMetadata);
 

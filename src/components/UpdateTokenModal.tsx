@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { IoCloseOutline } from 'react-icons/io5';
-import { useStorageUpload } from '@thirdweb-dev/react';
+import { upload } from 'thirdweb/storage';
 import { useAccount, useSwitchChain } from 'wagmi';
 import { zora } from 'wagmi/chains';
 import type { Token } from '../../types/tokens';
@@ -10,6 +10,7 @@ import updateToken from '@/utils/updateToken';
 import fetchOnChainTokenMetadata from '@/utils/fetchOnChainTokenMetadata';
 import readTokenUriOnChain from '@/utils/readTokenUriOnChain';
 import normalizeFileName from '@/utils/normalizeFileName';
+import { getThirdwebClient } from '@/utils/thirdwebClient';
 import type { Address } from 'viem';
 
 type Props = {
@@ -80,7 +81,6 @@ export default function UpdateTokenModal({
 }: Props) {
   const { address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
-  const { mutateAsync: upload } = useStorageUpload();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -189,13 +189,12 @@ export default function UpdateTokenModal({
       let imageUri: string = token.image ?? '';
 
       if (media) {
-        const uris = await upload({ data: [media] });
-        mediaUri = uris[0];
-        if (media.type.includes('image')) imageUri = uris[0];
+        const uri = await upload({ client: getThirdwebClient(), files: [media] });
+        mediaUri = uri;
+        if (media.type.includes('image')) imageUri = uri;
       }
       if (image) {
-        const uris = await upload({ data: [image] });
-        imageUri = uris[0];
+        imageUri = await upload({ client: getThirdwebClient(), files: [image] });
       }
 
       setPhaseOneMedia(true);
@@ -226,10 +225,10 @@ export default function UpdateTokenModal({
         ],
       };
 
-      const metadataUriArr = await upload({
-        data: [JSON.stringify(metadataObj)],
+      const metadataUri = await upload({
+        client: getThirdwebClient(),
+        files: [JSON.stringify(metadataObj)],
       });
-      const metadataUri = metadataUriArr[0];
 
       setPhaseTwoMetadata(true);
 

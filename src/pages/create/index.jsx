@@ -8,10 +8,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useStorageUpload } from '@thirdweb-dev/react';
+import { upload } from 'thirdweb/storage';
 import Head from 'next/head';
 import { IoIosRefresh } from 'react-icons/io';
 import normalizeFileName from '../../utils/normalizeFileName';
+import { getThirdwebClient } from '../../utils/thirdwebClient';
 
 export default function CreateIndex() {
   const { isConnected, address } = useAccount();
@@ -44,7 +45,6 @@ export default function CreateIndex() {
   const [submitMessage, setSubmitMessage] = useState('Create fragment');
   //fixing hydration error:
   const [isMounted, setIsMounted] = useState(false);
-  const { mutateAsync: upload } = useStorageUpload();
   const [submitPhaseOneMedia, setSubmitPhaseOneMedia] = useState(false);
   const [submitPhaseTwoMetadata, setSubmitPhaseTwoMetadata] = useState(false);
   const [submitPhaseThreeToken, setSubmitPhaseThreeToken] = useState(false);
@@ -457,8 +457,7 @@ export default function CreateIndex() {
       let imageUri = '';
       let metadataUri = '';
       if (media) {
-        const mediaUriData = await upload({ data: [media] });
-        mediaUri = mediaUriData[0];
+        mediaUri = await upload({ client: getThirdwebClient(), files: [media] });
       }
 
       // check if media mediatype is image:
@@ -467,8 +466,7 @@ export default function CreateIndex() {
 
       // upload image:
       if (!isTypeImage && image) {
-        const imageUriData = await upload({ data: [image] });
-        imageUri = imageUriData[0];
+        imageUri = await upload({ client: getThirdwebClient(), files: [image] });
       }
       // console.log('mediaUri', mediaUri);
       // console.log('imageUri', imageUri);
@@ -525,8 +523,10 @@ export default function CreateIndex() {
 
       //upload metadata:
       const metadata = JSON.stringify(metadataObj);
-      const metadataUriData = await upload({ data: [metadata] });
-      metadataUri = metadataUriData[0];
+      metadataUri = await upload({
+        client: getThirdwebClient(),
+        files: [metadata],
+      });
       console.log('metadataUri: ', metadataUri);
       setSubmitPhaseTwoMetadata(true);
 
