@@ -19,4 +19,5 @@ export const greenlistedAccounts = [
   '0x1E264D4ba338Cde08b18dbA20FC1690fb65a9Dd4', // test Jaguat mobile
   '0x8a314eC732Aa7DC8E369c4710ee77be7DdAC5682', // 20251210 presentation Ngira
   '0x6bDad5C75742B92Aefc7dBAcb62f89862b51793E',
+  '0x5F8288Ba171f7d17B3Ff8EB6746eFBa4Ff504400',
 ];
