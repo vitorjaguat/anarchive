@@ -5,6 +5,7 @@ const initialState = {
   openToken: 'initial',
   sort: 'From',
   view: 'graph',
+  sortGrid: 'DESC',
 };
 
 // Reducer function
@@ -24,6 +25,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         view: action.payload,
+      };
+    case 'CHANGE_SORT_GRID':
+      return {
+        ...state,
+        sortGrid: action.payload,
       };
     default:
       return state;
@@ -61,6 +67,14 @@ const MainContextProvider = ({ children }) => {
     });
   };
 
+  // Function to change grid sort order
+  const changeSortGrid = (sortGrid) => {
+    dispatch({
+      type: 'CHANGE_SORT_GRID',
+      payload: sortGrid,
+    });
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -70,6 +84,8 @@ const MainContextProvider = ({ children }) => {
         changeSort,
         view: state.view,
         changeView,
+        sortGrid: state.sortGrid,
+        changeSortGrid,
       }}
     >
       {children}

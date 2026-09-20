@@ -24,13 +24,17 @@ export default function CreateTokenButton() {
 
   return (
     <div
-      className='absolute top-12 left-3 flex items-center justify-center z-10'
+      className='flex items-center justify-center'
       onClick={handleAddClick}
     >
-      <div className='p-2 relative flex items-center justify-start bg-white/10 rounded-md cursor-pointer hover:bg-white/20 w-[34px] h-[34px] overflow-hidden hover:w-fit group'>
-        <HiOutlinePlus className='min-w-fit' size={18} />
-        <div className='w-0 overflow-hidden group-hover:w-auto whitespace-nowrap ml-0 group-hover:ml-2 duration-300 ease-out text-sm'>
-          Create new fragment
+      <div className='group grid grid-cols-[34px_0fr] hover:grid-cols-[34px_1fr] items-center bg-slate-500/40 rounded-md cursor-pointer hover:bg-slate-900/90 h-[34px] overflow-hidden transition-[grid-template-columns,background-color] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'>
+        <div className='flex items-center justify-center'>
+          <HiOutlinePlus size={18} />
+        </div>
+        <div className='overflow-hidden'>
+          <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150 whitespace-nowrap pl-2 pr-3 text-sm'>
+            Create new fragment
+          </div>
         </div>
       </div>
     </div>

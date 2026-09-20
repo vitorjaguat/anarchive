@@ -111,7 +111,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
       {openToken?.token?.tokenId && (
         <Fragment key={`token-panel-${openToken.token.tokenId || 'unknown'}`}>
           <motion.div
-            className='absolute min-w-[600px] right-0  h-[calc(100%-100px)] z-20 flex backdrop-blur-[6px] bg-slate-800/20'
+            className='absolute min-w-[600px] right-0  h-[calc(100%-100px)] z-20 flex backdrop-blur-[6px] bg-slate-800/50'
             key={openToken.token.tokenId}
             onClick={(e) => {
               e.preventDefault();

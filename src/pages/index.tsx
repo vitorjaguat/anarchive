@@ -3,7 +3,6 @@ import { useState, useEffect, useContext } from 'react';
 import TokenInfo from '../components/TokenInfo';
 import Filters from '../components/Filters';
 import Head from '../components/Headhead';
-import CreateTokenButton from '../components/CreateTokenButton';
 import { useRouter } from 'next/router';
 import type { GetServerSideProps } from 'next';
 import Layout from '@/components/Layout';
@@ -12,7 +11,6 @@ import contract from '../utils/contract';
 import { useIsMobile } from '@/utils/useIsMobile';
 import GridViewMobile from '@/components/mobile/GridViewMobile';
 import { MainContext } from '@/context/mainContext';
-import GraphGridToggle from '@/components/grid/GraphGridToggle';
 import Grid from '@/components/grid/Grid';
 import { publicClient } from '@/utils/zoraprotocolConfig';
 import fetchOnChainTokenMetadata from '@/utils/fetchOnChainTokenMetadata';
@@ -305,9 +303,6 @@ export default function Home({
                 usersFrags={usersFrags}
               />
             )}
-
-            <CreateTokenButton />
-            <GraphGridToggle view={view} changeView={changeView} />
           </div>
         )}
       </Layout>

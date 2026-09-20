@@ -54,11 +54,25 @@ export default function AppInfoBox({ setInfoVisible, infoVisible }) {
   //     controls.start('exit');
   //   }
   // }, [infoVisible]);
+
+  useEffect(() => {
+    if (!infoVisible) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setInfoVisible(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [infoVisible, setInfoVisible]);
+
   return (
     <AnimatePresence>
       {infoVisible && (
         <motion.div
-          className='absolute rounded-tr-md max-w-[600px] flex flex-col backdrop-blur-[6px] bg-slate-800/20 bottom-[100px] left-0 items-end'
+          className='absolute rounded-tr-md max-w-[600px] flex flex-col backdrop-blur-[6px] bg-slate-800/50 bottom-[100px] left-0 items-end z-[11]'
           variants={boxVariants}
           initial='hidden'
           animate='visible'

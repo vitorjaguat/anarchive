@@ -19,35 +19,43 @@ export default function GraphGridToggle({
   };
 
   return (
-    <div className='absolute top-3 right-3 flex flex-col gap-3 z-[11]'>
-      <div
-        className={
-          'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md ' +
-          (view === 'graph' ? 'border-[1px] border-slate-600' : '')
-        }
+    <div className='flex flex-col items-start gap-1'>
+      <button
+        className='group grid grid-cols-[34px_0fr] hover:grid-cols-[34px_1fr] items-center cursor-pointer rounded-md bg-slate-500/40 hover:bg-slate-900/90 h-[34px] overflow-hidden transition-[grid-template-columns,background-color] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'
+        onClick={handleClickGraph}
       >
-        <button
-          title='Graph view'
-          className='cursor-pointer'
-          onClick={handleClickGraph}
+        <div
+          className={
+            'flex items-center justify-center h-[34px] rounded-md border-[1px] ' +
+            (view === 'graph' ? 'border-slate-600' : 'border-transparent')
+          }
         >
           <PiGraphLight size={24} className='text-[#A0A0FF]' />
-        </button>
-      </div>
-      <div
-        className={
-          'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md ' +
-          (view === 'grid' ? 'border-[1px] border-slate-600' : '')
-        }
+        </div>
+        <div className='overflow-hidden'>
+          <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150 whitespace-nowrap pl-2 pr-3 text-sm'>
+            Graph view
+          </div>
+        </div>
+      </button>
+      <button
+        className='group grid grid-cols-[34px_0fr] hover:grid-cols-[34px_1fr] items-center cursor-pointer rounded-md bg-slate-500/40 hover:bg-slate-900/90 h-[34px] overflow-hidden transition-[grid-template-columns,background-color] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'
+        onClick={handleClickGrid}
       >
-        <button
-          title='Grid view'
-          className='cursor-pointer'
-          onClick={handleClickGrid}
+        <div
+          className={
+            'flex items-center justify-center h-[34px] rounded-md border-[1px] ' +
+            (view === 'grid' ? 'border-slate-600' : 'border-transparent')
+          }
         >
           <CiGrid41 size={24} className='text-[#A0A0FF]' />
-        </button>
-      </div>
+        </div>
+        <div className='overflow-hidden'>
+          <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150 whitespace-nowrap pl-2 pr-3 text-sm'>
+            Grid view
+          </div>
+        </div>
+      </button>
     </div>
   );
 }

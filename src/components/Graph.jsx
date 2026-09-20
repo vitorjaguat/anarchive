@@ -199,41 +199,6 @@ const Graph = ({
       return spriteCache.current.get(node.id);
     }
 
-    // Create a promise-based texture loader to get image dimensions
-    const createProportionalTexture = (imageUrl) => {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-
-          // Calculate aspect ratio
-          const aspectRatio = img.width / img.height;
-
-          // Set canvas size maintaining aspect ratio
-          const baseSize = 256;
-          if (aspectRatio > 1) {
-            // Landscape image
-            canvas.width = baseSize;
-            canvas.height = baseSize / aspectRatio;
-          } else {
-            // Portrait or square image
-            canvas.width = baseSize * aspectRatio;
-            canvas.height = baseSize;
-          }
-
-          // Draw image maintaining proportions
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-          const texture = new THREE.Texture(canvas);
-          texture.needsUpdate = true;
-          resolve({ texture, aspectRatio });
-        };
-        img.src = imageUrl;
-      });
-    };
-
     // For now, use the standard texture loader, but we'll enhance it
     const texture = new THREE.TextureLoader().load(
       node.image,
@@ -241,7 +206,10 @@ const Graph = ({
         // console.log(`Texture loaded for node: ${node.id}`);
         // Get the image to calculate aspect ratio
         const img = loadedTexture.image;
-        const aspectRatio = img.width / img.height;
+        // Some sources report 0 width/height, which turns aspectRatio into
+        // NaN/Infinity and collapses the sprite. Fall back to a 1:1 square.
+        const aspectRatio =
+          img.width > 0 && img.height > 0 ? img.width / img.height : 1;
 
         // Adjust sprite scale based on aspect ratio
         if (aspectRatio > 1) {

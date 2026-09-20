@@ -3,12 +3,12 @@ import GridViewItemMobile from '../mobile/GridViewItemMobile';
 // import { Masonry } from 'react-plock';
 import dynamic from 'next/dynamic';
 import useIsMounted from '@/utils/useIsMounted';
-import { useEffect, useState } from 'react';
-import { BiSort } from 'react-icons/bi';
+import { useContext, useEffect, useState } from 'react';
+import { MainContext } from '@/context/mainContext';
 
 const Masonry = dynamic(
   () => import('react-plock').then((mod) => mod.Masonry),
-  { ssr: false }
+  { ssr: false },
 );
 
 interface GridProps {
@@ -26,12 +26,12 @@ export default function Grid({
   filter,
 }: GridProps) {
   const mounted = useIsMounted();
+  const { sortGrid } = useContext(MainContext);
 
-  const [sortGrid, setSortGrid] = useState('DESC');
   const [tokens, setTokens] = useState(
     [...allTokens].sort(
-      (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId)
-    )
+      (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId),
+    ),
   );
   useEffect(() => {
     let filteredTokens = [...allTokens];
@@ -40,7 +40,7 @@ export default function Grid({
     if (filter && filter.length > 0) {
       filteredTokens = allTokens.filter((token) => {
         const tagsAttribute = token.token.attributes?.find(
-          (attr) => attr.key === 'Tags' || attr.key === 'Content Tags'
+          (attr) => attr.key === 'Tags' || attr.key === 'Content Tags',
         );
 
         if (!tagsAttribute) return false;
@@ -49,7 +49,7 @@ export default function Grid({
 
         // Check if any of the filter tags are included in the token's tags
         return filter.some((filterTag) =>
-          tagsValue.includes(filterTag.toLowerCase())
+          tagsValue.includes(filterTag.toLowerCase()),
         );
       });
     }
@@ -58,8 +58,8 @@ export default function Grid({
     if (showMineIsChecked) {
       filteredTokens = filteredTokens.filter((token) =>
         usersFrags.some(
-          (userFrag) => userFrag.token.tokenId === token.token.tokenId
-        )
+          (userFrag) => userFrag.token.tokenId === token.token.tokenId,
+        ),
       );
     }
 
@@ -67,52 +67,31 @@ export default function Grid({
     if (sortGrid === 'ASC') {
       setTokens(
         filteredTokens.sort(
-          (a, b) => Number(a.token.tokenId) - Number(b.token.tokenId)
-        )
+          (a, b) => Number(a.token.tokenId) - Number(b.token.tokenId),
+        ),
       );
     } else {
       setTokens(
         filteredTokens.sort(
-          (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId)
-        )
+          (a, b) => Number(b.token.tokenId) - Number(a.token.tokenId),
+        ),
       );
     }
   }, [allTokens, showMineIsChecked, sortGrid, filter, usersFrags]);
 
-  const handleClickSort = () => {
-    setSortGrid((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'));
-  };
-
   if (!allTokens || allTokens.length === 0 || !mounted) return null;
 
   return (
-    <div className='flex flex-col items-center w-full pt-3 h-full overflow-y-auto scroll-smooth'>
-      <div className='flex w-full justify-center z-10 mb-2'>
-        {/* SORT TOGLE */}
-        <div
-          className={
-            'w-[34px] aspect-square flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-md  ' +
-            (sortGrid === 'DESC' ? 'border-[1px] border-slate-600' : '')
-          }
-        >
-          <button
-            title='Sort by date'
-            className='cursor-pointer'
-            onClick={handleClickSort}
-          >
-            <BiSort size={20} className='text-[#A0A0FF]' />
-          </button>
-        </div>
-      </div>
+    <div className='flex flex-col items-center w-full h-full overflow-y-auto scroll-smooth'>
       {/* GRID */}
-      <div className='relative w-full  overflow-y-auto px-14 scroll-smooth'>
+      <div className='relative w-full overflow-y-auto pt-3 pl-14 pr-3 scroll-smooth'>
         <div className=' w-full pb-40 scroll-smooth'>
           {!showMineIsChecked ? (
             <Masonry
               items={tokens}
               config={{
                 columns: [2, 3, 4],
-                gap: [24, 32, 40],
+                gap: [12, 12, 12],
                 media: [1024, 1280, 1536],
                 useBalancedLayout: true,
               }}
@@ -131,7 +110,7 @@ export default function Grid({
               items={usersFrags}
               config={{
                 columns: [2, 3, 4],
-                gap: [16, 16, 16],
+                gap: [12, 12, 12],
                 media: [1024, 1280, 1536],
                 useBalancedLayout: true,
               }}

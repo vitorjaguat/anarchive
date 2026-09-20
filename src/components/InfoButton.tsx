@@ -13,10 +13,17 @@ export default function InfoButton({
 }: InfoButtonProps) {
   return (
     <div
-      className='absolute top-3 left-3 flex items-center justify-center cursor-help z-10 p-2 rounded-md bg-white/10 hover:bg-white/20 w-[34px] h-[34px]'
+      className='group grid grid-cols-[34px_0fr] hover:grid-cols-[34px_1fr] items-center cursor-help rounded-md bg-slate-500/40 hover:bg-slate-900/90 h-[34px] overflow-hidden transition-[grid-template-columns,background-color] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'
       onClick={() => setInfoVisible(!infoVisible)}
     >
-      <AiOutlineInfo size={18} />
+      <div className='flex items-center justify-center'>
+        <AiOutlineInfo size={18} />
+      </div>
+      <div className='overflow-hidden'>
+        <div className='opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-150 whitespace-nowrap pl-2 pr-3 text-sm'>
+          About
+        </div>
+      </div>
     </div>
   );
 }

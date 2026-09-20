@@ -1,10 +1,14 @@
 import Navbar from './Navbar';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import AppInfoBox from './AppInfoBox';
 import { usePathname } from 'next/navigation';
 import { useIsMobile } from '@/utils/useIsMobile';
 import NavbarMobile from './mobile/NavbarMobile';
 import InfoButton from './InfoButton';
+import CreateTokenButton from './CreateTokenButton';
+import GraphGridToggle from './grid/GraphGridToggle';
+import SortToggleGrid from './grid/SortToggleGrid';
+import { MainContext } from '@/context/mainContext';
 
 export default function Layout({
   children,
@@ -25,6 +29,8 @@ export default function Layout({
   }, []);
 
   const [infoVisible, setInfoVisible] = useState(false);
+  const { view, changeView, sortGrid, changeSortGrid } =
+    useContext(MainContext);
 
   if (isMounted && isMobile)
     return (
@@ -43,10 +49,20 @@ export default function Layout({
         <div className='relative w-screen h-screen'>
           <div>{children}</div>
 
-          <InfoButton
-            setInfoVisible={setInfoVisible}
-            infoVisible={infoVisible}
-          />
+          <div className='absolute top-3 left-3 flex flex-col items-start gap-1 z-10'>
+            <InfoButton
+              setInfoVisible={setInfoVisible}
+              infoVisible={infoVisible}
+            />
+            <CreateTokenButton />
+            <GraphGridToggle view={view} changeView={changeView} />
+            {view === 'grid' && (
+              <SortToggleGrid
+                sortGrid={sortGrid}
+                changeSortGrid={changeSortGrid}
+              />
+            )}
+          </div>
           <AppInfoBox
             setInfoVisible={setInfoVisible}
             infoVisible={infoVisible}
