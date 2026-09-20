@@ -19,6 +19,8 @@ import { zoraCreator1155ImplABI } from '@zoralabs/protocol-deployments';
 import { publicClient } from '@/utils/zoraprotocolConfig';
 import collectionAddress from '@/utils/contract';
 
+const PERMISSION_BIT_METADATA = BigInt(16); // 2 ** 4
+
 export default function GridOpenToken({
   token,
   onClose,
@@ -40,17 +42,18 @@ export default function GridOpenToken({
     let cancelled = false;
     (async () => {
       try {
-        const creator = await (publicClient as any).readContract({
+        const canUpdate = await (publicClient as any).readContract({
           address: collectionAddress as `0x${string}`,
           abi: zoraCreator1155ImplABI,
-          functionName: 'getCreatorRewardRecipient',
-          args: [BigInt(token.token.tokenId)],
+          functionName: 'isAdminOrRole',
+          args: [
+            address as `0x${string}`,
+            BigInt(token.token.tokenId),
+            PERMISSION_BIT_METADATA,
+          ],
         });
         if (!cancelled) {
-          setIsCreator(
-            typeof creator === 'string' &&
-              creator.toLowerCase() === address.toLowerCase(),
-          );
+          setIsCreator(Boolean(canUpdate));
         }
       } catch {
         if (!cancelled) setIsCreator(false);

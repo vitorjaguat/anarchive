@@ -19,6 +19,8 @@ import { zoraCreator1155ImplABI } from '@zoralabs/protocol-deployments';
 import { publicClient } from '@/utils/zoraprotocolConfig';
 import collectionAddress from '@/utils/contract';
 
+const PERMISSION_BIT_METADATA = BigInt(16); // 2 ** 4
+
 export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   const tokenInfoControls = useAnimationControls();
@@ -31,7 +33,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const { openToken, changeOpenToken } = useContext(MainContext);
   const { address } = useAccount();
 
-  console.log('openToken', openToken);
+  // console.log('openToken', openToken);
 
   useEffect(() => {
     if (!openToken?.token?.tokenId || !address) {
@@ -41,18 +43,18 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
     let cancelled = false;
     (async () => {
       try {
-        const creator = await publicClient.readContract({
+        const canUpdate = await publicClient.readContract({
           address: collectionAddress,
           abi: zoraCreator1155ImplABI,
-          functionName: 'getCreatorRewardRecipient',
-          args: [BigInt(openToken.token.tokenId)],
+          functionName: 'isAdminOrRole',
+          args: [
+            address,
+            BigInt(openToken.token.tokenId),
+            PERMISSION_BIT_METADATA,
+          ],
         });
-        console.log('getCreatorRewardRecipient', creator);
         if (!cancelled) {
-          setIsCreator(
-            typeof creator === 'string' &&
-              creator.toLowerCase() === address.toLowerCase(),
-          );
+          setIsCreator(Boolean(canUpdate));
         }
       } catch {
         if (!cancelled) setIsCreator(false);
