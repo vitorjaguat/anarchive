@@ -176,8 +176,15 @@ export default function Home({
   //filter tokens by content tag (searchbar):
   const [filter, setFilter] = useState([]);
 
-  const { openToken, changeOpenToken, sort, changeSort, view, changeView } =
-    useContext(MainContext);
+  const {
+    openToken,
+    changeOpenToken,
+    sort,
+    changeSort,
+    view,
+    changeView,
+    constellations,
+  } = useContext(MainContext);
   const [imageLoaded, setImageLoaded] = useState(false);
   const router = useRouter();
 
@@ -288,6 +295,7 @@ export default function Home({
                 allTokens={allTokens}
                 sort={sort}
                 filter={filter}
+                constellations={constellations}
                 showMineIsChecked={showMineIsChecked}
                 setImageLoaded={setImageLoaded}
                 usersFrags={usersFrags}
@@ -299,6 +307,7 @@ export default function Home({
                 allTokens={allTokens}
                 sort={sort}
                 filter={filter}
+                constellations={constellations}
                 showMineIsChecked={showMineIsChecked}
                 usersFrags={usersFrags}
               />

@@ -1,18 +1,24 @@
+import { tokenMatchesConstellations } from '../utils/constellations';
+
 class GraphDataClass {
-  constructor(tokenArr, attribute, filtersArr) {
-    if (!filtersArr?.length) {
-      this.filteredTokens = tokenArr;
-    } else {
-      this.filteredTokens = tokenArr?.filter((tk) => {
-        let attribute = tk.token.attributes.find(
+  constructor(tokenArr, attribute, filtersArr, constellationsArr) {
+    this.filteredTokens = tokenArr?.filter((tk) => {
+      if (filtersArr?.length) {
+        let tagsAttribute = tk.token.attributes.find(
           (att) => att.key === 'Tags' || att.key === 'Content Tags'
         );
-        if (!attribute) return false;
-        let attributeValue = attribute.value.toLowerCase();
+        if (!tagsAttribute) return false;
+        let attributeValue = tagsAttribute.value.toLowerCase();
 
-        return filtersArr.some((f) => attributeValue.includes(f.toLowerCase()));
-      });
-    }
+        if (
+          !filtersArr.some((f) => attributeValue.includes(f.toLowerCase()))
+        ) {
+          return false;
+        }
+      }
+
+      return tokenMatchesConstellations(tk, constellationsArr);
+    });
     this.nodes = this.filteredTokens?.map((token) => {
       const resolvedImage =
         token.token.imageSmall || token.token.image || token.token.imageLarge;

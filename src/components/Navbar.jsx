@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { MainContext } from '@/context/mainContext';
 import ConnectBtn from './ConnectButton';
 import SelectTag from './SelectTag';
+import ConstellationsBtn from './ConstellationsBtn';
 
 export default function Navbar({
   allTags,
@@ -13,12 +14,13 @@ export default function Navbar({
   showMineIsChecked,
   setShowMineIsChecked,
 }) {
-  const { view } = useContext(MainContext);
+  const { view, constellations, changeConstellations } =
+    useContext(MainContext);
 
   return (
     <div className='w-full flex justify-between items-center p-4 select-none h-[100px] z-[1000] backdrop-blur-[6px] bg-slate-800/50'>
       <div
-        className='tracking-widest flex leading-4 z-[1000] hover:text-slate-400 duration-300 items-center pr-20'
+        className='tracking-widest flex leading-4 z-[1000] hover:text-slate-400 duration-300 items-center min-w-[150px] w-[150px]'
         // onMouseEnter={() => setInfoVisible(true)}
         // onMouseLeave={() => setInfoVisible(false)}
       >
@@ -29,21 +31,24 @@ export default function Navbar({
         </div>
       </div>
 
-      <div className='flex justify-end w-full h-full gap-10'>
-        <div className='min-w-[130px]'>
-          <SelectSort
-            changeSort={changeSort}
-            sort={sort}
-            setShowMineIsChecked={setShowMineIsChecked}
+      <div className='flex justify-center gap-10 w-full h-full'>
+        <div className='w-[220px]'>
+          <ConstellationsBtn
+            constellations={constellations}
+            changeConstellations={changeConstellations}
             showMineIsChecked={showMineIsChecked}
-            view={view}
+            setShowMineIsChecked={setShowMineIsChecked}
           />
         </div>
-        {/* <Search allTokens={allTokens} setFilter={setFilter} /> */}
-        <SelectTag allTags={allTags} setFilter={setFilter} filter={filter} />
-        <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
-          <ConnectBtn />
+        <div className='w-[500px]'>
+          <SelectTag allTags={allTags} setFilter={setFilter} filter={filter} />
         </div>
+        <div className='w-[220px]'>
+          <SelectSort changeSort={changeSort} sort={sort} view={view} />
+        </div>
+      </div>
+      <div className='connect-btn flex h-full items-center font-thin  min-w-[150px]'>
+        <ConnectBtn />
       </div>
     </div>
   );

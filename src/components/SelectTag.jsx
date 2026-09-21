@@ -5,6 +5,7 @@ import {
   RxMagnifyingGlass,
   RxCross2,
 } from 'react-icons/rx';
+import { FiFilter } from 'react-icons/fi';
 
 export default function SelectTag({ allTags, setFilter, filter }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,7 +16,7 @@ export default function SelectTag({ allTags, setFilter, filter }) {
 
   // Filter tags based on search term
   const filteredTags = allTags.filter((tag) =>
-    tag.toLowerCase().includes(searchTerm.toLowerCase())
+    tag.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Close dropdown when clicking outside
@@ -57,7 +58,7 @@ export default function SelectTag({ allTags, setFilter, filter }) {
   };
 
   return (
-    <div className='w-full lg:max-w-[500px] xl:max-w-[800px] flex h-full items-center justify-center'>
+    <div className='w-full flex h-full items-center'>
       <div className='w-full relative' ref={dropdownRef}>
         {/* Dropdown - positioned ABOVE the button */}
         {isOpen && (
@@ -144,7 +145,8 @@ export default function SelectTag({ allTags, setFilter, filter }) {
           onClick={() => setIsOpen(!isOpen)}
           className='bg-slate-700 text-white px-4 py-2 font-thin text-sm rounded-lg w-full outline-none text-center flex items-center justify-between hover:bg-slate-600 transition-colors'
         >
-          <span className='text-gray-300'>
+          <span className='flex items-center gap-2 text-gray-300'>
+            <FiFilter size={14} />
             {filter.length === 0
               ? 'Select content tags to filter fragments...'
               : `${filter.length} tag${filter.length > 1 ? 's' : ''} selected`}

@@ -20,7 +20,7 @@ export default function Filters({ filter, setFilter }) {
         {filter.map((f) => (
           <div
             key={f}
-            className='bg-slate-600/50 text-white px-3 py-1 rounded-md flex justify-between items-center gap-2 mb-1'
+            className='bg-slate-500/40 hover:bg-slate-400/40 transition-colors duration-300 text-white px-3 py-1 rounded-md flex justify-between items-center gap-2 mb-1'
           >
             <div className='flex gap-3 items-center'>
               <FiFilter size={14} />

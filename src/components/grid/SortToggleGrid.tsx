@@ -13,7 +13,7 @@ export default function SortToggleGrid({
 
   return (
     <button
-      className='group grid grid-cols-[34px_0fr] hover:grid-cols-[34px_1fr] items-center cursor-pointer rounded-md bg-slate-500/40 hover:bg-slate-900/90 h-[34px] overflow-hidden transition-[grid-template-columns,background-color] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'
+      className='group grid grid-cols-[34px_0fr] hover:grid-cols-[34px_1fr] items-center cursor-pointer rounded-md bg-slate-500/40 hover:bg-slate-400/40 h-[34px] overflow-hidden transition-[grid-template-columns,background-color] duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]'
       onClick={handleClickSort}
     >
       <div

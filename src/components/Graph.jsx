@@ -13,6 +13,7 @@ const Graph = ({
   sort,
   showMineIsChecked,
   filter,
+  constellations,
   setImageLoaded,
 }) => {
   const graphRef = useRef();
@@ -83,15 +84,19 @@ const Graph = ({
   // prepare nodes (as graphData):
   useEffect(() => {
     if (!showMineIsChecked) {
-      setGraphData(new GraphDataClass(allTokens, sort, filter));
+      setGraphData(
+        new GraphDataClass(allTokens, sort, filter, constellations),
+      );
     }
     if (showMineIsChecked && usersFrags.length > 0) {
-      setGraphData(new GraphDataClass(usersFrags, sort, filter));
+      setGraphData(
+        new GraphDataClass(usersFrags, sort, filter, constellations),
+      );
     }
     if (showMineIsChecked && usersFrags.length === 0) {
       setGraphData({ nodes: [], links: [] });
     }
-  }, [allTokens, showMineIsChecked, usersFrags, sort, filter]);
+  }, [allTokens, showMineIsChecked, usersFrags, sort, filter, constellations]);
 
   //prepare nodes (as spheres):
   const selectedTokenId = openToken?.token?.tokenId;
@@ -402,7 +407,7 @@ const Graph = ({
             return;
           }
 
-          if (filter?.length === 0) {
+          if (filter?.length === 0 && constellations?.length === 0) {
             graphRef.current.zoomToFit(1000, -2000);
           } else {
             graphRef.current.zoomToFit(1000);

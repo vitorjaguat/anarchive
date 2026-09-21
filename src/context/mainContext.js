@@ -6,6 +6,7 @@ const initialState = {
   sort: 'From',
   view: 'graph',
   sortGrid: 'DESC',
+  constellations: [],
 };
 
 // Reducer function
@@ -30,6 +31,11 @@ const reducer = (state, action) => {
       return {
         ...state,
         sortGrid: action.payload,
+      };
+    case 'CHANGE_CONSTELLATIONS':
+      return {
+        ...state,
+        constellations: action.payload,
       };
     default:
       return state;
@@ -75,6 +81,14 @@ const MainContextProvider = ({ children }) => {
     });
   };
 
+  // Function to change selected constellations
+  const changeConstellations = (constellations) => {
+    dispatch({
+      type: 'CHANGE_CONSTELLATIONS',
+      payload: constellations,
+    });
+  };
+
   return (
     <MainContext.Provider
       value={{
@@ -86,6 +100,8 @@ const MainContextProvider = ({ children }) => {
         changeView,
         sortGrid: state.sortGrid,
         changeSortGrid,
+        constellations: state.constellations,
+        changeConstellations,
       }}
     >
       {children}

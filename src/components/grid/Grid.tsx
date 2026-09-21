@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import useIsMounted from '@/utils/useIsMounted';
 import { useContext, useEffect, useState } from 'react';
 import { MainContext } from '@/context/mainContext';
+import { tokenMatchesConstellations } from '@/utils/constellations';
 
 const Masonry = dynamic(
   () => import('react-plock').then((mod) => mod.Masonry),
@@ -17,6 +18,7 @@ interface GridProps {
   usersFrags: Token[];
   sort: string;
   filter: string[];
+  constellations: string[];
 }
 export default function Grid({
   allTokens,
@@ -24,6 +26,7 @@ export default function Grid({
   usersFrags,
   sort,
   filter,
+  constellations,
 }: GridProps) {
   const mounted = useIsMounted();
   const { sortGrid } = useContext(MainContext);
@@ -63,6 +66,13 @@ export default function Grid({
       );
     }
 
+    // Apply constellation filtering
+    if (constellations && constellations.length > 0) {
+      filteredTokens = filteredTokens.filter((token) =>
+        tokenMatchesConstellations(token, constellations),
+      );
+    }
+
     // Apply sorting
     if (sortGrid === 'ASC') {
       setTokens(
@@ -77,7 +87,14 @@ export default function Grid({
         ),
       );
     }
-  }, [allTokens, showMineIsChecked, sortGrid, filter, usersFrags]);
+  }, [
+    allTokens,
+    showMineIsChecked,
+    sortGrid,
+    filter,
+    constellations,
+    usersFrags,
+  ]);
 
   if (!allTokens || allTokens.length === 0 || !mounted) return null;
 
