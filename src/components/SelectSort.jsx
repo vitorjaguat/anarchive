@@ -40,7 +40,7 @@ export default function SelectSort({
           checked={showMineIsChecked}
           onChange={() =>
             setShowMineIsChecked(
-              (prevShowMineIsChecked) => !prevShowMineIsChecked
+              (prevShowMineIsChecked) => !prevShowMineIsChecked,
             )
           }
         />
@@ -48,7 +48,7 @@ export default function SelectSort({
           className='ml-2 mb-[-2px] text-xs font-thin text-slate-300'
           htmlFor='link-users-frags'
         >
-          Show collected
+          Collected by me
         </label>
       </div>
     </div>

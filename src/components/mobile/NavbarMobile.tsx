@@ -38,10 +38,10 @@ export default function NavbarMobile({
                     !mounted
                       ? undefined
                       : !account
-                      ? openConnectModal
-                      : chain.unsupported
-                      ? openChainModal
-                      : openAccountModal
+                        ? openConnectModal
+                        : chain.unsupported
+                          ? openChainModal
+                          : openAccountModal
                   }
                 >
                   <div className='translate-y-[1px]'>
@@ -60,7 +60,7 @@ export default function NavbarMobile({
               checked={showMineIsChecked}
               onChange={() =>
                 setShowMineIsChecked(
-                  (prevShowMineIsChecked) => !prevShowMineIsChecked
+                  (prevShowMineIsChecked) => !prevShowMineIsChecked,
                 )
               }
             />
@@ -68,7 +68,7 @@ export default function NavbarMobile({
               className='ml-2 mb-[-2px] text-xs font-thin text-slate-300'
               htmlFor='link-users-frags'
             >
-              Show collected
+              Collected by me
             </label>
           </div>
         </div>

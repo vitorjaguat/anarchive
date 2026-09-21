@@ -46,17 +46,15 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
       >
         <div className='w-full'>
           {/* IMAGE */}
-          <div className='w-full aspect-square flex items-center bg-black/20'>
+          <div className='w-full flex items-center bg-black/20'>
             {token?.token?.image && (
               <Image
                 src={token.token.image}
                 alt={token.token.name}
-                //   layout='responsive'
                 width={400}
                 height={400}
                 unoptimized={shouldUseUnoptimizedImage(token.token.image)}
-                className={'w-full cursor-pointer'}
-                //   onLoad={(e) => setImageLoaded(true)}
+                className={'w-full h-auto cursor-pointer'}
                 onClick={() => {
                   // largeMediaControls.start('visible');
                   // setOpenLargeMedia(token);
