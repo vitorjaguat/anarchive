@@ -15,6 +15,10 @@ main {
   -ms-overflow-style: none; /* For Internet Explorer and Edge */
 }
 
+*::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

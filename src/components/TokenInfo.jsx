@@ -111,7 +111,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
       {openToken?.token?.tokenId && (
         <Fragment key={`token-panel-${openToken.token.tokenId || 'unknown'}`}>
           <motion.div
-            className='absolute min-w-[600px] right-0  h-[calc(100%-90px)] z-20 flex backdrop-blur-[6px] bg-slate-800/50 border-l-[1px] border-l-slate-700/50'
+            className='absolute min-w-[600px] right-0  h-[calc(100%-90px)] z-20 flex backdrop-blur-[6px] bg-slate-800/50 border-l-[1px] border-l-slate-700/60'
             key={openToken.token.tokenId}
             onClick={(e) => {
               e.preventDefault();
@@ -147,7 +147,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           >
             {/* close button */}
             <div
-              className='w-4 h-fit py-2 rounded-s-md flex justify-center bg-slate-500 hover:bg-slate-400 active:bg-slate-400 duration-300 cursor-pointer translate-x-[-100%]'
+              className='w-4 h-fit py-2 rounded-s-md flex justify-center bg-slate-500/80 hover:bg-slate-500 active:bg-slate-400 duration-150 cursor-pointer translate-x-[-100%]'
               onClick={handleClose}
             >
               <RxChevronRight size={24} />
@@ -157,9 +157,9 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
             {openToken?.token && (
               <div className='pt-4 grid grid-cols-2 gap-4 max-w-[576px]'>
                 {/* left column */}
-                <div className=' pb-4 flex flex-col justify-start h-full gap-2'>
+                <div className=' pb-4 flex flex-col justify-start h-full min-h-0 gap-2'>
                   {/* image + collect btn */}
-                  <div className='flex flex-col gap-2'>
+                  <div className='flex flex-col gap-2 shrink-0'>
                     <div className='relative  bg-white/10 rounded-md overflow-hidden w-full flex justify-center items-center min-h-[280px]'>
                       {!imageLoaded && (
                         // <Image
@@ -234,7 +234,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                   </div>
 
                   {/* attributes */}
-                  <div className='grid grid-cols-2 gap-1'>
+                  <div className='grid grid-cols-2 gap-1 content-start overflow-y-auto min-h-0 flex-1 pb-[78px]'>
                     {openToken?.token?.attributes?.map((att, i) => {
                       const rawKey = String(att?.key ?? '').trim();
                       const rawValue = String(att?.value ?? '').trim();

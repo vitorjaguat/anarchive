@@ -18,7 +18,7 @@ export default function Navbar({
     useContext(MainContext);
 
   return (
-    <div className='w-full flex justify-between items-center p-4 select-none h-[90px] z-[1000] backdrop-blur-[6px] bg-slate-800/50 border-t-[1px] border-t-slate-700/50'>
+    <div className='w-full flex justify-between items-center p-4 select-none h-[90px] z-[1000] backdrop-blur-[6px] bg-slate-800/50 border-t-[1px] border-t-slate-700/60'>
       <div
         className='tracking-widest flex leading-[17px] z-[1000] hover:text-slate-400 duration-300 items-center min-w-[150px] w-[150px] text-[17px]'
         // onMouseEnter={() => setInfoVisible(true)}
