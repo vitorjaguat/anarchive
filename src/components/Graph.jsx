@@ -7,6 +7,8 @@ import ForceGraph3D from 'react-force-graph-3d';
 import { useRouter } from 'next/router';
 import { MainContext } from '@/context/mainContext';
 
+const NAVBAR_HEIGHT = 90;
+
 const Graph = ({
   allTokens,
   usersFrags,
@@ -42,6 +44,29 @@ const Graph = ({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  // Shift the camera's optical center up so the graph centers on the
+  // viewport space above the bottom navbar, instead of the full window.
+  // setViewOffset skews the projection frustum without moving/resizing
+  // the canvas itself, so this is independent of zoomToFit/cameraPosition.
+  useEffect(() => {
+    const camera = graphRef.current?.camera();
+    if (!camera) return;
+
+    // Treat the area above the navbar as the "full" frustum: its vertical
+    // center (from the top) is (windowHeight - NAVBAR_HEIGHT) / 2, so the
+    // full frustum height that puts its center there is windowHeight - NAVBAR_HEIGHT.
+    const fullHeight = windowHeight - NAVBAR_HEIGHT;
+    camera.setViewOffset(
+      windowWidth,
+      fullHeight,
+      0,
+      0,
+      windowWidth,
+      windowHeight,
+    );
+    camera.updateProjectionMatrix();
+  }, [windowWidth, windowHeight, graphData]);
 
   //events:
 
