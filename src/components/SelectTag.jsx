@@ -82,7 +82,7 @@ export default function SelectTag({ allTags, setFilter, filter }) {
                     className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-600 transition-colors flex items-center justify-between ${
                       filter.includes(tag)
                         ? 'text-gray-400 cursor-not-allowed'
-                        : 'text-white'
+                        : 'text-white cursor-pointer'
                     }`}
                   >
                     <span>{tag}</span>

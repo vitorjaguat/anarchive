@@ -1,8 +1,19 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { truncate } from '@/utils/utils';
 import Image from 'next/image';
+import { useAccount, useBalance } from 'wagmi';
+import { formatUnits } from 'viem';
+
+function formatBalance(value, decimals, symbol) {
+  if (value === undefined) return null;
+  const formatted = Number(formatUnits(value, decimals));
+  return `${Number(formatted.toFixed(5))} ${symbol}`;
+}
 
 export default function ConnectBtn() {
+  const { address, chainId } = useAccount();
+  const { data: balance } = useBalance({ address, chainId });
+
   return (
     <ConnectButton.Custom>
       {({
@@ -46,7 +57,15 @@ export default function ConnectBtn() {
                     {account.displayName}
                   </div>
                   <div className='h-[1px] w-2/3 bg-black/50 rounded-sm'></div>
-                  <div className=''>{account.displayBalance}</div>
+                  <div className=''>
+                    {balance
+                      ? formatBalance(
+                          balance.value,
+                          balance.decimals,
+                          balance.symbol
+                        )
+                      : account.displayBalance}
+                  </div>
                 </>
               ) : (
                 'Connect'
