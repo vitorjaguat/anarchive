@@ -109,9 +109,7 @@ const Graph = ({
   // prepare nodes (as graphData):
   useEffect(() => {
     if (!showMineIsChecked) {
-      setGraphData(
-        new GraphDataClass(allTokens, sort, filter, constellations),
-      );
+      setGraphData(new GraphDataClass(allTokens, sort, filter, constellations));
     }
     if (showMineIsChecked && usersFrags.length > 0) {
       setGraphData(
@@ -438,7 +436,7 @@ const Graph = ({
             graphRef.current.zoomToFit(1000);
           }
         }}
-        cooldownTime={openToken === 'initial' ? 12000 : 6000}
+        cooldownTime={openToken === 'initial' ? 12000 : 3000}
         cooldownTicks={300}
         warmupTicks={0}
         // linkVisibility={false}

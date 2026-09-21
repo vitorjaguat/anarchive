@@ -114,49 +114,33 @@ export default function SelectTag({ allTags, setFilter, filter }) {
           </div>
         )}
 
-        {/* Selected Tags Display - positioned ABOVE the button */}
-        {/* {selectedTags.length > 0 && (
-          <div className='mb-2 flex flex-wrap gap-2'>
-            {selectedTags.map((tag) => (
-              <div
-                key={tag}
-                className='bg-blue-600 text-white px-3 py-1 rounded-full text-sm flex items-center gap-2'
-              >
-                <span>{tag}</span>
-                <button
-                  onClick={() => handleTagRemove(tag)}
-                  className='hover:bg-blue-700 rounded-full p-1'
-                >
-                  <RxCross2 size={12} />
-                </button>
-              </div>
-            ))}
-            <button
-              onClick={clearAllTags}
-              className='text-gray-400 hover:text-white text-sm underline'
-            >
-              Clear all
-            </button>
-          </div>
-        )} */}
-
         {/* Main Select Button */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className='bg-slate-700 text-white px-4 py-2 font-thin text-sm rounded-lg w-full outline-none text-center flex items-center justify-between hover:bg-slate-600 transition-colors'
+          className='relative bg-slate-700 text-white px-4 py-2 font-thin text-sm rounded-lg w-full outline-none text-center flex items-center justify-between hover:bg-slate-600 transition-colors'
         >
-          <span className='flex items-center gap-2 text-gray-300'>
+          <span
+            className={
+              'flex items-center gap-2 ' +
+              (filter.length === 0 ? 'text-gray-300' : 'text-sph-green')
+            }
+          >
             <FiFilter size={14} />
             {filter.length === 0
               ? 'Select content tags to filter fragments...'
               : `${filter.length} tag${filter.length > 1 ? 's' : ''} selected`}
           </span>
           <RxChevronDown
-            className={`transition-transform duration-200 ${
+            className={`transition-transform duration-200 text-gray-300 ${
               isOpen ? 'rotate-180' : ''
             }`}
             size={16}
           />
+          {filter.length > 0 && (
+            <div className='absolute -bottom-1.5 -left-1.5 min-w-[18px] h-[18px] rounded-full bg-[#01ff00] text-black text-[11px] font-semibold leading-[4px] text-center flex items-center justify-center'>
+              {filter.length}
+            </div>
+          )}
         </button>
       </div>
     </div>

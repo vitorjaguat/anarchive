@@ -7,9 +7,7 @@ interface ConstellationsBtnProps {
   constellations: string[];
   changeConstellations: (constellations: string[]) => void;
   showMineIsChecked: boolean;
-  setShowMineIsChecked: (
-    value: boolean | ((prev: boolean) => boolean),
-  ) => void;
+  setShowMineIsChecked: (value: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 export default function ConstellationsBtn({
@@ -47,9 +45,7 @@ export default function ConstellationsBtn({
 
   const toggleConstellation = (constellation: string) => {
     if (constellations.includes(constellation)) {
-      changeConstellations(
-        constellations.filter((c) => c !== constellation),
-      );
+      changeConstellations(constellations.filter((c) => c !== constellation));
     } else {
       changeConstellations([...constellations, constellation]);
     }
@@ -67,7 +63,10 @@ export default function ConstellationsBtn({
                 return (
                   <button
                     key={constellation}
-                    onClick={() => toggleConstellation(constellation)}
+                    onClick={() => {
+                      toggleConstellation(constellation);
+                      setIsOpen(false);
+                    }}
                     className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-600 transition-colors flex items-center justify-between ${
                       isSelected ? 'text-white' : 'text-gray-300'
                     }`}
@@ -81,7 +80,10 @@ export default function ConstellationsBtn({
               })}
               <div className='mx-2 border-t border-slate-600' />
               <button
-                onClick={() => setShowMineIsChecked((prev) => !prev)}
+                onClick={() => {
+                  setShowMineIsChecked((prev) => !prev);
+                  setIsOpen(false);
+                }}
                 className={`w-full px-4 py-2 text-left text-sm hover:bg-slate-600 transition-colors flex items-center justify-between ${
                   showMineIsChecked ? 'text-white' : 'text-gray-300'
                 }`}
@@ -105,11 +107,6 @@ export default function ConstellationsBtn({
             Constellations
           </span>
           <div className='flex items-center gap-2'>
-            {selectedCount > 0 && (
-              <div className='min-w-[18px] h-[18px] px-[5px] rounded-full bg-[#01ff00] text-black text-[11px] leading-[18px] font-bold text-center'>
-                {selectedCount}
-              </div>
-            )}
             <RxChevronDown
               className={`transition-transform duration-200 ${
                 isOpen ? 'rotate-180' : ''
@@ -117,6 +114,11 @@ export default function ConstellationsBtn({
               size={16}
             />
           </div>
+          {selectedCount > 0 && (
+            <div className='absolute -bottom-1.5 -left-1.5 min-w-[18px] h-[18px] rounded-full bg-[#01ff00] text-black text-[11px] font-semibold leading-[4px] text-center flex items-center justify-center'>
+              {selectedCount}
+            </div>
+          )}
         </button>
       </div>
     </div>

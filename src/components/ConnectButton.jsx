@@ -28,30 +28,31 @@ export default function ConnectBtn() {
         return (
           <button
             type='button'
-            className='w-full px-4 py-2 rounded bg-sph-purple-light font-inter font-bold hover:bg-[#00cc00] text-white hover:text-black transition text-sm duration-300 ease-out'
+            className='w-full px-1 py-2 rounded bg-sph-purple-light font-inter font-bold hover:bg-[#00cc00] text-slate-800 hover:text-black transition text-sm duration-300 ease-out'
             onClick={
               !mounted
                 ? undefined
                 : !account
-                ? openConnectModal
-                : chain.unsupported
-                ? openChainModal
-                : openAccountModal
+                  ? openConnectModal
+                  : chain.unsupported
+                    ? openChainModal
+                    : openAccountModal
             }
           >
             <div
               className={
-                'w-full translate-y-[1px] flex flex-col gap-0  items-center ' +
+                'w-full translate-y-[1px] flex flex-col gap-0 font-semibold items-center ' +
                 (mounted && account ? 'text-sm' : '')
               }
             >
               {mounted && account ? (
                 <>
-                  <div className='flex items-center'>
+                  <div className='flex items-center '>
                     {account.ensAvatar && (
                       <Image
                         src={account.ensAvatar}
-                        className='w-4 h-4 inline mr-2 '
+                        className='w-4 h-4 inline mr-2  '
+                        alt='ENS avatar'
                       />
                     )}
                     {account.displayName}
@@ -62,7 +63,7 @@ export default function ConnectBtn() {
                       ? formatBalance(
                           balance.value,
                           balance.decimals,
-                          balance.symbol
+                          balance.symbol,
                         )
                       : account.displayBalance}
                   </div>

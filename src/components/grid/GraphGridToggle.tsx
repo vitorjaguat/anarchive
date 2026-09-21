@@ -19,9 +19,9 @@ export default function GraphGridToggle({
     >
       <div className='flex items-center justify-center h-[34px] rounded-md'>
         {view === 'graph' ? (
-          <CiGrid41 size={24} className='text-[#A0A0FF]' />
+          <CiGrid41 size={24} className='text-sph-purple-light' />
         ) : (
-          <PiGraphLight size={24} className='text-[#A0A0FF]' />
+          <PiGraphLight size={24} className='text-sph-purple-light' />
         )}
       </div>
       <div className='overflow-hidden'>
