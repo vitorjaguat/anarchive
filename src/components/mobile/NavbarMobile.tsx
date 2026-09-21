@@ -9,7 +9,7 @@ export default function NavbarMobile({
     <div className='fixed bottom-0 left-0 right-0 h-[76px]'>
       <div className='flex items-center justify-between w-full h-full px-3'>
         {/* LOGO */}
-        <div className='flex flex-col text-sm w-fit leading-4'>
+        <div className='flex flex-col text-[15px] w-fit leading-4'>
           <div className=''>The</div>
           <div>Anarchiving</div>
           <div>Game</div>
