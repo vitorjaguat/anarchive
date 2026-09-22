@@ -45,7 +45,7 @@ export default function SelectSort({ changeSort, sort, view }) {
         {/* Dropdown - positioned ABOVE the button */}
         {isOpen && (
           <div className='absolute bottom-full left-0 right-0 z-50 mb-1 bg-slate-700 border border-slate-600 rounded-lg shadow-lg max-h-80 overflow-hidden'>
-            <div className='max-h-56 overflow-y-auto'>
+            <div className='max-h-none overflow-y-auto'>
               {SORT_OPTIONS.map((option) => (
                 <button
                   key={option.value}
