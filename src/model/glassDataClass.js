@@ -20,9 +20,11 @@ class GraphDataClass {
     this.nodes = this.filteredTokens?.map((token) => {
       let resolvedImage =
         token.token.imageSmall || token.token.image || token.token.imageLarge;
+
       // fragment 40 is an svg, here is a png locally served version (exception):
       if (token.token.tokenId == '40')
         resolvedImage = '/images/fragment-40.png';
+
       return {
         id: token.token.tokenId,
         name: token.token.name,

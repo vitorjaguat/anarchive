@@ -1,17 +1,60 @@
 import { useState, useMemo } from 'react';
 import type { Token } from '../../types/tokens';
-import type { Address } from 'viem';
+import { BaseError, InsufficientFundsError, type Address } from 'viem';
 import contract from '@/utils/contract';
 import { publicClient, walletClient } from '@/utils/zoraprotocolConfig';
 import { useAccount } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { prepareMint1155 } from '@/utils/mintHelpers';
 
+const INSUFFICIENT_FUNDS_MESSAGE =
+  'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of your wallet.';
+
+// Node/provider wordings for "not enough balance" that don't match viem's
+// own InsufficientFundsError.nodeMessage regex (eg. Anvil/Foundry's
+// "EVM error: OutOfFunds", vs. go-ethereum's "insufficient funds for...").
+const OUT_OF_FUNDS_PATTERN =
+  /out ?of ?funds|insufficient funds|exceeds transaction sender account balance/i;
+
+function getMintErrorMessage(e: unknown): string {
+  if (e instanceof BaseError) {
+    // Walk the cause chain for a specific, known error (eg. insufficient
+    // funds) rather than surfacing a generic wrapper message like
+    // "Transaction creation failed."
+    const insufficientFunds = e.walk(
+      (err) => err instanceof InsufficientFundsError,
+    );
+    if (insufficientFunds instanceof BaseError) {
+      return insufficientFunds.shortMessage;
+    }
+
+    // Wallet-issued RPC errors (eg. MetaMask's -32003) get a hardcoded,
+    // generic viem shortMessage ("Transaction creation failed.") - the
+    // wallet's actual reason (eg. "insufficient funds for gas * price +
+    // value") lands in `.details` instead, so prefer that when present.
+    const details = e.details;
+    if (details && OUT_OF_FUNDS_PATTERN.test(details)) {
+      return INSUFFICIENT_FUNDS_MESSAGE;
+    }
+    if (details && details !== e.shortMessage) {
+      // Unrecognized detail: show both so the generic wrapper message
+      // doesn't hide whatever specific reason the node/wallet gave.
+      return `${e.shortMessage} ${details}`;
+    }
+
+    return e.shortMessage;
+  }
+
+  const anyError = e as any;
+  return anyError?.shortMessage || anyError?.message || 'Failed to mint';
+}
+
 interface MintProps {
   token: Token['token'];
   address?: `0x${string}`; // if not provided, will use connected wallet
   quantity?: number | bigint;
   className?: string;
+  disabled?: boolean;
   onSuccess?: (hash: `0x${string}`) => void;
   onError?: (error: unknown) => void;
 }
@@ -21,6 +64,7 @@ export default function Mint({
   address,
   quantity = 1,
   className,
+  disabled = false,
   onSuccess,
   onError,
 }: MintProps) {
@@ -60,7 +104,7 @@ export default function Mint({
       }
 
       const { request } = await (publicClient as any).simulateContract(
-        parameters as any
+        parameters as any,
       );
 
       const hash = await (walletClient as any).writeContract(request);
@@ -70,7 +114,7 @@ export default function Mint({
       onSuccess?.(hash);
     } catch (e: any) {
       console.error('Mint error:', e);
-      setError(e?.shortMessage || e?.message || 'Failed to mint');
+      setError(getMintErrorMessage(e));
       onError?.(e);
     } finally {
       setIsMinting(false);
@@ -78,7 +122,7 @@ export default function Mint({
   };
 
   return (
-    <div className='flex flex-col gap-2 cursor-pointer'>
+    <div className='flex flex-col gap-2'>
       <ConnectButton.Custom>
         {({ account, chain, openConnectModal, mounted, openChainModal }) => {
           return (
@@ -87,15 +131,28 @@ export default function Mint({
               onClick={
                 !mounted
                   ? undefined
-                  : account && chain?.unsupported
-                  ? openChainModal
-                  : !isConnected
-                  ? openConnectModal
-                  : handleClickMint
+                  : disabled
+                    ? undefined
+                    : account && chain?.unsupported
+                      ? openChainModal
+                      : !isConnected
+                        ? openConnectModal
+                        : handleClickMint
               }
-              className={className}
-              disabled={isMinting}
-              title={!isConnected ? 'Connect wallet to mint' : 'Mint'}
+              className={
+                className +
+                (!mounted || disabled || isMinting
+                  ? ' cursor-not-allowed'
+                  : ' cursor-pointer')
+              }
+              disabled={isMinting || disabled || !mounted}
+              title={
+                disabled
+                  ? 'This fragment can no longer be collected.'
+                  : !isConnected
+                    ? 'Connect wallet to mint'
+                    : 'Mint'
+              }
             >
               {isMinting ? 'Minting…' : 'Collect'}
             </button>

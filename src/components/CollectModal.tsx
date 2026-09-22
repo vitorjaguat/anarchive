@@ -54,6 +54,10 @@ export default function CollectModal({
     token?.imageLarge ||
     token?.imageOriginal;
 
+  const mintInactive = Boolean(
+    costError && costError.includes('Primary mint is not active'),
+  );
+
   const qtyValid = useMemo(() => {
     if (!Number.isFinite(quantity)) return false;
     if (quantity < 1) return false;
@@ -225,7 +229,10 @@ export default function CollectModal({
               <span className='opacity-70'>Estimating cost…</span>
             )}
             {!costLoading && costError && (
-              <span className='text-red-400'>{costError}</span>
+              <span className='text-red-400'>
+                {costError}
+                {mintInactive && '. This fragment can no longer be collected.'}
+              </span>
             )}
             {!costLoading && !costError && costDisplay && (
               <div className='rounded-md border border-slate-700 overflow-hidden'>
@@ -258,8 +265,9 @@ export default function CollectModal({
           <Mint
             token={token}
             quantity={qtyValid ? quantity : undefined}
-            className={`w-full py-2 cursor-pointer rounded-md ${
-              qtyValid
+            disabled={!qtyValid || mintInactive}
+            className={`w-full py-2 rounded-md ${
+              qtyValid && !mintInactive
                 ? 'bg-[#01ff00] text-black hover:opacity-90'
                 : 'bg-slate-700 text-slate-400 cursor-not-allowed'
             }`}
