@@ -1,15 +1,13 @@
 import Markdown from 'react-markdown';
-// import { MintModal } from '@reservoir0x/reservoir-kit-ui';
 import { Fragment, useState, useContext, useEffect } from 'react';
 import { MainContext } from '@/context/mainContext';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
-import { RxChevronRight } from 'react-icons/rx';
+import { IoMdArrowDropright } from 'react-icons/io';
 import { BsArrowsFullscreen } from 'react-icons/bs';
 import { IoCloseOutline } from 'react-icons/io5';
 import LargeMedia from './LargeMedia';
 import Image from 'next/image';
 import CopyURLButton from './CopyURLButton';
-// import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/router';
 import CollectModal from './CollectModal';
 import UpdateTokenModal from './UpdateTokenModal';
@@ -25,15 +23,12 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
   const [openLargeMedia, setOpenLargeMedia] = useState(null);
   const tokenInfoControls = useAnimationControls();
   const largeMediaControls = useAnimationControls();
-  // const { openConnectModal } = useConnectModal();
   const [openCollect, setOpenCollect] = useState(false);
   const [openUpdate, setOpenUpdate] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const router = useRouter();
   const { openToken, changeOpenToken } = useContext(MainContext);
   const { address } = useAccount();
-
-  // console.log('openToken', openToken);
 
   useEffect(() => {
     if (!openToken?.token?.tokenId || !address) {
@@ -147,10 +142,10 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
           >
             {/* close button */}
             <div
-              className='w-4 h-fit py-2 rounded-s-md flex justify-center bg-slate-500/80 hover:bg-slate-500 active:bg-slate-400 duration-150 cursor-pointer translate-x-[-100%]'
+              className='w-3.5 h-fit py-2 rounded-s-md flex justify-center shrink-0 bg-sph-purple-light/80 hover:bg-slate-400 duration-150 cursor-pointer translate-x-[-100%] translate-y-1 border-[1px] border-r-0 border-slate-700/60 text-slate-800 overflow-hidden'
               onClick={handleClose}
             >
-              <RxChevronRight size={24} />
+              <IoMdArrowDropright className='shrink-0' size={22} />
             </div>
 
             {/* columns */}
@@ -172,24 +167,6 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                           <div className='text-sm animate-ping'>loading...</div>
                         </div>
                       )}
-                      {/* {(openTokenData?.token?.image.slice(-3) === 'gif' ||
-                    openTokenData?.token?.image.slice(-3) === 'svg') && (
-                    <Image
-                      src={openTokenData.token.imageSmall}
-                      alt={openTokenData.token.name}
-                      width={300}
-                      height={300}
-                      className={
-                        'max-w-1/2 max-h-[300px] object-contain cursor-pointer' +
-                        (imageLoaded ? ' ' : ' w-0 h-0 overflow-hidden')
-                      }
-                      onLoad={() => setImageLoaded(true)}
-                      onClick={() => {
-                        largeMediaControls.start('visible');
-                        setOpenLargeMedia(openTokenData);
-                      }}
-                    />
-                  )} */}
                       {openToken?.token?.image && (
                         <Image
                           src={openToken.token.image}
@@ -222,7 +199,7 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
                     </div>
                     <div className=''>
                       <button
-                        className='w-full bg-sph-purple-light text-white/90 py-2 rounded-md hover:bg-[#01ff00] hover:text-[#000000] hover:scale-[1.02] transition-all duration-300'
+                        className='w-full bg-sph-purple-light text-slate-800 rounded-md hover:bg-sph-green hover:scale-[1.02] transition-all duration-300 font-semibold leading-none py-3'
                         onClick={(e) => {
                           e.stopPropagation();
                           setOpenCollect(true);
@@ -391,13 +368,6 @@ export default function TokenInfo({ imageLoaded, setImageLoaded }) {
               className='flex justify-center'
               // style={{ maxWidth: 'fit-content' }}
             >
-              {/* <img
-                  src={openLargeMedia.token.imageLarge}
-                  alt={openLargeMedia.token.name}
-                  width={500}
-                  height={500}
-                  className='max-w-[500px] max-h-[500px] object-contain rounded-md bg-white/10'
-                /> */}
               {openLargeMedia?.token && (
                 <LargeMedia token={openLargeMedia?.token} />
               )}

@@ -55,20 +55,18 @@ class GraphDataClass {
         }
       });
     });
-    if (attribute === 'From') {
-      this.nodes.forEach((node, i, allNodes) => {
-        allNodes
-          .filter((n) => n.from === node.to)
-          .forEach((targetNode) => {
-            const link = {
-              source: node.id,
-              target: targetNode.id,
-              isDestination: true,
-            };
-            this.links.push(link);
-          });
-      });
-    }
+    this.nodes.forEach((node, i, allNodes) => {
+      allNodes
+        .filter((n) => n.from === node.to)
+        .forEach((targetNode) => {
+          const link = {
+            source: node.id,
+            target: targetNode.id,
+            isDestination: true,
+          };
+          this.links.push(link);
+        });
+    });
     // console.log('this.links', this.links);
   }
 

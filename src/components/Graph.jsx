@@ -442,14 +442,15 @@ const Graph = ({
         // linkVisibility={false}
         //links:
         linkColor={(link) =>
-          link?.isDestination && sort === 'From'
+          link?.isDestination && (sort === 'From' || sort === 'To')
             ? 'rgba(160, 160, 255, 0.025)'
             : 'rgba(0,0,0,0)'
         }
-        linkWidth={sort === 'From' ? 20 : 0}
-        // linkDirectionalParticles={(link) => (link.isDestination ? 1 : 0)}
+        linkWidth={(link) =>
+          link?.isDestination && (sort === 'From' || sort === 'To') ? 20 : 0
+        }
         linkDirectionalParticles={(link) =>
-          link?.isDestination && sort === 'From' ? 2 : 0
+          link?.isDestination && (sort === 'From' || sort === 'To') ? 2 : 0
         }
         linkDirectionalParticleWidth={1}
         linkDirectionalParticleSpeed={0.001}

@@ -236,10 +236,6 @@ export default function CollectModal({
             )}
             {!costLoading && !costError && costDisplay && (
               <div className='rounded-md border border-slate-700 overflow-hidden'>
-                {/* <div className='grid grid-cols-2 bg-slate-800/50 px-3 py-2 font-medium'>
-                  <div>Item</div>
-                  <div className='text-right'>Amount</div>
-                </div> */}
                 <div className='divide-y divide-slate-700'>
                   <div className='grid grid-cols-2 px-3 py-1'>
                     <div>Mint fee</div>
