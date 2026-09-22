@@ -37,7 +37,6 @@ export default function GridViewItemMobile({ token }: { token: Token }) {
 
   if (!token?.token?.tokenId) return null;
 
-  if (token.token.tokenId == '63') console.dir(token);
   return (
     <>
       <div

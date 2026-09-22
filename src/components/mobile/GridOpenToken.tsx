@@ -90,14 +90,14 @@ export default function GridOpenToken({
   return createPortal(
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-[2px]'>
       <div
-        className='relative bg-slate-500 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto p-4'
+        className='relative bg-slate-700 rounded-lg border border-slate-500/40  shadow-black/25 shadow-inner max-w-lg w-full max-h-[90vh] overflow-y-auto px-2 py-4'
         tabIndex={-1}
       >
         <button className='absolute top-3 right-3 blur-none' onClick={onClose}>
           <IoCloseOutline className='text-white' size={25} />
         </button>
         {/* IMAGE */}
-        <div className='mt-8 w-full aspect-square flex items-center bg-black/20'>
+        <div className='mt-8 w-full bg-black/20'>
           {token?.token?.image && (
             <Image
               src={token.token.image}
@@ -105,7 +105,7 @@ export default function GridOpenToken({
               width={400}
               height={400}
               unoptimized={shouldUseUnoptimizedImage(token.token.image)}
-              className={'w-full cursor-pointer'}
+              className={'w-full h-auto cursor-pointer'}
               onClick={() => {
                 setOpenLargeMedia(token);
               }}
@@ -185,6 +185,12 @@ export default function GridOpenToken({
               {token.token.description}
             </Markdown>
           </div>
+        </div>
+        {/* CLOSE (bottom) */}
+        <div className='flex justify-end'>
+          <button className='blur-none' onClick={onClose}>
+            <IoCloseOutline className='text-white' size={25} />
+          </button>
         </div>
       </div>
 
