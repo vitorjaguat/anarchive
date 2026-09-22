@@ -5,14 +5,12 @@ class GraphDataClass {
     this.filteredTokens = tokenArr?.filter((tk) => {
       if (filtersArr?.length) {
         let tagsAttribute = tk.token.attributes.find(
-          (att) => att.key === 'Tags' || att.key === 'Content Tags'
+          (att) => att.key === 'Tags' || att.key === 'Content Tags',
         );
         if (!tagsAttribute) return false;
         let attributeValue = tagsAttribute.value.toLowerCase();
 
-        if (
-          !filtersArr.some((f) => attributeValue.includes(f.toLowerCase()))
-        ) {
+        if (!filtersArr.some((f) => attributeValue.includes(f.toLowerCase()))) {
           return false;
         }
       }
@@ -20,8 +18,11 @@ class GraphDataClass {
       return tokenMatchesConstellations(tk, constellationsArr);
     });
     this.nodes = this.filteredTokens?.map((token) => {
-      const resolvedImage =
+      let resolvedImage =
         token.token.imageSmall || token.token.image || token.token.imageLarge;
+      // fragment 40 is an svg, here is a png locally served version (exception):
+      if (token.token.tokenId == '40')
+        resolvedImage = '/images/fragment-40.png';
       return {
         id: token.token.tokenId,
         name: token.token.name,
