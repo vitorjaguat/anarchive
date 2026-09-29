@@ -5,6 +5,7 @@ export const CONSTELLATIONS = [
   'Esfera do Sul',
   'uint studio',
   'Cordata F.O.R.',
+  'Patrimonio degli Errori',
 ];
 
 // Strips punctuation/diacritics-adjacent signals so 'Cordata F.O.R.' also
@@ -22,8 +23,7 @@ export const tokenMatchesConstellations = (
 ): boolean => {
   if (!constellationsArr?.length) return true;
 
-  const from = token.token.attributes?.find((att) => att.key === 'From')
-    ?.value;
+  const from = token.token.attributes?.find((att) => att.key === 'From')?.value;
   const to = token.token.attributes?.find((att) => att.key === 'To')?.value;
   const normalizedFrom = normalizeName(from);
   const normalizedTo = normalizeName(to);
