@@ -1,5 +1,7 @@
 import { tokenMatchesConstellations } from '../utils/constellations';
 
+const normalizeValue = (value) => value?.trim().toLowerCase() ?? '';
+
 class GraphDataClass {
   constructor(tokenArr, attribute, filtersArr, constellationsArr) {
     this.filteredTokens = tokenArr?.filter((tk) => {
@@ -25,16 +27,23 @@ class GraphDataClass {
       if (token.token.tokenId == '40')
         resolvedImage = '/images/fragment-40.png';
 
+      const group =
+        attribute !== 'none'
+          ? token.token.attributes.find((att) => att.key === attribute)?.value
+          : 'none';
+      const from = token.token.attributes.find((att) => att.key === 'From')?.value;
+      const to = token.token.attributes.find((att) => att.key === 'To')?.value;
+
       return {
         id: token.token.tokenId,
         name: token.token.name,
         image: resolvedImage,
-        group:
-          attribute !== 'none'
-            ? token.token.attributes.find((att) => att.key === attribute)?.value
-            : 'none',
-        from: token.token.attributes.find((att) => att.key === 'From')?.value,
-        to: token.token.attributes.find((att) => att.key === 'To')?.value,
+        group,
+        from,
+        to,
+        groupKey: normalizeValue(group),
+        fromKey: normalizeValue(from),
+        toKey: normalizeValue(to),
       };
     });
     this.links = [];
@@ -44,7 +53,7 @@ class GraphDataClass {
     }
     this.nodes.forEach((node, i, allNodes) => {
       allNodes.forEach((n) => {
-        if (n.group === node.group && n.id !== node.id) {
+        if (n.groupKey === node.groupKey && n.id !== node.id) {
           this.links.push({
             source: node.id,
             target: n.id,
@@ -57,7 +66,7 @@ class GraphDataClass {
     });
     this.nodes.forEach((node, i, allNodes) => {
       allNodes
-        .filter((n) => n.from === node.to)
+        .filter((n) => n.fromKey === node.toKey)
         .forEach((targetNode) => {
           const link = {
             source: node.id,

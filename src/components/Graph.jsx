@@ -155,8 +155,8 @@ const Graph = ({
     // Dividing by (groupSize - 1) equalises total pull across all groups.
     const groupSizeMap = {};
     graphData.nodes.forEach((node) => {
-      if (node.group) {
-        groupSizeMap[node.group] = (groupSizeMap[node.group] || 0) + 1;
+      if (node.groupKey) {
+        groupSizeMap[node.groupKey] = (groupSizeMap[node.groupKey] || 0) + 1;
       }
     });
 
@@ -164,7 +164,7 @@ const Graph = ({
     if (linkForce) {
       linkForce.strength((link) => {
         if (link.isDestination) return 0.0001;
-        const grp = link.source?.group;
+        const grp = link.source?.groupKey;
         const size = grp && groupSizeMap[grp] ? groupSizeMap[grp] : 1;
         return size > 1 ? 0.003 / (size - 1) : 0.003;
       });
@@ -201,7 +201,7 @@ const Graph = ({
     // that directly nudge node velocities. No external import needed.
     const clusterForce = (alpha) => {
       graphData.nodes.forEach((node) => {
-        const target = centroidMap[node.group];
+        const target = centroidMap[node.groupKey];
         if (!target) return;
         node.vx =
           (node.vx || 0) + (target.x - (node.x || 0)) * SPRING_STRENGTH * alpha;
@@ -461,7 +461,7 @@ const Graph = ({
         nodeLabel={(node) =>
           `<div class='node-label'><div class='title'>${node.name}</div><div>${node.group}</div></div>`
         }
-        nodeAutoColorBy={'group'}
+        nodeAutoColorBy={'groupKey'}
         // nodeThreeObject={(node) =>
         //   spheres.find((sphere) => sphere.userData.id === node.id)
         // }
