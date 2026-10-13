@@ -3,6 +3,7 @@ import { useRef, useState, useEffect, useContext } from 'react';
 import * as THREE from 'three';
 import { GraphDataClass } from '../model/glassDataClass';
 import contract from '../utils/contract';
+import { toTextureUrl } from '../utils/imageOptimization';
 import ForceGraph3D from 'react-force-graph-3d';
 import { useRouter } from 'next/router';
 import { MainContext } from '@/context/mainContext';
@@ -229,7 +230,7 @@ const Graph = ({
 
     // For now, use the standard texture loader, but we'll enhance it
     const texture = new THREE.TextureLoader().load(
-      node.image,
+      toTextureUrl(node.image),
       (loadedTexture) => {
         // console.log(`Texture loaded for node: ${node.id}`);
         // Get the image to calculate aspect ratio
@@ -250,7 +251,10 @@ const Graph = ({
       },
       undefined,
       (error) => {
-        console.error(`Failed to load texture for node: ${node.id}`, error);
+        console.error(
+          `Failed to load texture for node: ${node.id} (${node.image})`,
+          error,
+        );
         if (sprite.material) {
           sprite.material.color.set(0x999999);
         }
